@@ -1,0 +1,12 @@
+# Build scripts we have reviewed and allow to run during install.
+# Without this, pnpm 10+ exits non-zero on install ("ignored build scripts"), which
+# fails the Vercel deploy. `allowBuilds` is read by pnpm 12+,
+# `onlyBuiltDependencies` by pnpm 10.4+ — both are listed so either version installs
+# cleanly.
+allowBuilds:
+  unrs-resolver: true
+  sharp: true
+
+onlyBuiltDependencies:
+  - unrs-resolver
+  - sharp

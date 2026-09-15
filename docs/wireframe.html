@@ -1,0 +1,1967 @@
+<title>Pentaxl website — wireframe and review sheet</title>
+<style>
+  :root {
+    --paper: #f4f6f5;
+    --sheet: #ffffff;
+    --ink: #0d1214;
+    --graphite: #5c6a68;
+    --rule: #d3dad8;
+    --box: #e4e9e7;
+    --box-2: #d7dedc;
+    --accent: #0e7a63;
+    --brass: #8a6416;
+    --brass-bg: #f6efdd;
+    --shadow: 0 1px 2px rgba(13, 18, 20, 0.04);
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --measure: 66ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0b1011;
+      --sheet: #11181a;
+      --ink: #e9efee;
+      --graphite: #93a3a1;
+      --rule: #1f2a2c;
+      --box: #1a2325;
+      --box-2: #222d2f;
+      --accent: #2fe0b6;
+      --brass: #e7c565;
+      --brass-bg: #2a2313;
+      --shadow: none;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0b1011;
+    --sheet: #11181a;
+    --ink: #e9efee;
+    --graphite: #93a3a1;
+    --rule: #1f2a2c;
+    --box: #1a2325;
+    --box-2: #222d2f;
+    --accent: #2fe0b6;
+    --brass: #e7c565;
+    --brass-bg: #2a2313;
+    --shadow: none;
+  }
+
+  :root[data-theme="light"] {
+    --paper: #f4f6f5;
+    --sheet: #ffffff;
+    --ink: #0d1214;
+    --graphite: #5c6a68;
+    --rule: #d3dad8;
+    --box: #e4e9e7;
+    --box-2: #d7dedc;
+    --accent: #0e7a63;
+    --brass: #8a6416;
+    --brass-bg: #f6efdd;
+    --shadow: 0 1px 2px rgba(13, 18, 20, 0.04);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+    display: grid;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1040px) {
+    .wrap {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      gap: 3.5rem;
+      padding: 3.5rem 2rem 6rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.1;
+  }
+  h2 {
+    font-size: 1.375rem;
+  }
+  h3 {
+    font-size: 1.0625rem;
+  }
+  p {
+    margin: 0;
+    max-width: var(--measure);
+  }
+
+  .lede {
+    color: var(--graphite);
+    font-size: 1.0625rem;
+  }
+  .small {
+    font-size: 0.875rem;
+  }
+  .mono {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+  }
+  .muted {
+    color: var(--graphite);
+  }
+
+  /* ---- index rail ---- */
+  .rail {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+  @media (min-width: 1040px) {
+    .rail {
+      position: sticky;
+      top: 2rem;
+    }
+  }
+
+  .rail h2 {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--graphite);
+    font-weight: 500;
+  }
+
+  .rail ol {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.125rem;
+  }
+  .rail a {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    border-bottom: 1px solid transparent;
+  }
+  .rail a:hover,
+  .rail a:focus-visible {
+    color: var(--accent);
+    border-bottom-color: var(--rule);
+  }
+  .rail a span {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--graphite);
+    min-width: 1.4rem;
+  }
+
+  /* ---- document head ---- */
+  .doc-head {
+    display: grid;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+  }
+  .meta div {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .meta dt {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--graphite);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .meta dd {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .dl {
+    font: inherit;
+    font-size: 0.9375rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--accent) 12%, transparent);
+    color: var(--accent);
+    cursor: pointer;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+  .dl {
+    display: inline-block;
+    text-decoration: none;
+  }
+  .dl:hover {
+    background: var(--accent);
+    color: var(--sheet);
+  }
+  .dl.ghost {
+    border-color: var(--rule);
+    color: var(--graphite);
+    background: transparent;
+  }
+  .dl.ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: transparent;
+  }
+
+  /* ---- legend ---- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--graphite);
+    white-space: nowrap;
+  }
+  .chip.i {
+    color: var(--accent);
+    border-color: color-mix(in oklab, var(--accent) 40%, var(--rule));
+  }
+  .chip.d {
+    color: var(--brass);
+    border-color: color-mix(in oklab, var(--brass) 40%, var(--rule));
+    background: var(--brass-bg);
+  }
+  .swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid var(--rule);
+    background: var(--box);
+  }
+
+  /* ---- sitemap tree ---- */
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .tree ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--rule);
+  }
+  .tree > ul {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .tree li {
+    position: relative;
+    padding-left: 0.9rem;
+    white-space: nowrap;
+  }
+  .tree li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.95em;
+    width: 0.65rem;
+    height: 1px;
+    background: var(--rule);
+  }
+  .tree > ul > li::before {
+    display: none;
+  }
+  .tree b {
+    font-weight: 600;
+  }
+  .tree em {
+    font-style: normal;
+    color: var(--graphite);
+  }
+
+  /* ---- sheets ---- */
+  .sheet {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .sheet > header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    background: color-mix(in oklab, var(--box) 45%, var(--sheet));
+  }
+  .sheet > header .route {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+  }
+  .sheet > header .job {
+    color: var(--graphite);
+    font-size: 0.875rem;
+    flex-basis: 100%;
+    max-width: var(--measure);
+  }
+
+  .row {
+    display: grid;
+    gap: 1rem 1.5rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  @media (min-width: 900px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      align-items: start;
+    }
+  }
+
+  .ann {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  .ann .ref {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+  }
+  .ann h3 {
+    font-size: 0.9375rem;
+  }
+  .ann p {
+    font-size: 0.875rem;
+    color: var(--graphite);
+  }
+  .ann .flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.15rem;
+  }
+
+  /* ---- wireframe vocabulary ---- */
+  .wf {
+    background: color-mix(in oklab, var(--box) 30%, var(--sheet));
+    border: 1px dashed var(--rule);
+    padding: 0.85rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .wf .bar {
+    height: 0.55rem;
+    background: var(--box-2);
+    border-radius: 1px;
+  }
+  .wf .bar.thick {
+    height: 1.15rem;
+  }
+  .wf .bar.tall {
+    height: 1.9rem;
+  }
+  .wf .w80 {
+    width: 80%;
+  }
+  .wf .w60 {
+    width: 60%;
+  }
+  .wf .w45 {
+    width: 45%;
+  }
+  .wf .w30 {
+    width: 30%;
+  }
+  .wf .w20 {
+    width: 20%;
+  }
+  .wf .stack {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .wf .flex {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .wf .spread {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .wf .btn {
+    height: 1.6rem;
+    width: 5.5rem;
+    background: var(--box-2);
+    border-radius: 2px;
+  }
+  .wf .btn.solid {
+    background: color-mix(in oklab, var(--accent) 30%, var(--box-2));
+  }
+  .wf .pill {
+    height: 1.2rem;
+    width: 3.75rem;
+    background: var(--box-2);
+    border-radius: 2px;
+  }
+  .wf .pill.on {
+    background: color-mix(in oklab, var(--accent) 28%, var(--box-2));
+  }
+  .wf .pill.sm {
+    width: 2.5rem;
+    height: 1rem;
+  }
+  .wf .card {
+    background: var(--box);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.6rem;
+    display: grid;
+    gap: 0.35rem;
+    min-height: 4.5rem;
+  }
+  .wf .cols {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .wf .c2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wf .c3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .wf .c5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .wf .panel {
+    background: var(--box);
+    border: 1px solid var(--rule);
+    padding: 0.75rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .wf .figure {
+    aspect-ratio: 1.1;
+    display: grid;
+    place-items: center;
+    background: var(--box);
+    border: 1px solid var(--rule);
+  }
+  .wf .figure svg {
+    width: 72%;
+    height: auto;
+  }
+  .wf .dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--box-2);
+  }
+  .wf .dot.on {
+    width: 1.1rem;
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--accent) 45%, var(--box-2));
+  }
+  .wf .arrow {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--box);
+  }
+  .wf .faqrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .wf .plus {
+    font-family: var(--mono);
+    color: var(--graphite);
+    font-size: 0.8rem;
+  }
+  .wf .label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    color: var(--graphite);
+  }
+  .wf.dark {
+    background: color-mix(in oklab, var(--ink) 8%, var(--sheet));
+  }
+
+  /* ---- tables ---- */
+  .tablewrap {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--sheet);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.875rem;
+    min-width: 40rem;
+  }
+  caption {
+    text-align: left;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--graphite);
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600;
+    font-size: 0.8125rem;
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  td.ref,
+  th.ref {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .blank td {
+    height: 2.4rem;
+  }
+
+  section {
+    display: grid;
+    gap: 1rem;
+  }
+  section > h2 + .lede {
+    margin-top: -0.35rem;
+  }
+  .sheets {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .main {
+    display: grid;
+    gap: 3.25rem;
+    min-width: 0;
+  }
+
+  a {
+    color: var(--accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media print {
+    :root {
+      --paper: #ffffff;
+      --sheet: #ffffff;
+      --ink: #0d1214;
+      --graphite: #4a5654;
+      --rule: #c8d0ce;
+      --box: #eceff0;
+      --box-2: #dde3e2;
+      --accent: #0b5f4d;
+      --brass: #7a5712;
+      --brass-bg: #f7f1e2;
+      --shadow: none;
+    }
+
+    @page {
+      size: A4;
+      margin: 14mm 12mm;
+    }
+
+    .rail,
+    .actions {
+      display: none;
+    }
+    .wrap {
+      display: block;
+      max-width: none;
+      padding: 0;
+    }
+    .main {
+      gap: 2rem;
+    }
+
+    /* Never split a block from its annotation, or a table row across a page. */
+    .row,
+    .sheet > header,
+    .tablewrap,
+    tr {
+      break-inside: avoid;
+    }
+    .sheet {
+      break-inside: auto;
+    }
+    section {
+      break-inside: auto;
+    }
+    #decisions,
+    #addons,
+    #requests {
+      break-before: page;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+      break-after: avoid;
+    }
+    .lede {
+      font-size: 1rem;
+    }
+    body {
+      background: #fff;
+      font-size: 11pt;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .blank td {
+      height: 2.8rem;
+    }
+  }
+</style>
+
+<div class="wrap">
+  <nav class="rail" aria-label="Contents">
+    <div>
+      <h2>Pages</h2>
+      <ol>
+        <li>
+          <a href="#p1"><span>1</span> Home</a>
+        </li>
+        <li>
+          <a href="#p2"><span>2</span> Services index</a>
+        </li>
+        <li>
+          <a href="#p3"><span>3</span> Service detail</a>
+        </li>
+        <li>
+          <a href="#p4"><span>4</span> Work index</a>
+        </li>
+        <li>
+          <a href="#p5"><span>5</span> Case study</a>
+        </li>
+        <li>
+          <a href="#p6"><span>6</span> Stack</a>
+        </li>
+        <li>
+          <a href="#p7"><span>7</span> Process</a>
+        </li>
+        <li>
+          <a href="#p8"><span>8</span> About</a>
+        </li>
+        <li>
+          <a href="#p9"><span>9</span> Contact</a>
+        </li>
+        <li>
+          <a href="#p10"><span>10</span> Legal &amp; errors</a>
+        </li>
+      </ol>
+    </div>
+    <div>
+      <h2>Review</h2>
+      <ol>
+        <li>
+          <a href="#decisions"><span>A</span> Needs your input</a>
+        </li>
+        <li>
+          <a href="#addons"><span>B</span> Possible add-ons</a>
+        </li>
+        <li>
+          <a href="#requests"><span>C</span> Change requests</a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="main">
+    <header class="doc-head">
+      <p class="mono muted">Wireframe &amp; structure review</p>
+      <h1>Pentaxl website — what is on each page, and what we still need from you</h1>
+      <p class="lede">
+        Grey boxes on purpose. This sheet is about <em>structure</em> — what sits where, in what
+        order, and what each block is for — so you can mark up layout and content without the
+        colours and motion getting in the way. Every block has a reference code; quote it and we
+        will know exactly what you mean.
+      </p>
+      <dl class="meta">
+        <div>
+          <dt>Prepared for</dt>
+          <dd>Client review</dd>
+        </div>
+        <div>
+          <dt>Site</dt>
+          <dd>pentaxl.com</dd>
+        </div>
+        <div>
+          <dt>Pages</dt>
+          <dd>10 routes, 16 URLs</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>Built and reviewable</dd>
+        </div>
+      </dl>
+      <div class="actions">
+        <a class="dl" href="pentaxl-wireframe.pdf" download="pentaxl-wireframe.pdf"
+          >Download the PDF</a
+        >
+        <button type="button" class="dl ghost" onclick="window.print()">Print this page</button>
+        <span class="small muted">The PDF is A4, ten pages, ready to send on.</span>
+      </div>
+      <div class="legend" role="list" aria-label="Legend">
+        <span class="chip" role="listitem"><span class="swatch"></span> Block of content</span>
+        <span class="chip i" role="listitem">Interactive</span>
+        <span class="chip d" role="listitem">Needs your input</span>
+      </div>
+    </header>
+
+    <section aria-labelledby="map-h">
+      <h2 id="map-h">How the pages connect</h2>
+      <p class="lede">
+        Five items in the top navigation. Everything else is reached from the footer or from links
+        inside a page — nothing is a dead end.
+      </p>
+      <div class="tree">
+        <ul>
+          <li>
+            <b>/</b> <em>Home — routes people to the right place</em>
+            <ul>
+              <li>
+                <b>/services</b> <em>index</em>
+                <ul>
+                  <li><b>/services/[slug]</b> <em>× 5 — one per discipline</em></li>
+                </ul>
+              </li>
+              <li>
+                <b>/work</b> <em>index</em>
+                <ul>
+                  <li><b>/work/[slug]</b> <em>× 2 — case studies</em></li>
+                </ul>
+              </li>
+              <li><b>/stack</b> <em>technology, filterable</em></li>
+              <li>
+                <b>/about</b> <em>who we are, how to engage</em>
+                <ul>
+                  <li><b>/process</b> <em>five delivery stages</em></li>
+                </ul>
+              </li>
+              <li><b>/contact</b> <em>form + direct details</em></li>
+              <li><b>/privacy</b>, <b>/terms</b> <em>footer only</em></li>
+              <li><b>404</b>, <b>500</b> <em>designed, with a route back</em></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="p1" aria-labelledby="p1h">
+      <h2 id="p1h">1. Home</h2>
+      <p class="lede">
+        Home's job is to route people, not to say everything. Ten blocks, top to bottom.
+      </p>
+      <div class="sheets">
+        <div class="sheet">
+          <header>
+            <strong>Home</strong>
+            <span class="route">/</span>
+            <span class="job"
+              >A visitor should learn what we do, see proof it is real, and find one obvious next
+              step — inside about fifteen seconds.</span
+            >
+          </header>
+
+          <div class="row">
+            <div class="wf">
+              <div class="spread">
+                <div class="bar w20" style="width: 5rem"></div>
+                <div class="flex">
+                  <span class="pill sm"></span><span class="pill sm"></span
+                  ><span class="pill sm"></span><span class="pill sm"></span
+                  ><span class="pill sm"></span>
+                </div>
+              </div>
+              <div class="bar" style="height: 2px"></div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.1</p>
+              <h3>Sticky header</h3>
+              <p>
+                Logo, five nav items, and a thin progress line showing how far down the page you
+                are. On phones the nav collapses into a bottom sheet with the main action in thumb
+                reach.
+              </p>
+              <div class="flags">
+                <span class="chip i">Sticky</span><span class="chip i">Mobile drawer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="cols c2">
+                <div class="stack">
+                  <div class="bar w20"></div>
+                  <div class="bar thick w80"></div>
+                  <div class="bar thick w60"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                  <div class="flex" style="margin-top: 0.35rem">
+                    <span class="btn solid"></span><span class="btn"></span>
+                  </div>
+                  <div class="flex" style="margin-top: 0.5rem">
+                    <span class="pill sm"></span><span class="pill sm"></span
+                    ><span class="pill sm"></span>
+                  </div>
+                </div>
+                <div class="figure">
+                  <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <polygon
+                      points="50,8 92,38 76,88 24,88 8,38"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-opacity=".35"
+                      stroke-width="1"
+                    ></polygon>
+                    <line
+                      x1="50"
+                      y1="8"
+                      x2="76"
+                      y2="88"
+                      stroke="currentColor"
+                      stroke-opacity=".2"
+                      stroke-width="1"
+                    ></line>
+                    <line
+                      x1="92"
+                      y1="38"
+                      x2="24"
+                      y2="88"
+                      stroke="currentColor"
+                      stroke-opacity=".2"
+                      stroke-width="1"
+                    ></line>
+                    <circle cx="50" cy="8" r="3" fill="currentColor" fill-opacity=".45"></circle>
+                    <circle cx="92" cy="38" r="3" fill="currentColor" fill-opacity=".45"></circle>
+                    <circle cx="76" cy="88" r="3" fill="currentColor" fill-opacity=".45"></circle>
+                    <circle cx="24" cy="88" r="3" fill="currentColor" fill-opacity=".45"></circle>
+                    <circle cx="8" cy="38" r="3" fill="currentColor" fill-opacity=".45"></circle>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.2</p>
+              <h3>Hero</h3>
+              <p>
+                Headline, one supporting sentence, two actions at different commitment levels
+                (“Start a project” and “See our work”), and three counters — 10 engineers, 5
+                disciplines, 6 technology clusters.
+              </p>
+              <p>
+                The five-point figure is the name made literal: each point is one discipline and a
+                working link into that page. It redraws itself line by line on every visit.
+              </p>
+              <div class="flags">
+                <span class="chip i">Draws on load</span><span class="chip i">Points are links</span
+                ><span class="chip d">Tagline to confirm</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="flex" style="opacity: 0.75">
+                <span class="pill sm"></span><span class="pill sm"></span
+                ><span class="pill sm"></span><span class="pill sm"></span
+                ><span class="pill sm"></span><span class="pill sm"></span
+                ><span class="pill sm"></span><span class="pill sm"></span>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.3</p>
+              <h3>Technology strip</h3>
+              <p>
+                A slow-moving line of the tools we work in. Cheap credibility for a technical buyer
+                scanning for something familiar.
+              </p>
+              <div class="flags">
+                <span class="chip i">Auto-scrolls</span><span class="chip d">Confirm the list</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="bar w30"></div>
+              <div class="flex">
+                <span class="pill on"></span><span class="pill"></span><span class="pill"></span
+                ><span class="pill"></span><span class="pill"></span>
+              </div>
+              <div class="panel">
+                <div class="cols c2">
+                  <div class="stack">
+                    <div class="bar thick w60"></div>
+                    <div class="bar"></div>
+                    <div class="bar w80"></div>
+                    <div class="bar w20" style="margin-top: 0.3rem"></div>
+                    <div class="bar w80"></div>
+                    <div class="bar w80"></div>
+                    <div class="bar w60"></div>
+                  </div>
+                  <div class="stack">
+                    <div class="bar w45"></div>
+                    <div class="bar w80"></div>
+                    <div class="flex" style="margin-top: 0.3rem">
+                      <span class="pill sm"></span><span class="pill sm"></span
+                      ><span class="pill sm"></span>
+                    </div>
+                    <div class="flex">
+                      <span class="pill sm"></span><span class="pill sm"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.4</p>
+              <h3>Services — five tabs</h3>
+              <p>
+                One tab per discipline. Hovering or selecting lights the tab and swaps the panel
+                below: what it is, the numbered list of what you actually receive, a typical
+                timeline with an honest caveat, and the tools involved.
+              </p>
+              <p>Keeps five services on the page without five walls of text.</p>
+              <div class="flags">
+                <span class="chip i">Tabs, glow on hover</span
+                ><span class="chip i">Keyboard arrows</span
+                ><span class="chip d">Confirm all five are sold</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="bar w30"></div>
+              <div class="cols c3">
+                <div class="card">
+                  <div class="bar w45"></div>
+                  <div class="bar thick w80"></div>
+                  <div class="bar"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card">
+                  <div class="bar w45"></div>
+                  <div class="bar thick w80"></div>
+                  <div class="bar"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card" style="opacity: 0.55">
+                  <div class="bar w45"></div>
+                  <div class="bar thick w80"></div>
+                  <div class="bar"></div>
+                </div>
+              </div>
+              <div class="spread">
+                <div class="flex">
+                  <span class="dot on"></span><span class="dot"></span><span class="dot"></span>
+                </div>
+                <div class="flex"><span class="arrow"></span><span class="arrow"></span></div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.5</p>
+              <h3>Selected work — carousel</h3>
+              <p>
+                Swipeable on touch, arrows and dots on desktop. Two cards for High Flyers and Mon
+                Amour, then a third inviting the reader's own project, since client work is
+                confidential.
+              </p>
+              <p>Nothing moves on its own — the reader stays in control.</p>
+              <div class="flags">
+                <span class="chip i">Carousel</span><span class="chip d">Case study content</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="bar w30"></div>
+              <div class="cols c5">
+                <div class="card">
+                  <div class="bar w30"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card">
+                  <div class="bar w30"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card">
+                  <div class="bar w30"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card">
+                  <div class="bar w30"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="card">
+                  <div class="bar w30"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.6</p>
+              <h3>How we work — five stages</h3>
+              <p>
+                Numbered because it genuinely is a sequence. Each stage shows roughly how long it
+                takes and what lands at the end of it. Scrolls sideways on a phone rather than
+                shrinking to five unreadable columns.
+              </p>
+              <div class="flags">
+                <span class="chip i">Hover glow</span><span class="chip i">Scrolls on mobile</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="bar w30"></div>
+              <div class="cols c3">
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+                <div class="card">
+                  <div class="bar thick w60"></div>
+                  <div class="flex"><span class="pill sm"></span><span class="pill sm"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.7</p>
+              <h3>What we build with — six clusters</h3>
+              <p>
+                Languages, frameworks, AI and ML, cloud, data, security. A glow follows the cursor
+                across each card. Links to the full list where every tool says what it is used for.
+              </p>
+              <div class="flags">
+                <span class="chip i">Cursor glow</span
+                ><span class="chip d">Confirm the inventory</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="bar w30"></div>
+              <div class="faqrow">
+                <div class="bar w60"></div>
+                <span class="plus">+</span>
+              </div>
+              <div class="faqrow">
+                <div class="bar w45"></div>
+                <span class="plus">&times;</span>
+              </div>
+              <div class="stack" style="padding: 0.25rem 0 0.5rem">
+                <div class="bar w80"></div>
+                <div class="bar w60"></div>
+              </div>
+              <div class="faqrow">
+                <div class="bar w60"></div>
+                <span class="plus">+</span>
+              </div>
+              <div class="faqrow" style="border: 0">
+                <div class="bar w45"></div>
+                <span class="plus">+</span>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.8</p>
+              <h3>Questions buyers ask</h3>
+              <p>
+                Six answers we would give on a first call: how engagements start, what happens when
+                scope changes, on-premise deployment, existing codebases, adding AI to a live
+                product, and team size. Opening one closes the last.
+              </p>
+              <p>Doubles as search-engine content, so these answers can win the search itself.</p>
+              <div class="flags">
+                <span class="chip i">Accordion</span
+                ><span class="chip d">Add or cut questions</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf dark">
+              <div class="spread">
+                <div class="stack" style="flex: 1">
+                  <div class="bar thick w60"></div>
+                  <div class="bar w80"></div>
+                </div>
+                <span class="btn solid"></span>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.9</p>
+              <h3>Closing invitation</h3>
+              <p>
+                One ask, phrased as the next step rather than a slogan. Every page ends in one of
+                these or in the next logical page.
+              </p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="wf">
+              <div class="cols c3">
+                <div class="stack">
+                  <div class="bar w45"></div>
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+                <div class="stack">
+                  <div class="bar w30"></div>
+                  <div class="bar w60"></div>
+                  <div class="bar w60"></div>
+                  <div class="bar w45"></div>
+                </div>
+                <div class="stack">
+                  <div class="bar w30"></div>
+                  <div class="bar w60"></div>
+                  <div class="bar w60"></div>
+                  <div class="bar w45"></div>
+                </div>
+              </div>
+              <div class="bar" style="height: 1px"></div>
+              <div class="spread">
+                <div class="bar w20"></div>
+                <div class="bar w20"></div>
+              </div>
+            </div>
+            <div class="ann">
+              <p class="ref">1.10</p>
+              <h3>Footer</h3>
+              <p>
+                Tagline, email, and three groups of links — what we do, the firm, legal. Phone and
+                WhatsApp appear here automatically once you give us the number.
+              </p>
+              <div class="flags">
+                <span class="chip d">Phone / WhatsApp</span
+                ><span class="chip d">City shown publicly</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p2" aria-labelledby="p2h">
+      <h2 id="p2h">2. Services index</h2>
+      <div class="sheet">
+        <header>
+          <strong>Services</strong><span class="route">/services</span>
+          <span class="job"
+            >Explains why the five disciplines are sold together, then lets the reader pick
+            one.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="bar thick w60"></div>
+            <div class="bar w80"></div>
+            <div class="cols c2" style="margin-top: 0.4rem">
+              <div class="card">
+                <div class="pill sm" style="width: 1.6rem; height: 1.6rem"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar w80"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w45"></div>
+              </div>
+              <div class="card">
+                <div class="pill sm" style="width: 1.6rem; height: 1.6rem"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar w80"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w45"></div>
+              </div>
+              <div class="card">
+                <div class="pill sm" style="width: 1.6rem; height: 1.6rem"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar w80"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w45"></div>
+              </div>
+              <div class="card">
+                <div class="pill sm" style="width: 1.6rem; height: 1.6rem"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar w80"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w45"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ann">
+            <p class="ref">2.1</p>
+            <h3>Five cards, two columns</h3>
+            <p>
+              Each card: an icon, the name, one sentence a non-technical buyer understands, the
+              typical timeline and how many deliverables it includes. A hairline draws itself in as
+              the card appears.
+            </p>
+            <div class="flags"><span class="chip i">Cursor glow</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p3" aria-labelledby="p3h">
+      <h2 id="p3h">3. Service detail</h2>
+      <div class="sheet">
+        <header>
+          <strong>One per discipline</strong><span class="route">/services/[slug]</span>
+          <span class="job"
+            >Five pages, same five-part shape, so a buyer can compare them. Each is individually
+            findable in search.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="flex"><span class="label">Home / Services / …</span></div>
+            <div class="bar thick w60"></div>
+            <div class="bar w80"></div>
+            <div class="bar" style="height: 1px; margin: 0.3rem 0"></div>
+            <div class="label">01 — What this is</div>
+            <div class="bar w80"></div>
+            <div class="bar w60"></div>
+            <div class="label">02 — What you get</div>
+            <div class="bar w80"></div>
+            <div class="bar w80"></div>
+            <div class="label">03 — How long it takes</div>
+            <div class="bar w45"></div>
+            <div class="label">04 — What it is built with</div>
+            <div class="cols c3">
+              <div class="card" style="min-height: 2.5rem"></div>
+              <div class="card" style="min-height: 2.5rem"></div>
+              <div class="card" style="min-height: 2.5rem"></div>
+            </div>
+            <div class="spread" style="margin-top: 0.3rem">
+              <div class="bar w30"></div>
+              <div class="bar w30"></div>
+            </div>
+          </div>
+          <div class="ann">
+            <p class="ref">3.1</p>
+            <h3>Numbered sections</h3>
+            <p>
+              What it is, in plain English. What you actually receive, as things you can open or
+              run. How long it typically takes, with the caveat stated. Which technologies are
+              involved — pulled from the same source as the stack page, so the two can never
+              disagree.
+            </p>
+            <p>
+              Breadcrumbs at the top, previous and next service at the bottom, so the page never
+              dead-ends.
+            </p>
+            <div class="flags"><span class="chip i">Prev / next</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p4" aria-labelledby="p4h">
+      <h2 id="p4h">4. Work index</h2>
+      <div class="sheet">
+        <header>
+          <strong>Work</strong><span class="route">/work</span>
+          <span class="job"
+            >Two products, honestly labelled as our own rather than implied client
+            engagements.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="bar thick w45"></div>
+            <div class="bar w80"></div>
+            <div class="cols c2" style="margin-top: 0.4rem">
+              <div class="card">
+                <div class="bar w30"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w80"></div>
+                <div class="bar w45"></div>
+              </div>
+              <div class="card">
+                <div class="bar w30"></div>
+                <div class="bar thick w60"></div>
+                <div class="bar" style="height: 1px"></div>
+                <div class="bar w80"></div>
+                <div class="bar w45"></div>
+              </div>
+            </div>
+            <div class="bar w60" style="margin-top: 0.4rem"></div>
+          </div>
+          <div class="ann">
+            <p class="ref">4.1</p>
+            <h3>Two cards, plus a note</h3>
+            <p>
+              Both currently say the write-up is in progress, which is deliberate — an empty section
+              is recoverable, invented detail is not. A line underneath explains that client
+              engagements are covered by confidentiality and discussed in a call.
+            </p>
+            <div class="flags"><span class="chip d">Write-ups needed</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p5" aria-labelledby="p5h">
+      <h2 id="p5h">5. Case study</h2>
+      <div class="sheet">
+        <header>
+          <strong>One per project</strong><span class="route">/work/[slug]</span>
+          <span class="job"
+            >A fixed seven-part shape, so two case studies can be compared at a glance.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="label">Home / Work / …</div>
+            <div class="bar thick w60"></div>
+            <div class="label" style="margin-top: 0.3rem">01 Context &nbsp; 02 Problem</div>
+            <div class="bar w80"></div>
+            <div class="bar w60"></div>
+            <div class="label">03 Approach — each decision with its trade-off</div>
+            <div class="bar w80"></div>
+            <div class="bar w80"></div>
+            <div class="label">04 Architecture — one diagram</div>
+            <div class="cols c2">
+              <div class="card" style="min-height: 2.2rem"></div>
+              <div class="card" style="min-height: 2.2rem"></div>
+            </div>
+            <div class="label">
+              05 Stack &nbsp; 06 Outcome &nbsp; 07 What we would do differently
+            </div>
+            <div class="bar w80"></div>
+            <div class="bar w45"></div>
+          </div>
+          <div class="ann">
+            <p class="ref">5.1</p>
+            <h3>The seven parts</h3>
+            <p>
+              Context, problem, approach with trade-offs named, one architecture diagram, outcome,
+              stack, and — unusually — what we would do differently. That last section is the one
+              that makes an engineer trust the rest.
+            </p>
+            <p>
+              While a write-up is unfinished the page says so plainly and stays out of search
+              results.
+            </p>
+            <div class="flags"><span class="chip d">Both awaiting content</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p6" aria-labelledby="p6h">
+      <h2 id="p6h">6. Stack</h2>
+      <div class="sheet">
+        <header>
+          <strong>Technology ecosystem</strong><span class="route">/stack</span>
+          <span class="job"
+            >Six clusters, each entry saying what we use it for. This is the page that wins specific
+            searches.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="bar thick w60"></div>
+            <div class="flex">
+              <span class="pill on"></span><span class="pill"></span><span class="pill"></span
+              ><span class="pill"></span><span class="pill"></span><span class="pill"></span>
+            </div>
+            <div class="bar" style="height: 1px; margin-top: 0.3rem"></div>
+            <div class="cols c2" style="gap: 0.35rem">
+              <div class="bar w60"></div>
+              <div class="bar w80"></div>
+            </div>
+            <div class="cols c2" style="gap: 0.35rem">
+              <div class="bar w45"></div>
+              <div class="bar w80"></div>
+            </div>
+            <div class="cols c2" style="gap: 0.35rem">
+              <div class="bar w60"></div>
+              <div class="bar w60"></div>
+            </div>
+          </div>
+          <div class="ann">
+            <p class="ref">6.1</p>
+            <h3>Filter, then a two-column list</h3>
+            <p>
+              Pills across the top filter to one cluster; they light up on hover and scroll sideways
+              on a phone. Every row is a tool and the reason it was chosen — not a logo wall.
+            </p>
+            <div class="flags">
+              <span class="chip i">Filter pills</span
+              ><span class="chip d">Prune to what is true</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p7" aria-labelledby="p7h">
+      <h2 id="p7h">7. Process</h2>
+      <div class="sheet">
+        <header>
+          <strong>How an engagement runs</strong><span class="route">/process</span>
+          <span class="job"
+            >Five stages, with scope agreed in writing at stage three — before anyone builds.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="bar thick w60"></div>
+            <div class="flex" style="align-items: flex-start">
+              <span class="label" style="min-width: 2rem">01</span>
+              <div class="stack" style="flex: 1">
+                <div class="bar thick w45"></div>
+                <div class="bar w80"></div>
+                <div class="cols c3">
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                </div>
+              </div>
+            </div>
+            <div class="bar" style="height: 1px"></div>
+            <div class="flex" style="align-items: flex-start">
+              <span class="label" style="min-width: 2rem">02</span>
+              <div class="stack" style="flex: 1">
+                <div class="bar thick w45"></div>
+                <div class="bar w80"></div>
+                <div class="cols c3">
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                  <div class="bar"></div>
+                </div>
+              </div>
+            </div>
+            <div class="bar" style="height: 1px"></div>
+            <div class="stack" style="margin-top: 0.3rem">
+              <div class="bar w45"></div>
+              <div class="bar w80"></div>
+            </div>
+          </div>
+          <div class="ann">
+            <p class="ref">7.1</p>
+            <h3>Stage by stage</h3>
+            <p>
+              Each stage states what happens, what you do, what lands, and roughly how long. A
+              closing section says out loud what happens when scope changes mid-build — most firms
+              leave that deliberately vague, and saying it is a differentiator.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p8" aria-labelledby="p8h">
+      <h2 id="p8h">8. About</h2>
+      <div class="sheet">
+        <header>
+          <strong>About</strong><span class="route">/about</span>
+          <span class="job"
+            >Why the firm exists, how to engage it, and who the client would actually work
+            with.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="bar thick w60"></div>
+            <div class="bar w80"></div>
+            <div class="label" style="margin-top: 0.3rem">Approach</div>
+            <div class="bar w80"></div>
+            <div class="label">Engagements — fixed scope / retainer / augmentation</div>
+            <div class="cols c2" style="gap: 0.35rem">
+              <div class="bar w45"></div>
+              <div class="bar w80"></div>
+            </div>
+            <div class="cols c2" style="gap: 0.35rem">
+              <div class="bar w45"></div>
+              <div class="bar w80"></div>
+            </div>
+            <div class="label">Team</div>
+            <div class="card" style="min-height: 2.2rem"><div class="bar w60"></div></div>
+          </div>
+          <div class="ann">
+            <p class="ref">8.1</p>
+            <h3>The gap worth closing</h3>
+            <p>
+              Three engagement shapes are described plainly. The team section currently says ten
+              engineers and where you are based, with a visible note that names are being added — a
+              consultancy page with no named people is the thing a buyer notices, and it is the
+              single highest-value addition left.
+            </p>
+            <div class="flags"><span class="chip d">Names, roles, links</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p9" aria-labelledby="p9h">
+      <h2 id="p9h">9. Contact</h2>
+      <div class="sheet">
+        <header>
+          <strong>Start a project</strong><span class="route">/contact</span>
+          <span class="job"
+            >A real page at a real address — linkable from an email signature or a proposal, unlike
+            a pop-up.</span
+          >
+        </header>
+        <div class="row">
+          <div class="wf">
+            <div class="cols c2">
+              <div class="stack">
+                <div class="label">Name</div>
+                <div class="bar tall"></div>
+                <div class="label">Email</div>
+                <div class="bar tall"></div>
+                <div class="label">Phone — optional</div>
+                <div class="bar tall"></div>
+                <div class="label">What do you need — select</div>
+                <div class="bar tall"></div>
+                <div class="label">Budget range — optional</div>
+                <div class="bar tall"></div>
+                <div class="label">What are you trying to build</div>
+                <div class="bar" style="height: 3.5rem"></div>
+                <span class="btn solid" style="margin-top: 0.3rem"></span>
+              </div>
+              <div class="stack">
+                <div class="bar thick w60"></div>
+                <div class="bar w80"></div>
+                <div class="label" style="margin-top: 0.3rem">Email</div>
+                <div class="bar w60"></div>
+                <div class="label">Phone</div>
+                <div class="bar w45"></div>
+                <div class="label">WhatsApp</div>
+                <div class="bar w45"></div>
+                <div class="card" style="margin-top: 0.4rem">
+                  <div class="bar w80"></div>
+                  <div class="bar w60"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ann">
+            <p class="ref">9.1</p>
+            <h3>Form, plus the details directly</h3>
+            <p>
+              Six fields, with the service pre-selected so enquiries arrive qualified. Mistakes are
+              caught when you leave a field, never while typing, and nothing you typed is lost if
+              something fails. Spam is handled by a hidden field and a per-visitor limit.
+            </p>
+            <p>
+              Email, phone and WhatsApp are shown next to the form, because some people will never
+              use a form.
+            </p>
+            <div class="flags">
+              <span class="chip i">Live validation</span
+              ><span class="chip d">Mailbox not yet live</span
+              ><span class="chip d">Budget bands</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="p10" aria-labelledby="p10h">
+      <h2 id="p10h">10. Legal and error pages</h2>
+      <div class="tablewrap">
+        <table>
+          <caption>
+            Supporting pages
+          </caption>
+          <thead>
+            <tr>
+              <th class="ref">Ref</th>
+              <th>Page</th>
+              <th>What it contains</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ref">10.1</td>
+              <td>Privacy — /privacy</td>
+              <td>
+                What the form collects, why, how long it is kept, and your rights. States plainly
+                that the site sets no cookies and runs no third-party analytics.
+              </td>
+              <td>Needs a legal read</td>
+            </tr>
+            <tr>
+              <td class="ref">10.2</td>
+              <td>Terms — /terms</td>
+              <td>
+                Covers the website only. Says explicitly that nothing on the site is a quote and
+                that work begins when scope and price are agreed in writing.
+              </td>
+              <td>Needs a legal read</td>
+            </tr>
+            <tr>
+              <td class="ref">10.3</td>
+              <td>Page not found — 404</td>
+              <td>
+                Designed, not a default. Explains the likely cause and lists the main sections as a
+                way out.
+              </td>
+              <td>Done</td>
+            </tr>
+            <tr>
+              <td class="ref">10.4</td>
+              <td>Something broke — 500</td>
+              <td>Designed. Offers “Try again”, a link home, and an email address.</td>
+              <td>Done</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="decisions" aria-labelledby="dh">
+      <h2 id="dh">A. What we need from you</h2>
+      <p class="lede">
+        Everything below is marked in the build and checked automatically before launch, so none of
+        it can ship by accident. Nothing here blocks reviewing the site.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <caption>
+            Open items
+          </caption>
+          <thead>
+            <tr>
+              <th class="ref">Ref</th>
+              <th>Item</th>
+              <th>On the site today</th>
+              <th>What we need</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ref">A1</td>
+              <td>Company mailbox</td>
+              <td>
+                A stand-in address. The form deliberately tells people it is not delivering yet
+                rather than dropping enquiries silently.
+              </td>
+              <td>A real mailbox on the domain. Then the form goes live in one change.</td>
+            </tr>
+            <tr>
+              <td class="ref">A2</td>
+              <td>Phone and WhatsApp</td>
+              <td>Hidden — nothing broken, the rows simply do not appear.</td>
+              <td>One number. It then shows on Contact and in the footer automatically.</td>
+            </tr>
+            <tr>
+              <td class="ref">A3</td>
+              <td>Tagline</td>
+              <td>“Software, AI and cloud, from idea to production.”</td>
+              <td>Confirm or replace. It appears in the footer, page titles and link previews.</td>
+            </tr>
+            <tr>
+              <td class="ref">A4</td>
+              <td>City shown publicly</td>
+              <td>Country only.</td>
+              <td>The city you want shown, if any.</td>
+            </tr>
+            <tr>
+              <td class="ref">A5</td>
+              <td>Named people</td>
+              <td>“Ten engineers” and a visible note that names are being added.</td>
+              <td>Two or three names, roles and links. Highest-value item on this list.</td>
+            </tr>
+            <tr>
+              <td class="ref">A6</td>
+              <td>Two case studies</td>
+              <td>Both marked in progress and kept out of search.</td>
+              <td>
+                For each: the constraint, what was hard, two or three decisions with their
+                trade-offs, the outcome, and what you would do differently.
+              </td>
+            </tr>
+            <tr>
+              <td class="ref">A7</td>
+              <td>Service list</td>
+              <td>Five disciplines.</td>
+              <td>
+                Confirm each is genuinely sold today. We delete rather than keep anything
+                aspirational.
+              </td>
+            </tr>
+            <tr>
+              <td class="ref">A8</td>
+              <td>Technology inventory</td>
+              <td>A sensible default set across six clusters.</td>
+              <td>
+                Prune anything you do not actually work in — an overstated stack fails in the first
+                technical call.
+              </td>
+            </tr>
+            <tr>
+              <td class="ref">A9</td>
+              <td>Budget bands</td>
+              <td>Four ranges in dollars, plus “not decided yet”.</td>
+              <td>Confirm currency and bands. Wrong bands filter out good enquiries.</td>
+            </tr>
+            <tr>
+              <td class="ref">A10</td>
+              <td>Privacy and terms</td>
+              <td>Accurate descriptions of what the site does.</td>
+              <td>A legal review before launch.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="addons" aria-labelledby="ah">
+      <h2 id="ah">B. Add-ons we can build</h2>
+      <p class="lede">
+        Deliberately not built yet, either because they need something only you can supply or
+        because they are a separate decision.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <caption>
+            Options
+          </caption>
+          <thead>
+            <tr>
+              <th class="ref">Ref</th>
+              <th>Add-on</th>
+              <th>What it needs from you</th>
+              <th>Worth it when</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ref">B1</td>
+              <td>Client logos and quotes</td>
+              <td>Written permission to publish each name, and a real attributed quote.</td>
+              <td>
+                You have two or three referenceable clients. Unverifiable logos actively cost you
+                trust, which is why there are none today.
+              </td>
+            </tr>
+            <tr>
+              <td class="ref">B2</td>
+              <td>Team page with photos</td>
+              <td>Names, roles, short bios, headshots.</td>
+              <td>Alongside A5 — the strongest single credibility addition.</td>
+            </tr>
+            <tr>
+              <td class="ref">B3</td>
+              <td>Insights or blog</td>
+              <td>A commitment to publish, even quarterly.</td>
+              <td>You will actually write. An abandoned blog reads worse than none.</td>
+            </tr>
+            <tr>
+              <td class="ref">B4</td>
+              <td>Careers page</td>
+              <td>Real openings.</td>
+              <td>You are hiring. It stays out of the footer until then — never a dead link.</td>
+            </tr>
+            <tr>
+              <td class="ref">B5</td>
+              <td>Case study screenshots and diagrams</td>
+              <td>Images you are permitted to show.</td>
+              <td>With A6. Shots of real software outperform any amount of copy.</td>
+            </tr>
+            <tr>
+              <td class="ref">B6</td>
+              <td>Booking link</td>
+              <td>A calendar account.</td>
+              <td>You would rather take calls than emails; sits beside the form.</td>
+            </tr>
+            <tr>
+              <td class="ref">B7</td>
+              <td>Second language</td>
+              <td>Translated copy.</td>
+              <td>
+                You sell outside English-speaking markets. The content layer is already structured
+                for it.
+              </td>
+            </tr>
+            <tr>
+              <td class="ref">B8</td>
+              <td>Analytics</td>
+              <td>A decision on privacy posture.</td>
+              <td>
+                You want traffic numbers. A cookie-free option keeps the “no cookies” promise on the
+                privacy page intact.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="requests" aria-labelledby="rh">
+      <h2 id="rh">C. Change requests</h2>
+      <p class="lede">
+        Quote the reference code from any block above — “1.5 — put the case studies before the
+        services” is enough for us to act on without a call.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <caption>
+            For your notes
+          </caption>
+          <thead>
+            <tr>
+              <th class="ref">Ref</th>
+              <th>Page / block</th>
+              <th>Change or addition</th>
+              <th>Priority</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr class="blank">
+              <td class="ref"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted">
+        Print or save this page as a PDF to mark it up by hand — the layout is set up for it.
+      </p>
+    </section>
+  </div>
+</div>

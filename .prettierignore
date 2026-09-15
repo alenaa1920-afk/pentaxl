@@ -1,0 +1,8 @@
+# Private planning doc, untracked. Left unformatted.
+pentaxl-website-brief.md
+
+.next
+node_modules
+pnpm-lock.yaml
+test-results
+playwright-report
