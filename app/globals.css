@@ -1,15 +1,30 @@
 @import "tailwindcss";
 
+/* Palette: warm pearl ground with obsidian luxe bands, jade as the working accent and
+   gold reserved for emphasis. Every value below was contrast-checked against the
+   surface it sits on — ink 16.7:1, muted 7.0:1, jade 6.0:1, gold 4.6:1 on pearl;
+   gold-bright 10.3:1 and pearl 16.6:1 on obsidian. `gold-bright` is display-only on
+   light grounds (3.5:1) — never body text there. */
 @theme {
-  --color-void: #07090a;
-  --color-panel: #0e1315;
-  --color-panel-2: #131b1d;
-  --color-line: #1d2729;
-  --color-ink: #e9efee;
-  --color-muted: #93a3a1;
-  --color-accent: #2fe0b6;
-  --color-accent-dim: #189d84;
-  --color-brass: #e7c565;
+  --color-pearl: #f8f5ef;
+  --color-surface: #fffdfa;
+  --color-surface-2: #f2ede3;
+  --color-obsidian: #17132b;
+  --color-obsidian-2: #221c3d;
+  --color-ink: #16122a;
+  --color-muted: #57506b;
+  --color-muted-dark: #a79fc0;
+  --color-line: #e2dbcf;
+  --color-line-dark: #332a55;
+  --color-accent: #0b6b4f;
+  --color-accent-dim: #2e8f6e;
+  --color-accent-bright: #34c79a;
+  /* 4.74:1 even where the hero's glow tints the ground to #dce4dc — the nominal
+     5.66:1 on flat pearl is not the number that matters. */
+  --color-gold: #7d5c10;
+  --color-gold-bright: #e2c06a;
+  /* Text on an accent fill. Flips on dark bands, where the accent is much lighter. */
+  --color-on-accent: #f8f5ef;
 
   --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
@@ -45,7 +60,7 @@
   }
 
   body {
-    background-color: var(--color-void);
+    background-color: var(--color-pearl);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -68,7 +83,23 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: var(--color-void);
+    color: var(--color-pearl);
+  }
+
+  /* Dark luxe bands: one class flips a whole section to the obsidian surface, which is
+     what keeps the page from reading as one flat colour top to bottom. */
+  .on-dark {
+    background-color: var(--color-obsidian);
+    color: var(--color-pearl);
+    --color-ink: var(--color-pearl);
+    --color-muted: var(--color-muted-dark);
+    --color-line: var(--color-line-dark);
+    --color-surface: var(--color-obsidian-2);
+    --color-surface-2: #2b2450;
+    --color-accent: var(--color-accent-bright);
+    --color-accent-dim: #1f7a5e;
+    --color-gold: var(--color-gold-bright);
+    --color-on-accent: var(--color-obsidian);
   }
 }
 
@@ -201,27 +232,119 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   animation: marquee 38s linear infinite;
 }
 
-/* Cards: a hairline that lights up, no drop shadow, no lift-the-world hover. */
+/* Cards on the pearl ground: a warm surface, a hairline that warms to gold on hover,
+   and a whisper of elevation — luxury reads as paper and edge, not as neon. */
 @utility panel {
   background:
-    linear-gradient(var(--color-panel), var(--color-panel)) padding-box,
-    linear-gradient(140deg, var(--color-line), transparent 55%) border-box;
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(140deg, var(--color-line), transparent 60%) border-box;
   border: 1px solid transparent;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--color-ink) 5%, transparent);
   transition:
     background 0.35s ease,
-    border-color 0.35s ease;
+    box-shadow 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @utility panel-hover {
   &:hover {
     background:
-      linear-gradient(var(--color-panel-2), var(--color-panel-2)) padding-box,
-      linear-gradient(140deg, var(--color-accent-dim), transparent 60%) border-box;
+      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+      linear-gradient(140deg, var(--color-gold-bright), transparent 65%) border-box;
+    box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--color-ink) 22%, transparent);
   }
 }
 
-/* Cursor-following glow. A tiny pointer handler sets --mx/--my; with no pointer
-   (touch, keyboard) the gradient stays centred and fades in on focus instead. */
+/* Near-3D card tilt. Spotlight sets --rx/--ry from the pointer; with no pointer the
+   vars stay 0 and the card simply does not tilt. */
+@utility tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@utility lift {
+  &:hover {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(10px);
+  }
+}
+
+/* Gold sheen sweeping across a surface — the one overtly luxurious flourish. */
+@keyframes sheen {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+@utility sheen {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 28%;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-gold-bright) 55%, transparent),
+      transparent
+    );
+    opacity: 0;
+  }
+
+  &:hover::after {
+    opacity: 0.7;
+    animation: sheen 900ms ease-out;
+  }
+}
+
+/* Floating motion for the contact launcher. */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Six bobs on arrival, then it settles. An infinitely moving target is measurably
+   harder to hit — Playwright literally cannot land a click on one — and the motion has
+   done its job by then. Pauses on hover and focus too. */
+@utility bob {
+  animation: bob 3.6s ease-in-out 6;
+
+  &:hover,
+  &:focus-visible {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+@utility ring-pulse {
+  animation: ring-pulse 2.8s ease-out infinite;
+}
+
+/* Cursor-following wash. On the pearl ground a warm gold reads as lustre; on an
+   obsidian band the same utility picks up that band's brighter accent. */
 @utility spot {
   position: relative;
   isolation: isolate;
@@ -235,9 +358,9 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
     opacity: 0;
     transition: opacity 0.4s ease;
     background: radial-gradient(
-      260px circle at var(--mx, 50%) var(--my, 0%),
-      color-mix(in oklab, var(--color-accent) 16%, transparent),
-      transparent 65%
+      280px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--color-gold-bright) 26%, transparent),
+      transparent 68%
     );
   }
 
@@ -247,7 +370,7 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
-/* Interactive chrome — tabs, arrows, pills — lights up rather than lifts. */
+/* Interactive chrome — tabs, pills, arrows — warms to gold and gains a soft ring. */
 @utility glow {
   transition:
     box-shadow 0.35s ease,
@@ -256,30 +379,30 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
     background-color 0.35s ease;
 
   &:hover {
-    border-color: var(--color-accent-dim);
+    border-color: var(--color-accent);
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-accent) 35%, transparent),
-      0 0 28px -10px var(--color-accent);
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 30%, transparent),
+      0 8px 22px -12px color-mix(in oklab, var(--color-ink) 40%, transparent);
   }
 }
 
 @utility glow-on {
   border-color: var(--color-accent);
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-accent) 55%, transparent),
-    0 0 32px -8px var(--color-accent);
+    0 0 0 1px color-mix(in oklab, var(--color-accent) 45%, transparent),
+    0 10px 26px -14px color-mix(in oklab, var(--color-ink) 45%, transparent);
 }
 
-/* Slow drifting light behind sections — movement instead of a flat blurred circle. */
+/* Slow drifting light behind sections. */
 @keyframes aurora {
   0%,
   100% {
     transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.5;
+    opacity: 0.35;
   }
   50% {
     transform: translate3d(4%, -3%, 0) scale(1.15);
-    opacity: 0.85;
+    opacity: 0.6;
   }
 }
 
@@ -325,6 +448,88 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
+/* Stage illustrations on /process. Each animation loops slowly and stops entirely
+   under reduced motion (handled by the global block at the end of this file). */
+@keyframes converge {
+  0%,
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0.35;
+  }
+  45%,
+  55% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@utility converge {
+  animation: converge 5s ease-in-out infinite;
+}
+
+@keyframes fill-bar {
+  0% {
+    transform: scaleX(0);
+  }
+  55%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@utility fill-bar {
+  transform-origin: left;
+  animation: fill-bar 4.5s ease-in-out infinite;
+}
+
+@keyframes tick-in {
+  0%,
+  20% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  45%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility tick-in {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tick-in 4.5s ease-in-out infinite;
+}
+
+@keyframes trace {
+  0% {
+    stroke-dashoffset: var(--len, 300);
+  }
+  60%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@utility trace {
+  stroke-dasharray: var(--len, 300);
+  animation: trace 5s ease-in-out infinite;
+}
+
+@keyframes travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@utility travel {
+  offset-path: var(--path);
+  animation: travel 4s linear infinite;
+}
+
 /* Reading progress, zero JS where supported. */
 @supports (animation-timeline: scroll()) {
   @keyframes progress {
@@ -358,6 +563,24 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
 
   .scroll-progress {
     display: none;
+  }
+
+  .bob,
+  .ring-pulse,
+  .converge,
+  .fill-bar,
+  .tick-in,
+  .trace,
+  .travel {
+    animation: none !important;
+  }
+
+  .fill-bar {
+    transform: scaleX(1);
+  }
+
+  .tilt {
+    transform: none !important;
   }
 
   .rule-draw,

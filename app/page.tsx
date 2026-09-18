@@ -11,7 +11,7 @@ import { RangeChart } from "@/components/range-chart"
 import { MediaSlot } from "@/components/media-slot"
 import { GuaranteeIcon, IndustryIcon } from "@/components/icons"
 import { services } from "@/content/services"
-import { caseStudies } from "@/content/work"
+import { posts } from "@/content/blog"
 import { engagementWeeks, processStages } from "@/content/process"
 import { stackClusters } from "@/content/stack"
 import { engagementModels, guarantees, industries, site } from "@/content/site"
@@ -37,12 +37,12 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="bg-accent/12 aurora pointer-events-none absolute -top-60 -right-40 size-[48rem] rounded-full blur-[140px]"
+          className="bg-accent/8 aurora pointer-events-none absolute -top-72 -right-52 size-[44rem] rounded-full blur-[150px]"
         />
         <Container>
           <div className="grid items-center gap-14 py-12 md:py-20 lg:grid-cols-2 lg:gap-8">
             <div>
-              <p className="text-accent rise mb-6 font-mono text-sm">Technical consulting</p>
+              <p className="text-gold rise mb-6 font-mono text-sm">Technical consulting</p>
               <HeroHeadline
                 text="We build software, wire in AI, and run the cloud underneath."
                 className="max-w-measure text-2xl md:text-3xl lg:text-4xl"
@@ -53,8 +53,8 @@ export default function HomePage() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3" {...reveal(2)}>
                 <Action href="/contact">Start a project</Action>
-                <Action href="/work" variant="secondary">
-                  See our work
+                <Action href="/process" variant="secondary">
+                  See how we work
                 </Action>
               </div>
               <dl className="mt-12 flex flex-wrap gap-x-10 gap-y-4" {...reveal(3)}>
@@ -62,7 +62,7 @@ export default function HomePage() {
                   <div key={fact.label}>
                     <dt className="sr-only">{fact.label}</dt>
                     <dd>
-                      <span className="font-display text-accent text-xl">
+                      <span className="font-display text-gold text-xl">
                         <CountUp to={fact.value} />
                       </span>{" "}
                       <span className="text-muted font-mono text-sm">{fact.label}</span>
@@ -92,57 +92,35 @@ export default function HomePage() {
       </Block>
 
       <Block
-        id="work"
-        index="/ work"
-        title="Selected work"
-        lead="Two products we built and shipped ourselves. The write-ups are being finished, including the part about what we would do differently."
-        more={{ href: "/work", label: "All work" }}
+        id="writing"
+        index="/ writing"
+        title="Notes from the work"
+        lead="Written by whoever did the thing. Short, specific, and honest about what did not work."
+        more={{ href: "/blog", label: "All posts" }}
       >
-        <Carousel label="Selected work" itemClass="w-[86%] sm:w-[58%] lg:w-[40%]">
-          {caseStudies.map((study) => (
+        <Carousel label="Latest posts" itemClass="w-[86%] sm:w-[58%] lg:w-[40%]">
+          {posts.map((post) => (
             <Spotlight
-              key={study.slug}
+              key={post.slug}
               as="article"
-              className="panel flex h-full flex-col justify-between p-6 md:p-8"
+              className="panel tilt lift flex h-full flex-col justify-between p-6 md:p-8"
             >
               <div>
-                <p className="text-muted font-mono text-sm">{study.client}</p>
-                <h3 className="mt-3 text-xl">{study.title}</h3>
-                <p className="text-muted mt-4 text-base">
-                  {study.status === "draft"
-                    ? "A product we designed, built and shipped. The full write-up is being written from the real project rather than invented."
-                    : study.problemLine}
-                </p>
+                <div className="flex flex-wrap items-center gap-x-3 font-mono text-sm">
+                  <span className="text-accent">{post.tag}</span>
+                  <span className="text-muted">{post.readingMinutes} min</span>
+                </div>
+                <h3 className="mt-3 text-xl">{post.title}</h3>
+                <p className="text-muted mt-4 text-base">{post.excerpt}</p>
               </div>
               <Link
-                href={`/work/${study.slug}`}
+                href={`/blog/${post.slug}`}
                 className="text-accent decoration-accent/30 hover:decoration-accent mt-8 inline-block font-mono text-sm underline underline-offset-[6px]"
               >
-                {study.status === "draft" ? `Ask about ${study.title}` : "Read the case study"}
+                {post.status === "draft" ? "See the outline" : "Read the post"}
               </Link>
             </Spotlight>
           ))}
-          <Spotlight
-            key="next"
-            as="article"
-            className="panel border-accent/30 flex h-full flex-col justify-between p-6 md:p-8"
-          >
-            <div>
-              <p className="text-accent font-mono text-sm">Next</p>
-              <h3 className="mt-3 text-xl">Your project</h3>
-              <p className="text-muted mt-4 text-base">
-                Client engagements are covered by confidentiality, so they are discussed in a call
-                rather than published. We will walk you through the architecture and the decisions
-                in more depth than a public write-up allows.
-              </p>
-            </div>
-            <Link
-              href="/contact"
-              className="text-accent decoration-accent/30 hover:decoration-accent mt-8 inline-block font-mono text-sm underline underline-offset-[6px]"
-            >
-              Start a project
-            </Link>
-          </Spotlight>
         </Carousel>
       </Block>
 
@@ -152,6 +130,7 @@ export default function HomePage() {
         title="How we work"
         lead="Scope agreed in writing before anyone builds, work landing in milestones you can use, and production with a runbook rather than a handshake."
         more={{ href: "/process", label: "The full process, and what happens when scope changes" }}
+        className="on-dark"
       >
         {/* A rail rather than five cramped columns — it stays readable at every width. */}
         {/* tabIndex so keyboard users can scroll the rail on narrow screens — axe flags a
@@ -165,12 +144,10 @@ export default function HomePage() {
             <Spotlight
               key={stage.number}
               as="li"
-              className="panel w-[72%] p-6 sm:w-[45%] md:w-auto"
+              className="panel tilt lift w-[72%] p-6 sm:w-[45%] md:w-auto"
               {...reveal(i)}
             >
-              <p className="text-accent font-mono text-sm">
-                {String(stage.number).padStart(2, "0")}
-              </p>
+              <p className="text-gold font-mono text-sm">{String(stage.number).padStart(2, "0")}</p>
               <span aria-hidden="true" className="bg-accent/40 rule-draw mt-4 block h-px w-full" />
               <h3 className="mt-4 text-lg">{stage.name}</h3>
               <p className="text-muted mt-2 font-mono text-sm">{stage.duration}</p>
@@ -178,38 +155,6 @@ export default function HomePage() {
             </Spotlight>
           ))}
         </ol>
-      </Block>
-
-      <Block
-        id="stack"
-        index="/ stack"
-        title="What we build with"
-        lead="Six clusters, each saying what we actually use it for rather than showing a logo."
-        more={{ href: "/stack", label: "The full technology ecosystem" }}
-      >
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {stackClusters.map((cluster, i) => (
-            <Spotlight key={cluster.id} className="panel p-6" {...reveal(i)}>
-              <h3 className="text-lg">{cluster.name}</h3>
-              <span aria-hidden="true" className="bg-accent/40 rule-draw mt-4 block h-px w-full" />
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {cluster.items.slice(0, 5).map((item) => (
-                  <li
-                    key={item.name}
-                    className="border-line text-muted border px-2.5 py-1 font-mono text-sm"
-                  >
-                    {item.name}
-                  </li>
-                ))}
-                {cluster.items.length > 5 ? (
-                  <li className="text-accent px-2.5 py-1 font-mono text-sm">
-                    +{cluster.items.length - 5}
-                  </li>
-                ) : null}
-              </ul>
-            </Spotlight>
-          ))}
-        </div>
       </Block>
 
       <Block
@@ -266,7 +211,7 @@ export default function HomePage() {
       >
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {guarantees.map((item, i) => (
-            <Spotlight as="li" key={item.id} className="panel p-5" {...reveal(i % 4)}>
+            <Spotlight as="li" key={item.id} className="panel tilt lift p-5" {...reveal(i % 4)}>
               <span className="text-accent border-line flex size-9 items-center justify-center border">
                 <GuaranteeIcon id={item.id} />
               </span>
@@ -282,10 +227,11 @@ export default function HomePage() {
         index="/ industries"
         title="Where this work usually lands"
         lead="The domains we are set up for. If yours is not here it does not mean no — it means we will tell you honestly whether we have seen your problem before."
+        className="on-dark"
       >
         <ul className="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
           {industries.map((item, i) => (
-            <Spotlight as="li" key={item.id} className="panel p-5" {...reveal(i % 4)}>
+            <Spotlight as="li" key={item.id} className="panel tilt lift p-5" {...reveal(i % 4)}>
               <span className="text-accent flex items-center gap-3">
                 <IndustryIcon id={item.id} />
                 <span className="text-ink text-base">{item.name}</span>
@@ -308,7 +254,7 @@ export default function HomePage() {
             <Spotlight
               as="li"
               key={model.id}
-              className="panel flex flex-col p-6 md:p-8"
+              className="panel tilt lift flex flex-col p-6 md:p-8"
               {...reveal(i)}
             >
               <h3 className="text-xl">{model.name}</h3>

@@ -19,7 +19,6 @@ export type Service = {
   weeks: [number, number]
   timelineCaveat: string
   stackClusters: ClusterId[]
-  caseStudySlug?: string
 }
 
 export const services: Service[] = [

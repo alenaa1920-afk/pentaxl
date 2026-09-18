@@ -34,15 +34,19 @@ Tailwind v4 is CSS-first: `app/globals.css` `@theme` is the single source of tru
 is no `tailwind.config.ts` — do not create one.
 
 ```
-void       #07090A  page background     bg-void
-panel      #0E1315  cards               panel utility
-panel-2    #131B1D  card hover
-line       #1D2729  hairlines, borders  border-line
-ink        #E9EFEE  primary text        text-ink
-muted      #93A3A1  secondary text      text-muted   (7.6:1 on void)
-accent     #2FE0B6  interaction, glow   text-accent  (11.8:1 on void)
-accent-dim #189D84  resting edges
-brass      #E7C565  form errors only
+pearl        #F8F5EF  page ground         bg-pearl
+surface      #FFFDFA  cards               panel utility
+surface-2    #F2EDE3  card hover
+obsidian     #17132B  dark luxe bands     .on-dark
+obsidian-2   #221C3D  cards on a band
+ink          #16122A  text                text-ink      (16.7:1 on pearl)
+muted        #57506B  secondary text      text-muted    (7.0:1)
+line         #E2DBCF  hairlines           border-line
+accent       #0B6B4F  jade, interaction   text-accent   (6.0:1)
+accent-bright#34C79A  accent on a band                  (8.4:1 on obsidian)
+gold         #7D5C10  section markers     text-gold     (5.7:1, 4.7:1 over the hero glow)
+gold-bright  #E2C06A  display + on bands                (10.3:1 on obsidian)
+on-accent    flips    text on an accent fill
 ```
 
 The colour is named `void`, not `base` — `text-base` is the font-size utility, so a colour
@@ -95,6 +99,12 @@ Reusable, all keyboard- and screen-reader-tested in `e2e/interactive.spec.ts`:
   glow on `:focus-within`.
 - `CountUp` — animates a number once on first view; renders the final value server-side
   and skips the animation under reduced motion.
+- `ContactDock` — the floating launcher, bottom-right. Hidden on `/contact`, closes on
+  Escape and restores focus, and its bob runs **six iterations then stops**: an
+  infinitely moving control is measurably harder to hit, and Playwright cannot land a
+  click on one at all.
+- `StageArt` — five hand-authored animated SVGs, one per delivery stage. Decorative and
+  `aria-hidden`; the stage text carries the meaning.
 - `Faq` — native `<details name="faq">`, so accordion behaviour, keyboard and
   find-in-page are free, plus `FAQPage` JSON-LD. Answers stay in the DOM when closed.
 
@@ -127,7 +137,14 @@ to something in `content/`.
 `spot` (cursor glow) · `glow` / `glow-on` (hover and active lighting for tabs, pills,
 arrows) · `aurora` (slow drifting background light) · `rail` (scroll-snap carousel) ·
 `rule-draw` (hairline that draws itself when its section reveals) · `panel` /
-`panel-hover` (card surface)
+`panel-hover` (card surface) · `tilt` / `lift` (pointer-driven 3D tilt, capped at 5°,
+fed by `Spotlight`) · `sheen` (gold sweep) · `bob` / `ring-pulse` (contact dock) ·
+`converge` / `fill-bar` / `tick-in` / `trace` / `travel` (stage illustrations)
+
+**When editing `globals.css`, never replace a range between two comment anchors.** Doing
+that once silently deleted `spot`, `glow`, `glow-on`, `aurora`, `rule-draw` and `rail`
+while leaving 33 references to them in the components — the build stayed green and only
+a carousel test caught it. Add and remove utilities by name.
 
 ## Still avoid
 
@@ -151,6 +168,21 @@ zero Axe critical or serious issues · 98 e2e tests must stay green
 
 Axe runs with `reducedMotion: "reduce"` so it measures settled colours; otherwise it
 samples text mid-fade and reports a blended contrast value.
+
+## Routes
+
+`/`, `/services` + 5 details, `/process`, `/blog` + 3 posts, `/about`, `/contact`,
+`/privacy`, `/terms`, plus designed 404 and 500.
+
+**`/work` and `/stack` were deferred to phase two** and deleted. `content/stack.ts`
+remains because services reference cluster ids for their tech chips — it is data, not a
+page. Do not add a dynamic segment at the route root: an `app/[legal]` route once
+served /privacy and /terms from one file and, with `dynamicParams = false`, answered
+every other unknown top-level path with an internal NoFallbackError instead of the 404
+page. Two thin pages sharing `components/legal-page.tsx` is the right trade.
+
+A Playwright test crawls every internal link on every route and fails on any status
+≥ 400, so a dead link cannot ship again.
 
 ## Reference
 

@@ -26,7 +26,7 @@ for (const route of ROUTES) {
 
 for (const width of WIDTHS) {
   test(`no horizontal overflow at ${width}px`, async ({ page }) => {
-    for (const route of ["/", "/services/software-development", "/stack", "/contact"]) {
+    for (const route of ["/", "/services/software-development", "/blog", "/process", "/contact"]) {
       await page.setViewportSize({ width, height: 900 })
       await page.goto(route)
       const overflow = await page.evaluate(
@@ -36,6 +36,24 @@ for (const width of WIDTHS) {
     }
   })
 }
+
+test("every internal link resolves — no dead links anywhere", async ({ page, request }) => {
+  const seen = new Set<string>()
+  for (const route of ROUTES) {
+    await page.goto(route)
+    const hrefs = await page
+      .locator("a[href^='/']")
+      .evaluateAll((els) => els.map((el) => el.getAttribute("href") ?? ""))
+    for (const href of hrefs) seen.add(href.split("#")[0])
+  }
+
+  const broken: string[] = []
+  for (const href of [...seen].filter(Boolean)) {
+    const res = await request.get(href)
+    if (res.status() >= 400) broken.push(`${href} → ${res.status()}`)
+  }
+  expect(broken, `dead internal links:\n${broken.join("\n")}`).toEqual([])
+})
 
 test("skip link is first in tab order and moves focus to main", async ({ page }) => {
   await page.goto("/")
@@ -130,12 +148,42 @@ test("the pentagon traces one line at a time, not all at once", async ({ page })
 
 test("current route is marked in the nav", async ({ page }, info) => {
   test.skip(info.project.name !== "desktop", "desktop nav only")
-  await page.goto("/stack")
-  await expect(page.locator('nav[aria-label="Primary"] a[aria-current="page"]')).toHaveText("Stack")
+  await page.goto("/blog")
+  await expect(page.locator('nav[aria-label="Primary"] a[aria-current="page"]')).toHaveText("Blog")
 })
 
-test("draft case studies are excluded from the sitemap", async ({ page }) => {
+test("draft posts are excluded from the sitemap, and removed routes are gone", async ({ page }) => {
   const body = await (await page.request.get("/sitemap.xml")).text()
   expect(body).toContain("/services/software-development")
-  expect(body).not.toContain("/work/high-flyers")
+  expect(body).toContain("/blog")
+  // Drafts stay out until written.
+  expect(body).not.toContain("/blog/what-happens-when-the-model-is-wrong")
+  // Work and Stack were deferred to phase two.
+  expect(body).not.toContain("/work")
+  expect(body).not.toContain("/stack")
+})
+
+test("the deferred routes 404 rather than linger", async ({ page }) => {
+  for (const gone of ["/work", "/stack"]) {
+    expect((await page.request.get(gone)).status(), `${gone} should be gone`).toBe(404)
+  }
+})
+
+test("the floating contact dock opens, closes on Escape and hides on /contact", async ({
+  page,
+}) => {
+  await page.goto("/")
+  const trigger = page.getByRole("button", { name: "Contact us" })
+  await expect(trigger).toBeVisible()
+
+  await trigger.click()
+  await expect(page.getByRole("button", { name: "Close contact options" })).toBeVisible()
+  await expect(page.getByRole("link", { name: "Tell us about the project" })).toBeVisible()
+
+  await page.keyboard.press("Escape")
+  await expect(page.getByRole("button", { name: "Contact us" })).toBeFocused()
+
+  // Redundant on the contact page itself.
+  await page.goto("/contact")
+  await expect(page.getByRole("button", { name: "Contact us" })).toHaveCount(0)
 })

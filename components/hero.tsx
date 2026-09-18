@@ -128,7 +128,7 @@ export function HeroFigure() {
                   cx={p.x}
                   cy={p.y}
                   r="5"
-                  fill="var(--color-void)"
+                  fill="var(--color-pearl)"
                   stroke={dim ? "var(--color-line)" : "var(--color-accent)"}
                   strokeWidth="1.5"
                   className={cn("transition-[stroke] duration-300", !dim && "node-pulse")}

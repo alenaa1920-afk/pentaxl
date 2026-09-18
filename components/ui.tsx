@@ -60,7 +60,7 @@ export function SectionHeading({
 }) {
   return (
     <div className="max-w-measure" {...reveal()}>
-      {index ? <p className="text-accent mb-4 font-mono text-sm">{index}</p> : null}
+      {index ? <p className="text-gold mb-4 font-mono text-sm">{index}</p> : null}
       <h2 id={id} className="text-xl md:text-2xl">
         {title}
       </h2>
@@ -112,7 +112,7 @@ const action = cva(
     variants: {
       variant: {
         primary:
-          "bg-accent text-void hover:shadow-[0_0_28px_-4px_var(--color-accent)] hover:brightness-110",
+          "bg-accent text-on-accent sheen hover:shadow-[0_0_28px_-4px_var(--color-accent)] hover:brightness-110",
         secondary: "border border-line text-ink hover:border-accent hover:text-accent",
         quiet:
           "px-0 font-mono text-sm text-accent underline decoration-accent/30 underline-offset-[6px] hover:decoration-accent",
@@ -261,10 +261,10 @@ export function CtaBand({
   actionHref?: string
 }) {
   return (
-    <section aria-labelledby="cta" className="border-line relative overflow-hidden border-t">
+    <section aria-labelledby="cta" className="on-dark relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="bg-accent/12 pointer-events-none absolute -bottom-52 left-1/2 size-[44rem] -translate-x-1/2 rounded-full blur-[130px]"
+        className="bg-accent/20 aurora pointer-events-none absolute -bottom-52 left-1/2 size-[44rem] -translate-x-1/2 rounded-full blur-[130px]"
       />
       <Container>
         <div className="flex flex-col gap-8 py-16 md:flex-row md:items-end md:justify-between md:py-24">
@@ -291,11 +291,11 @@ export function Ticker({ items }: { items: string[] }) {
       {/* Tailwind v4 renamed these utilities: bg-linear-*, not bg-gradient-*. */}
       <div
         aria-hidden="true"
-        className="from-void pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-linear-to-r to-transparent"
+        className="from-pearl pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-linear-to-r to-transparent"
       />
       <div
         aria-hidden="true"
-        className="from-void pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-linear-to-l to-transparent"
+        className="from-pearl pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-linear-to-l to-transparent"
       />
       <ul className="ticker-track flex w-max gap-10" aria-hidden="true">
         {row.map((item, i) => (
@@ -373,6 +373,7 @@ export function Block({
   lead,
   more,
   rule = true,
+  className,
   children,
 }: {
   id: string
@@ -381,10 +382,12 @@ export function Block({
   lead?: string
   more?: { href: string; label: string }
   rule?: boolean
+  /** Pass "on-dark" to flip the whole band to the obsidian surface. */
+  className?: string
   children: React.ReactNode
 }) {
   return (
-    <Section labelledBy={id} rule={rule}>
+    <Section labelledBy={id} rule={rule} className={className}>
       <SectionHeading id={id} index={index} title={title} lead={lead} />
       <div className="mt-12">{children}</div>
       {more ? (

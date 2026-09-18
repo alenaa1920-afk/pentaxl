@@ -34,8 +34,8 @@ export const whatsAppUrl = () => {
 
 export const primaryNav = [
   { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
-  { href: "/stack", label: "Stack" },
+  { href: "/process", label: "How we work" },
+  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ]
@@ -45,14 +45,13 @@ export const footerNav = [
     heading: "What we do",
     items: [
       { href: "/services", label: "Services" },
-      { href: "/stack", label: "Technology" },
       { href: "/process", label: "How we work" },
     ],
   },
   {
     heading: "The firm",
     items: [
-      { href: "/work", label: "Work" },
+      { href: "/blog", label: "Blog" },
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
     ],

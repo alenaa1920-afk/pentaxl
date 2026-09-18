@@ -38,16 +38,27 @@ test("muted and accent text both clear AA on the page background", async ({ page
       const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
       return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
     }
-    const against = (token: string) => {
+    const against = (token: string, surface: string) => {
       const a = lum(root.getPropertyValue(token))
-      const b = lum(root.getPropertyValue("--color-void"))
+      const b = lum(root.getPropertyValue(surface))
       return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
     }
-    return { muted: against("--color-muted"), accent: against("--color-accent") }
+    return {
+      muted: against("--color-muted", "--color-pearl"),
+      accent: against("--color-accent", "--color-pearl"),
+      gold: against("--color-gold", "--color-pearl"),
+      onAccent: against("--color-on-accent", "--color-accent"),
+      darkBandText: against("--color-muted-dark", "--color-obsidian"),
+      darkBandAccent: against("--color-accent-bright", "--color-obsidian"),
+    }
   })
 
-  expect(ratios.muted, "muted on void").toBeGreaterThanOrEqual(4.5)
-  expect(ratios.accent, "accent on void").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.muted, "muted on pearl").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.accent, "accent on pearl").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.gold, "gold on pearl").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.onAccent, "button text on accent").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.darkBandText, "muted on obsidian band").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.darkBandAccent, "accent on obsidian band").toBeGreaterThanOrEqual(4.5)
 })
 
 test("reduced motion disables the reveal system entirely", async ({ browser }) => {

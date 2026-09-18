@@ -4,6 +4,10 @@ Marketing site for Pentaxl — a ten-person technical consulting startup doing s
 development, AI and ML integration, cloud and DevOps, security and compliance, and data
 and integrations.
 
+Warm pearl ground with obsidian luxe bands, jade for interaction and gold for emphasis.
+Motion throughout is CSS: scroll reveals, a self-drawing hero, pointer-driven 3D card
+tilt, animated stage illustrations, and a floating contact launcher.
+
 Next.js 15 App Router, React 19, TypeScript, Tailwind v4. No CMS: content is typed
 TypeScript in `content/`. No animation library: the motion is CSS.
 
@@ -36,7 +40,7 @@ route types will otherwise fail it.
 
 ```
 app/                 routes; every page exports metadata
-  [legal]/           /privacy and /terms from one file
+  blog/              index + one page per post
 content/             all copy and data — the single source of truth
   site.ts            company facts, nav, form options, legal copy
   services.ts        five disciplines + hero figure edges

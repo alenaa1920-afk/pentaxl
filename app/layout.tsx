@@ -3,6 +3,7 @@ import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google"
 import "./globals.css"
 import { site } from "@/content/site"
 import { MotionRoot, SiteHeader } from "@/components/chrome"
+import { ContactDock } from "@/components/contact-dock"
 import { JsonLd, SiteFooter } from "@/components/ui"
 
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" })
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a
           href="#main"
-          className="focus:border-accent focus:bg-panel sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:border focus:px-4 focus:py-2 focus:text-base"
+          className="focus:border-accent focus:bg-surface sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:border focus:px-4 focus:py-2 focus:text-base"
         >
           Skip to content
         </a>
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        <ContactDock />
         {/* Contact point omitted while the mailbox is a placeholder — publishing an
             address that bounces is worse than publishing none. */}
         <JsonLd

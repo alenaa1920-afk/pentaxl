@@ -1,19 +1,8 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
-import {
-  Action,
-  ClusterGrid,
-  CtaBand,
-  JsonLd,
-  PageHeader,
-  Part,
-  PrevNext,
-  Prose,
-  reveal,
-} from "@/components/ui"
+import { ClusterGrid, CtaBand, JsonLd, PageHeader, Part, PrevNext, Prose } from "@/components/ui"
 import { neighbours, serviceBySlug, services } from "@/content/services"
 import { clustersByIds } from "@/content/stack"
-import { caseStudyBySlug } from "@/content/work"
 import { site } from "@/content/site"
 import { pageMetadata } from "@/lib/utils"
 
@@ -38,7 +27,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   if (!service) notFound()
 
   const near = neighbours(services, service.slug)
-  const related = service.caseStudySlug ? caseStudyBySlug(service.caseStudySlug) : undefined
 
   return (
     <>
@@ -97,25 +85,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         index={4}
         id="tech"
         title="What it is built with"
-        lead="Pulled from the same source as the stack page, so the two can never disagree."
+        lead="The tools this discipline actually uses, and why each one is in the list."
       >
         <ClusterGrid clusters={clustersByIds(service.stackClusters)} />
-        <p className="mt-10">
-          <Action href="/stack" variant="quiet">
-            What we use each of these for
-          </Action>
-        </p>
       </Part>
-
-      {related ? (
-        <Part index={5} id="related" title="Related work">
-          <p {...reveal()}>
-            <Action href={`/work/${related.slug}`} variant="quiet">
-              {related.title}
-            </Action>
-          </p>
-        </Part>
-      ) : null}
 
       {near ? (
         <PrevNext

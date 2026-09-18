@@ -28,7 +28,7 @@ export function MediaSlot({
       className={cn(
         // w-full and min-w-0 matter: with only aspect-ratio set, a stretched grid item
         // derives its *width* from the row height and blows out its column.
-        "border-line bg-panel relative m-0 grid w-full min-w-0 place-items-center border border-dashed",
+        "border-line bg-surface relative m-0 grid w-full min-w-0 place-items-center border border-dashed",
         className,
       )}
       style={{ aspectRatio: ratio }}

@@ -79,7 +79,7 @@ export function Tabs({
               className={cn(
                 "glow inline-flex min-h-11 items-center gap-2 border px-4 text-base whitespace-nowrap",
                 selected
-                  ? "glow-on bg-panel-2 text-accent"
+                  ? "glow-on bg-surface-2 text-accent"
                   : "border-line text-muted hover:text-ink",
               )}
             >

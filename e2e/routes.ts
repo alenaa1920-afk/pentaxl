@@ -1,15 +1,14 @@
 import { services } from "../content/services"
-import { caseStudies } from "../content/work"
+import { posts } from "../content/blog"
 
-/** Derived from content, so adding a service or case study extends the suite for free. */
+/** Derived from content, so adding a service or post extends the suite for free. */
 export const ROUTES = [
   "/",
   "/services",
   ...services.map((s) => `/services/${s.slug}`),
-  "/work",
-  ...caseStudies.map((c) => `/work/${c.slug}`),
-  "/stack",
   "/process",
+  "/blog",
+  ...posts.map((p) => `/blog/${p.slug}`),
   "/about",
   "/contact",
   "/privacy",

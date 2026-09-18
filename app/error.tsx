@@ -25,7 +25,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
           <button
             type="button"
             onClick={reset}
-            className="bg-accent text-void inline-flex min-h-11 items-center justify-center px-5 py-2.5 text-base font-medium transition-all hover:brightness-110"
+            className="bg-accent text-pearl inline-flex min-h-11 items-center justify-center px-5 py-2.5 text-base font-medium transition-all hover:brightness-110"
           >
             Try again
           </button>

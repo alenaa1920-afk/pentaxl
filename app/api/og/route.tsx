@@ -3,11 +3,11 @@ import { site } from "@/content/site"
 
 export const runtime = "nodejs"
 
-const BASE = "#07090A"
-const INK = "#E9EFEE"
-const MUTED = "#93A3A1"
-const LINE = "#1D2729"
-const ACCENT = "#2FE0B6"
+const BASE = "#F8F5EF"
+const INK = "#16122A"
+const MUTED = "#57506B"
+const LINE = "#E2DBCF"
+const ACCENT = "#0B6B4F"
 
 /** Per-route OG images in the site palette. No webfont fetch — that would add a failure
  *  mode to every social preview for a gain nobody sees at this size. */

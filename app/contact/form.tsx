@@ -71,14 +71,14 @@ export function ContactForm() {
 
   const box = (invalid: boolean) =>
     cn(
-      "mt-3 w-full border bg-panel px-4 py-2 text-base transition-colors",
-      invalid ? "border-brass" : "border-line focus:border-accent",
+      "mt-3 w-full border bg-surface px-4 py-2 text-base transition-colors",
+      invalid ? "border-gold" : "border-line focus:border-accent",
     )
 
   return (
     <form action={formAction} noValidate className="max-w-measure">
       {state.status === "error" && state.message ? (
-        <p role="alert" className="border-brass/60 bg-brass/10 mb-8 border px-4 py-3 text-base">
+        <p role="alert" className="border-gold/60 bg-gold/10 mb-8 border px-4 py-3 text-base">
           {state.message}{" "}
           <a href={`mailto:${site.email}`} className="text-accent underline underline-offset-4">
             {site.email}
@@ -133,7 +133,7 @@ export function ContactForm() {
               )}
 
               {error ? (
-                <p id={`${id}-error`} className="text-brass mt-2 text-sm">
+                <p id={`${id}-error`} className="text-gold mt-2 text-sm">
                   {error}
                 </p>
               ) : null}

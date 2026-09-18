@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next"
 import { site } from "@/content/site"
 import { services } from "@/content/services"
-import { publishedCaseStudies } from "@/content/work"
+import { publishedPosts } from "@/content/blog"
 import { STATIC_ROUTES } from "@/lib/utils"
 
 /**
- * Draft case studies are excluded on purpose — submitting a page that says "write-up in
- * progress" is worse than not submitting it. They appear once status flips to published.
+ * Draft posts are excluded on purpose — submitting an unwritten page is worse than not
+ * submitting it. They appear automatically once status flips to published.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const url = (path: string) => `${site.url}${path === "/" ? "" : path}`
@@ -21,8 +21,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...publishedCaseStudies.map((c) => ({
-      url: url(`/work/${c.slug}`),
+    ...publishedPosts.map((post) => ({
+      url: url(`/blog/${post.slug}`),
       changeFrequency: "yearly" as const,
       priority: 0.6,
     })),

@@ -47,9 +47,8 @@ export function pageMetadata({
 export const STATIC_ROUTES = [
   "/",
   "/services",
-  "/work",
-  "/stack",
   "/process",
+  "/blog",
   "/about",
   "/contact",
   "/privacy",
