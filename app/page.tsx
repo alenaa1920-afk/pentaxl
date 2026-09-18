@@ -8,7 +8,7 @@ import { Spotlight } from "@/components/spotlight"
 import { CountUp } from "@/components/count-up"
 import { Faq } from "@/components/faq"
 import { RangeChart } from "@/components/range-chart"
-import { MediaSlot } from "@/components/media-slot"
+import { PhotoBand } from "@/components/photo-band"
 import { GuaranteeIcon, IndustryIcon } from "@/components/icons"
 import { services } from "@/content/services"
 import { posts } from "@/content/blog"
@@ -37,12 +37,12 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="bg-accent/8 aurora pointer-events-none absolute -top-72 -right-52 size-[44rem] rounded-full blur-[150px]"
+          className="mesh pointer-events-none absolute -top-72 -right-52 size-[46rem] rounded-full opacity-25 blur-[130px]"
         />
         <Container>
           <div className="grid items-center gap-14 py-12 md:py-20 lg:grid-cols-2 lg:gap-8">
             <div>
-              <p className="text-gold rise mb-6 font-mono text-sm">Technical consulting</p>
+              <p className="text-accent-2 rise mb-6 font-mono text-sm">Technical consulting</p>
               <HeroHeadline
                 text="We build software, wire in AI, and run the cloud underneath."
                 className="max-w-measure text-2xl md:text-3xl lg:text-4xl"
@@ -62,7 +62,7 @@ export default function HomePage() {
                   <div key={fact.label}>
                     <dt className="sr-only">{fact.label}</dt>
                     <dd>
-                      <span className="font-display text-gold text-xl">
+                      <span className="font-display text-accent-2 text-xl">
                         <CountUp to={fact.value} />
                       </span>{" "}
                       <span className="text-muted font-mono text-sm">{fact.label}</span>
@@ -90,6 +90,13 @@ export default function HomePage() {
       >
         <ServiceTabs />
       </Block>
+
+      <PhotoBand
+        eyebrow="/ the team"
+        title="Ten engineers, senior enough to say no"
+        body="Small on purpose. You get the people who will actually build the thing, in the first call and every one after it."
+        spec="JPG · 2400×1400 · the team working, candid"
+      />
 
       <Block
         id="writing"
@@ -130,7 +137,7 @@ export default function HomePage() {
         title="How we work"
         lead="Scope agreed in writing before anyone builds, work landing in milestones you can use, and production with a runbook rather than a handshake."
         more={{ href: "/process", label: "The full process, and what happens when scope changes" }}
-        className="on-dark"
+        className="on-mist"
       >
         {/* A rail rather than five cramped columns — it stays readable at every width. */}
         {/* tabIndex so keyboard users can scroll the rail on narrow screens — axe flags a
@@ -147,7 +154,9 @@ export default function HomePage() {
               className="panel tilt lift w-[72%] p-6 sm:w-[45%] md:w-auto"
               {...reveal(i)}
             >
-              <p className="text-gold font-mono text-sm">{String(stage.number).padStart(2, "0")}</p>
+              <p className="text-accent-2 font-mono text-sm">
+                {String(stage.number).padStart(2, "0")}
+              </p>
               <span aria-hidden="true" className="bg-accent/40 rule-draw mt-4 block h-px w-full" />
               <h3 className="mt-4 text-lg">{stage.name}</h3>
               <p className="text-muted mt-2 font-mono text-sm">{stage.duration}</p>
@@ -227,7 +236,7 @@ export default function HomePage() {
         index="/ industries"
         title="Where this work usually lands"
         lead="The domains we are set up for. If yours is not here it does not mean no — it means we will tell you honestly whether we have seen your problem before."
-        className="on-dark"
+        className="on-mist"
       >
         <ul className="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
           {industries.map((item, i) => (
@@ -266,35 +275,13 @@ export default function HomePage() {
         </ul>
       </Block>
 
-      {/* PLACEHOLDER: reserved frames for real assets — a product walkthrough video, a
-          product screenshot and a team photo. Delete this whole Block if the assets are
-          not coming; an empty frame is honest, but only until launch. */}
-      <Block
-        id="proof"
-        index="/ proof"
-        title="Screenshots and a walkthrough land here"
-        lead="Reserved, not forgotten. Real product shots and a short walkthrough of one build do more than any amount of copy — these frames are sized and waiting for the assets."
-      >
-        <div className="grid items-start gap-4 lg:grid-cols-[1.6fr_1fr]">
-          <MediaSlot
-            kind="video"
-            title="Product walkthrough"
-            spec="MP4 or WebM · 1920×1080 · 30–60 seconds"
-          />
-          <div className="grid min-w-0 gap-4">
-            <MediaSlot
-              title="Product screenshot"
-              spec="PNG · 1600×1000 · light or dark UI"
-              ratio="16 / 10"
-            />
-            <MediaSlot
-              title="The team at work"
-              spec="JPG · 1600×1000 · candid, not stock"
-              ratio="16 / 10"
-            />
-          </div>
-        </div>
-      </Block>
+      <PhotoBand
+        eyebrow="/ in production"
+        title="Software that survives its second year"
+        body="Environments you can rebuild, deploys that are boring, and enough observability that a production problem is a question you can answer."
+        spec="JPG · 2400×1400 · screens, a desk, real work"
+        height="short"
+      />
 
       <Block
         id="faq"

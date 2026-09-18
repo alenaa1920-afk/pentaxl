@@ -1,36 +1,31 @@
 @import "tailwindcss";
 
-/* Palette: warm pearl ground with obsidian luxe bands, jade as the working accent and
-   gold reserved for emphasis. Every value below was contrast-checked against the
-   surface it sits on — ink 16.7:1, muted 7.0:1, jade 6.0:1, gold 4.6:1 on pearl;
-   gold-bright 10.3:1 and pearl 16.6:1 on obsidian. `gold-bright` is display-only on
-   light grounds (3.5:1) — never body text there. */
+/* Bright, vivid, photo-led. White canvas, electric indigo as the working accent, violet
+   for markers and magenta for highlights. Contrast-checked on white: ink 18.8:1,
+   muted 7.5:1, accent 6.7:1, accent-2 6.0:1, hot 6.0:1, and white-on-accent 6.7:1.
+   Text over photography uses .on-photo, which sits on a scrim, never bare imagery. */
 @theme {
-  --color-pearl: #f8f5ef;
-  --color-surface: #fffdfa;
-  --color-surface-2: #f2ede3;
-  --color-obsidian: #17132b;
-  --color-obsidian-2: #221c3d;
-  --color-ink: #16122a;
-  --color-muted: #57506b;
-  --color-muted-dark: #a79fc0;
-  --color-line: #e2dbcf;
-  --color-line-dark: #332a55;
-  --color-accent: #0b6b4f;
-  --color-accent-dim: #2e8f6e;
-  --color-accent-bright: #34c79a;
-  /* 4.74:1 even where the hero's glow tints the ground to #dce4dc — the nominal
-     5.66:1 on flat pearl is not the number that matters. */
-  --color-gold: #7d5c10;
-  --color-gold-bright: #e2c06a;
-  /* Text on an accent fill. Flips on dark bands, where the accent is much lighter. */
-  --color-on-accent: #f8f5ef;
+  --color-canvas: #ffffff;
+  --color-mist: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #f7f9fe;
+  --color-ink: #0a1028;
+  --color-muted: #4a5473;
+  --color-line: #e3e8f2;
+  --color-accent: #4f2bff;
+  --color-accent-2: #7a2bf5;
+  --color-accent-dim: #8a7bff;
+  --color-hot: #be185d;
+  --color-cyan: #0077b6;
+  --color-on-accent: #ffffff;
+  /* Not overridden by .on-photo — that block repoints --color-ink to white for text,
+     so a backdrop using bg-ink inside a band renders white. Use bg-backdrop. */
+  --color-backdrop: #0a1028;
 
   --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
-  /* Scale 14 16 18 24 32 48 72. Off-scale sizes are unset so they fail loudly. */
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.5;
   --text-base: 1rem;
@@ -60,7 +55,7 @@
   }
 
   body {
-    background-color: var(--color-pearl);
+    background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -83,24 +78,79 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: var(--color-pearl);
+    color: var(--color-on-accent);
   }
 
-  /* Dark luxe bands: one class flips a whole section to the obsidian surface, which is
-     what keeps the page from reading as one flat colour top to bottom. */
-  .on-dark {
-    background-color: var(--color-obsidian);
-    color: var(--color-pearl);
-    --color-ink: var(--color-pearl);
-    --color-muted: var(--color-muted-dark);
-    --color-line: var(--color-line-dark);
-    --color-surface: var(--color-obsidian-2);
-    --color-surface-2: #2b2450;
-    --color-accent: var(--color-accent-bright);
-    --color-accent-dim: #1f7a5e;
-    --color-gold: var(--color-gold-bright);
-    --color-on-accent: var(--color-obsidian);
+  /* Text sitting over a photo band. The scrim underneath is what makes these safe —
+     never put .on-photo text straight onto imagery. */
+  .on-photo {
+    color: #ffffff;
+    --color-ink: #ffffff;
+    --color-muted: #dfe4f2;
+    --color-line: rgba(255, 255, 255, 0.28);
+    --color-surface: rgba(255, 255, 255, 0.1);
+    --color-surface-2: rgba(255, 255, 255, 0.16);
+    --color-accent: #c3b5ff;
+    --color-accent-2: #e9b8ff;
+    --color-on-accent: #0a1028;
   }
+
+  /* Alternate band for rhythm without going dark. */
+  .on-mist {
+    background-color: var(--color-mist);
+  }
+}
+
+/* The vivid signature. Fully opaque on purpose: a gradient that fades to transparent
+   picks up whatever is behind it, which is how this band ended up pale. Every stop
+   clears 4.9:1 against white text (indigo 6.7, violet 6.0, magenta 6.0), so copy sits
+   safely anywhere on it without a scrim. */
+@keyframes mesh-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@utility mesh {
+  background-image: linear-gradient(
+    115deg,
+    #4f2bff 0%,
+    #5f27f5 22%,
+    #7a2bf5 44%,
+    #a81fc4 68%,
+    #be185d 100%
+  );
+  background-size: 220% 220%;
+  animation: mesh-drift 22s ease-in-out infinite;
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-accent),
+    var(--color-accent-2) 45%,
+    var(--color-hot)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Slow zoom on background photography — the Ken Burns move, kept subtle. */
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+@utility ken-burns {
+  animation: ken-burns 22s ease-in-out infinite alternate;
 }
 
 /* ---------- motion -------------------------------------------------------- */

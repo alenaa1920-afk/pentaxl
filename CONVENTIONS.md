@@ -34,19 +34,17 @@ Tailwind v4 is CSS-first: `app/globals.css` `@theme` is the single source of tru
 is no `tailwind.config.ts` — do not create one.
 
 ```
-pearl        #F8F5EF  page ground         bg-pearl
-surface      #FFFDFA  cards               panel utility
-surface-2    #F2EDE3  card hover
-obsidian     #17132B  dark luxe bands     .on-dark
-obsidian-2   #221C3D  cards on a band
-ink          #16122A  text                text-ink      (16.7:1 on pearl)
-muted        #57506B  secondary text      text-muted    (7.0:1)
-line         #E2DBCF  hairlines           border-line
-accent       #0B6B4F  jade, interaction   text-accent   (6.0:1)
-accent-bright#34C79A  accent on a band                  (8.4:1 on obsidian)
-gold         #7D5C10  section markers     text-gold     (5.7:1, 4.7:1 over the hero glow)
-gold-bright  #E2C06A  display + on bands                (10.3:1 on obsidian)
-on-accent    flips    text on an accent fill
+canvas       #FFFFFF  page ground         bg-canvas
+mist         #F4F7FB  alternate band      .on-mist
+surface      #FFFFFF  cards               panel utility
+ink          #0A1028  text                text-ink     (18.8:1)
+muted        #4A5473  secondary text      text-muted   (7.5:1)
+line          #E3E8F2  hairlines          border-line
+accent       #4F2BFF  electric indigo     text-accent  (6.7:1)
+accent-2     #7A2BF5  violet, markers     text-accent-2 (6.0:1)
+hot          #BE185D  magenta highlight   text-hot     (6.0:1)
+on-accent    #FFFFFF  text on accent fills
+backdrop     #0A1028  dark backdrop — NOT overridden by .on-photo
 ```
 
 The colour is named `void`, not `base` — `text-base` is the font-size utility, so a colour
@@ -168,6 +166,16 @@ zero Axe critical or serious issues · 98 e2e tests must stay green
 
 Axe runs with `reducedMotion: "reduce"` so it measures settled colours; otherwise it
 samples text mid-fade and reports a blended contrast value.
+
+## Photo bands
+
+`PhotoBand` is the full-width imagery band. Pass `src` (a file in `public/media`) and it
+renders the photo with a slow Ken Burns zoom under a gradient scrim; omit `src` and it
+falls back to the animated vivid gradient and names the asset it is waiting for.
+
+The scrim over real photography is not decoration — text over bare imagery fails contrast
+the moment the picture changes. Everything inside uses `.on-photo`, which is only safe
+above that scrim.
 
 ## Routes
 

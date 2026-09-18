@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Container, CtaBand, PageHeader, Section, SectionHeading, reveal } from "@/components/ui"
 import { Spotlight } from "@/components/spotlight"
 import { MediaSlot } from "@/components/media-slot"
+import { PhotoBand } from "@/components/photo-band"
 import { StageArt } from "@/components/stage-art"
 import { RangeChart } from "@/components/range-chart"
 import { engagementWeeks, processStages, scopeChangePolicy } from "@/content/process"
@@ -36,7 +37,7 @@ export default function ProcessPage() {
               spec="MP4 or WebM · 1920×1080 · 90 seconds · poster frame too"
             />
             <div className="min-w-0">
-              <p className="text-gold font-mono text-sm">Coming here</p>
+              <p className="text-accent-2 font-mono text-sm">Coming here</p>
               <h2 className="mt-3 text-xl">Ninety seconds, one real engagement</h2>
               <p className="text-muted mt-4 text-base">
                 A screen recording of an actual build: the problem statement, the design document, a
@@ -56,7 +57,7 @@ export default function ProcessPage() {
           return (
             <li
               key={stage.number}
-              className={dark ? "on-dark border-line border-t" : "border-line border-t"}
+              className={dark ? "on-mist border-line border-t" : "border-line border-t"}
             >
               <div className="py-14 sm:py-16 md:py-20">
                 <Container>
@@ -69,13 +70,13 @@ export default function ProcessPage() {
                     </Spotlight>
 
                     <div {...reveal(1)}>
-                      <p className="text-gold font-mono text-sm">
+                      <p className="text-accent-2 font-mono text-sm">
                         Stage {String(stage.number).padStart(2, "0")} of 05
                       </p>
                       <h2 className="mt-3 text-xl md:text-2xl">{stage.name}</h2>
                       <span
                         aria-hidden="true"
-                        className="bg-gold/50 rule-draw mt-6 block h-px w-full"
+                        className="bg-accent-2/50 rule-draw mt-6 block h-px w-full"
                       />
                       <p className="max-w-measure mt-6 text-base md:text-lg">{stage.what}</p>
 
@@ -139,12 +140,20 @@ export default function ProcessPage() {
         </div>
       </Section>
 
-      <Section labelledBy="scope-change" className="on-dark">
+      <Section labelledBy="scope-change" className="on-mist">
         <SectionHeading id="scope-change" index="/ policy" title={scopeChangePolicy.heading} />
         <p className="max-w-measure mt-6 text-base md:text-lg" {...reveal(1)}>
           {scopeChangePolicy.body}
         </p>
       </Section>
+
+      <PhotoBand
+        eyebrow="/ stage one"
+        title="It starts with a conversation, not a proposal"
+        body="We listen to the problem before proposing anything. What the product is for, who it serves, and which constraint is non-negotiable."
+        spec="JPG · 2400×1400 · a scoping session"
+        height="short"
+      />
 
       <CtaBand
         heading="Start at stage one"

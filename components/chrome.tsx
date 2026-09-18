@@ -50,7 +50,7 @@ export function SiteHeader() {
   const pathname = usePathname()
 
   return (
-    <header className="border-line bg-pearl/80 sticky top-0 z-40 border-b backdrop-blur-md">
+    <header className="border-line bg-canvas/80 sticky top-0 z-40 border-b backdrop-blur-md">
       <Container>
         <div className="flex h-16 items-center justify-between gap-6">
           <Link href="/" className="font-display text-lg" aria-label={`${site.name} — home`}>
@@ -95,7 +95,7 @@ export function SiteHeader() {
               <Menu aria-hidden="true" className="size-5" />
             </Drawer.Trigger>
             <Drawer.Portal>
-              <Drawer.Overlay className="bg-pearl/70 fixed inset-0 z-50 backdrop-blur-sm" />
+              <Drawer.Overlay className="bg-canvas/70 fixed inset-0 z-50 backdrop-blur-sm" />
               <Drawer.Content
                 aria-label="Menu"
                 className="border-line bg-surface fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col border-t pb-8 outline-none"

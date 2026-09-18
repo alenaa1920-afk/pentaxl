@@ -31,7 +31,9 @@ export default function BlogPage() {
                     <span className="text-accent">{post.tag}</span>
                     <span className="text-muted">{post.readingMinutes} min read</span>
                     {post.status === "draft" ? (
-                      <span className="border-gold/50 text-gold border px-2 py-0.5">Draft</span>
+                      <span className="border-accent-2/50 text-accent-2 border px-2 py-0.5">
+                        Draft
+                      </span>
                     ) : (
                       <span className="text-muted">{post.date}</span>
                     )}
@@ -41,7 +43,7 @@ export default function BlogPage() {
                   </h2>
                   <span
                     aria-hidden="true"
-                    className="bg-gold/40 rule-draw mt-5 block h-px w-full"
+                    className="bg-accent-2/40 rule-draw mt-5 block h-px w-full"
                   />
                   <p className="text-muted mt-5 text-base">{post.excerpt}</p>
                   <span className="text-accent mt-6 font-mono text-sm">

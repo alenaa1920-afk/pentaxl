@@ -60,7 +60,7 @@ export function SectionHeading({
 }) {
   return (
     <div className="max-w-measure" {...reveal()}>
-      {index ? <p className="text-gold mb-4 font-mono text-sm">{index}</p> : null}
+      {index ? <p className="text-accent-2 mb-4 font-mono text-sm">{index}</p> : null}
       <h2 id={id} className="text-xl md:text-2xl">
         {title}
       </h2>
@@ -261,7 +261,7 @@ export function CtaBand({
   actionHref?: string
 }) {
   return (
-    <section aria-labelledby="cta" className="on-dark relative overflow-hidden">
+    <section aria-labelledby="cta" className="on-mist relative overflow-hidden">
       <div
         aria-hidden="true"
         className="bg-accent/20 aurora pointer-events-none absolute -bottom-52 left-1/2 size-[44rem] -translate-x-1/2 rounded-full blur-[130px]"
@@ -291,11 +291,11 @@ export function Ticker({ items }: { items: string[] }) {
       {/* Tailwind v4 renamed these utilities: bg-linear-*, not bg-gradient-*. */}
       <div
         aria-hidden="true"
-        className="from-pearl pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-linear-to-r to-transparent"
+        className="from-canvas pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-linear-to-r to-transparent"
       />
       <div
         aria-hidden="true"
-        className="from-pearl pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-linear-to-l to-transparent"
+        className="from-canvas pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-linear-to-l to-transparent"
       />
       <ul className="ticker-track flex w-max gap-10" aria-hidden="true">
         {row.map((item, i) => (
@@ -382,7 +382,7 @@ export function Block({
   lead?: string
   more?: { href: string; label: string }
   rule?: boolean
-  /** Pass "on-dark" to flip the whole band to the obsidian surface. */
+  /** Pass "on-mist" to flip the whole band to a photo band. */
   className?: string
   children: React.ReactNode
 }) {

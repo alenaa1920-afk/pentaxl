@@ -34,7 +34,9 @@ test("muted and accent text both clear AA on the page background", async ({ page
     const root = getComputedStyle(document.documentElement)
     const toLinear = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
     const lum = (value: string) => {
-      const hex = value.trim().replace("#", "")
+      // The production build minifies #ffffff to #fff, so expand shorthand first.
+      let hex = value.trim().replace("#", "")
+      if (hex.length === 3) hex = [...hex].map((c) => c + c).join("")
       const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
       return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
     }
@@ -44,21 +46,21 @@ test("muted and accent text both clear AA on the page background", async ({ page
       return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
     }
     return {
-      muted: against("--color-muted", "--color-pearl"),
-      accent: against("--color-accent", "--color-pearl"),
-      gold: against("--color-gold", "--color-pearl"),
+      muted: against("--color-muted", "--color-canvas"),
+      accent: against("--color-accent", "--color-canvas"),
+      accent2: against("--color-accent-2", "--color-canvas"),
+      hot: against("--color-hot", "--color-canvas"),
+      mutedOnMist: against("--color-muted", "--color-mist"),
       onAccent: against("--color-on-accent", "--color-accent"),
-      darkBandText: against("--color-muted-dark", "--color-obsidian"),
-      darkBandAccent: against("--color-accent-bright", "--color-obsidian"),
     }
   })
 
-  expect(ratios.muted, "muted on pearl").toBeGreaterThanOrEqual(4.5)
-  expect(ratios.accent, "accent on pearl").toBeGreaterThanOrEqual(4.5)
-  expect(ratios.gold, "gold on pearl").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.muted, "muted on canvas").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.accent, "accent on canvas").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.accent2, "accent-2 on canvas").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.hot, "hot on canvas").toBeGreaterThanOrEqual(4.5)
+  expect(ratios.mutedOnMist, "muted on the mist band").toBeGreaterThanOrEqual(4.5)
   expect(ratios.onAccent, "button text on accent").toBeGreaterThanOrEqual(4.5)
-  expect(ratios.darkBandText, "muted on obsidian band").toBeGreaterThanOrEqual(4.5)
-  expect(ratios.darkBandAccent, "accent on obsidian band").toBeGreaterThanOrEqual(4.5)
 })
 
 test("reduced motion disables the reveal system entirely", async ({ browser }) => {

@@ -62,7 +62,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <div className="max-w-measure">
             {post.status === "draft" ? (
               <div className="panel p-6 md:p-8" {...reveal()}>
-                <p className="text-gold font-mono text-sm">Not written yet</p>
+                <p className="text-accent-2 font-mono text-sm">Not written yet</p>
                 <h2 className="mt-3 text-xl">What this piece will argue</h2>
                 <p className="text-muted mt-4 text-base">
                   The outline is real; the prose is not written. We would rather show you the shape
