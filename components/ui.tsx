@@ -46,22 +46,29 @@ export function Section({
   )
 }
 
-/** Mono index label + title. Not an all-caps eyebrow — a technical marker. */
+/** Mono index label + title. Centred by default — the page reads as one column. */
 export function SectionHeading({
   id,
   index,
   title,
   lead,
+  align = "center",
 }: {
   id: string
   index?: string
   title: string
   lead?: string
+  align?: "center" | "start"
 }) {
   return (
-    <div className="max-w-measure" {...reveal()}>
-      {index ? <p className="text-accent-2 mb-4 font-mono text-sm">{index}</p> : null}
-      <h2 id={id} className="text-xl md:text-2xl">
+    <div
+      className={cn("max-w-measure", align === "center" ? "mx-auto text-center" : "")}
+      {...reveal()}
+    >
+      {index ? (
+        <p className="text-accent-2 mb-4 font-mono text-sm tracking-widest">{index}</p>
+      ) : null}
+      <h2 id={id} className="text-2xl md:text-3xl">
         {title}
       </h2>
       {lead ? <p className="text-muted mt-4 text-base md:text-lg">{lead}</p> : null}
@@ -389,9 +396,9 @@ export function Block({
   return (
     <Section labelledBy={id} rule={rule} className={className}>
       <SectionHeading id={id} index={index} title={title} lead={lead} />
-      <div className="mt-12">{children}</div>
+      <div className="mt-14">{children}</div>
       {more ? (
-        <p className="mt-10">
+        <p className="mt-12 text-center">
           <Action href={more.href} variant="quiet">
             {more.label}
           </Action>

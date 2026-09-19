@@ -3,6 +3,7 @@ import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google"
 import "./globals.css"
 import { site } from "@/content/site"
 import { ChromeGate, MotionRoot, SiteHeader } from "@/components/chrome"
+import { ShaderBackdrop } from "@/components/shader-backdrop"
 import { ContactDock } from "@/components/contact-dock"
 import { JsonLd, SiteFooter } from "@/components/ui"
 
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <ShaderBackdrop />
         <MotionRoot />
         <ChromeGate>
           <SiteHeader />

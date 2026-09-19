@@ -1,8 +1,9 @@
 "use client"
 
-// Interactive: hovering a node dims the rest and swaps the supporting line. The figure
-// redraws on every load, then the travelling pulses keep running so it reads as a live
-// system rather than a diagram.
+// The hero. Centred, and the arrival is choreographed in CSS: eyebrow, then the
+// headline word by word, then support, actions, stats, then the figure draws itself.
+// No animation library — keyframes do this identically for 0 kB, and the complaint
+// was that the site felt slow.
 
 import Link from "next/link"
 import { useState } from "react"
@@ -16,12 +17,7 @@ const CX = 220
 const CY = 196
 const R = 140
 
-/**
- * Milliseconds per segment. Each edge waits for the previous one to finish, so the
- * figure is traced one line at a time like a pen travelling between the dots rather
- * than every edge fading up at once. serviceEdges is ordered to walk the pentagon
- * perimeter first, then the two interior chords.
- */
+/** Milliseconds per traced segment. Owner asked for a visible, unhurried draw. */
 const SEG_MS = 520
 
 const points = heroCycle
@@ -54,33 +50,50 @@ const labelPos = (x: number, y: number) =>
         ? "left-full top-1/2 -translate-y-1/2 pl-3"
         : "right-full top-1/2 -translate-y-1/2 pr-3"
 
+/** Headline with a per-word entrance and the last clause in gradient. */
+export function HeroHeadline({
+  lead,
+  accent,
+  className,
+}: {
+  lead: string
+  accent: string
+  className?: string
+}) {
+  const words = lead.split(" ")
+  return (
+    <h1 className={className}>
+      {words.map((word, i) => (
+        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
+          <span className="enter-word inline-block" style={{ animationDelay: `${180 + i * 55}ms` }}>
+            {word}
+            {i < words.length - 1 ? " " : ""}
+          </span>
+        </span>
+      ))}{" "}
+      <span className="inline-block overflow-hidden align-bottom">
+        <span
+          className="gradient-text enter-word inline-block"
+          style={{ animationDelay: `${180 + words.length * 55}ms` }}
+        >
+          {accent}
+        </span>
+      </span>
+    </h1>
+  )
+}
+
 export function HeroFigure() {
   const [active, setActive] = useState<string | null>(null)
-
-  // The draw replays on every load, by request. The classes are server-rendered and
-  // `--len` is an inline style, so it is pure CSS — the animation starts on first paint
-  // instead of waiting for hydration, and runs even with JS disabled.
-  const current = active ? points.find((p) => p.slug === active) : null
-  const summary = active ? services.find((s) => s.slug === active)?.summary : site.tagline
+  const summary = active ? services.find((s) => s.slug === active)?.summary : null
 
   return (
     <div className="w-full">
-      <div className="relative mx-auto w-full max-w-[26rem]" style={{ aspectRatio: W / H }}>
-        <div
-          aria-hidden="true"
-          className="halo pointer-events-none absolute inset-[12%] rounded-full bg-[conic-gradient(from_0deg,transparent,var(--color-accent),transparent_55%)] opacity-[0.18] blur-2xl"
-        />
-
+      <div
+        className="relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem]"
+        style={{ aspectRatio: W / H }}
+      >
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full" aria-hidden="true">
-          <defs>
-            <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
-              <path d="M28 0H0V28" fill="none" stroke="var(--color-line)" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <g className="grid-drift">
-            <rect x="-28" y="-28" width={W + 56} height={H + 56} fill="url(#grid)" opacity="0.55" />
-          </g>
-
           {edges.map((edge, i) => {
             const dim = active !== null && edge.from !== active && edge.to !== active
             const shared = { x1: edge.a.x, y1: edge.a.y, x2: edge.b.x, y2: edge.b.y }
@@ -91,24 +104,22 @@ export function HeroFigure() {
               >
                 <line
                   {...shared}
-                  stroke={dim ? "var(--color-line)" : "var(--color-accent-dim)"}
+                  stroke={dim ? "var(--color-line)" : "var(--color-accent)"}
                   strokeWidth={dim ? 1 : 1.5}
                   className={cn("edge-draw transition-[stroke] duration-300")}
                   style={{
                     animationDuration: `${SEG_MS}ms`,
-                    animationDelay: `${i * SEG_MS}ms`,
+                    animationDelay: `${900 + i * SEG_MS}ms`,
                   }}
                 />
                 {!dim ? (
-                  // Revealed only once the whole figure is traced, so it cannot make the
-                  // pentagon look finished while it is still being drawn.
                   <g
                     className="pulse-in"
-                    style={{ animationDelay: `${edges.length * SEG_MS + 500}ms` }}
+                    style={{ animationDelay: `${900 + edges.length * SEG_MS + 400}ms` }}
                   >
                     <line
                       {...shared}
-                      stroke="var(--color-accent)"
+                      stroke="var(--color-accent-2)"
                       strokeWidth="2"
                       strokeLinecap="round"
                       className="edge-pulse"
@@ -123,26 +134,26 @@ export function HeroFigure() {
           {points.map((p, i) => {
             const dim = active !== null && p.slug !== active
             return (
-              <g key={p.slug} className="node-in" style={{ animationDelay: `${i * SEG_MS}ms` }}>
+              <g
+                key={p.slug}
+                className="node-in"
+                style={{ animationDelay: `${900 + i * SEG_MS}ms` }}
+              >
                 <circle
                   cx={p.x}
                   cy={p.y}
                   r="5"
                   fill="var(--color-canvas)"
-                  stroke={dim ? "var(--color-line)" : "var(--color-accent)"}
+                  stroke={dim ? "var(--color-line)" : "var(--color-accent-2)"}
                   strokeWidth="1.5"
                   className={cn("transition-[stroke] duration-300", !dim && "node-pulse")}
                   style={{ animationDelay: `${i * 260}ms` }}
                 />
-                {p.slug === active ? (
-                  <circle cx={p.x} cy={p.y} r="2.5" fill="var(--color-accent)" />
-                ) : null}
               </g>
             )
           })}
         </svg>
 
-        {/* Real links, so the figure is navigation rather than decoration. */}
         {points.map((p) => (
           <Link
             key={p.slug}
@@ -169,25 +180,9 @@ export function HeroFigure() {
         ))}
       </div>
 
-      <p className="text-muted mx-auto mt-8 min-h-12 max-w-[26rem] text-center text-base">
-        {current ? summary : site.tagline}
+      <p className="text-muted mx-auto mt-6 min-h-12 max-w-[26rem] text-center text-base">
+        {summary ?? site.tagline}
       </p>
     </div>
-  )
-}
-
-/** Headline that assembles itself word by word. */
-export function HeroHeadline({ text, className }: { text: string; className?: string }) {
-  return (
-    <h1 className={className}>
-      {text.split(" ").map((word, i) => (
-        <span key={`${word}-${i}`} className="inline-block overflow-hidden align-bottom">
-          <span className="rise inline-block" style={{ animationDelay: `${i * 45}ms` }}>
-            {word}
-            {i < text.split(" ").length - 1 ? " " : ""}
-          </span>
-        </span>
-      ))}
-    </h1>
   )
 }

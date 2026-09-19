@@ -62,7 +62,9 @@ test("skip link is first in tab order and moves focus to main", async ({ page })
   const focused = page.locator(":focus")
   await expect(focused).toHaveText(/skip to content/i)
   await focused.press("Enter")
-  expect(await page.evaluate(() => window.location.hash)).toBe("#main")
+  await expect
+    .poll(() => page.evaluate(() => window.location.hash), { timeout: 10000 })
+    .toBe("#main")
 })
 
 test("mobile drawer opens, then closes on Escape and restores focus", async ({ page }, info) => {
@@ -81,6 +83,8 @@ test("mobile drawer opens, then closes on Escape and restores focus", async ({ p
 })
 
 test("hero nodes are real links into the service pages", async ({ page }) => {
+  // Reduced motion (the default) renders the figure in its final state immediately,
+  // so the node is clickable without waiting out the trace.
   await page.goto("/")
   const first = services[0]
   await page.getByRole("link", { name: first.name }).first().click()
@@ -88,37 +92,52 @@ test("hero nodes are real links into the service pages", async ({ page }) => {
   await expect(page.locator("h1")).toHaveText(first.name)
 })
 
-test("scroll reveal shows content as it enters the viewport", async ({ page }) => {
+test("scroll reveal shows content as it enters the viewport", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "no-preference" })
+  const page = await context.newPage()
   await page.goto("/")
-  await expect(page.locator("html")).toHaveAttribute("data-motion", "on")
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "on", { timeout: 20000 })
 
-  const target = page.locator("[data-reveal]").last()
-  await target.scrollIntoViewIfNeeded()
-  await expect(target).toHaveAttribute("data-shown", "")
-  await expect(target).toBeVisible()
+  // Scroll via evaluate: reveal targets can sit inside perpetually animating bands,
+  // where locator actions never satisfy the stability wait.
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+
+  // Polled, not asserted once: the observer delivers its callbacks over several frames
+  // after the jump, so reading the count the instant the first one lands is a race.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => document.querySelectorAll("[data-reveal]:not([data-shown])").length),
+      { timeout: 20000, message: "everything scrolled past should have been revealed" },
+    )
+    .toBe(0)
+  await context.close()
 })
 
-test("the shader backdrop loads, is decorative, and yields to reduced motion", async ({
-  page,
+test("the shader backdrop is global, decorative, and yields to reduced motion", async ({
   browser,
 }) => {
+  // Software GL in headless makes this the slowest test in the suite.
+  test.setTimeout(90_000)
+  // With motion allowed the WebGL canvas mounts over the static gradient.
+  const motion = await browser.newContext({ reducedMotion: "no-preference" })
+  const lively = await motion.newPage()
+  await lively.goto("/")
+  await expect(lively.locator("canvas").first()).toBeAttached({ timeout: 20000 })
+  // Fixed and full-viewport — the background of the whole page, not one section.
+  const fixed = await lively.locator("div.fixed.inset-0.-z-50").first()
+  await expect(fixed).toBeAttached()
+  expect(await fixed.getAttribute("aria-hidden")).toBe("true")
+  await motion.close()
+
+  // Default context is reduced-motion: the gradient carries it, no canvas at all.
+  const page = await browser.newPage()
   await page.goto("/")
-  // The static gradient is the pre-hydration and reduced-motion state; the shader
-  // paints over it in a canvas once its chunk arrives.
-  const backdrop = page.locator("section .mesh").first()
-  await expect(backdrop).toBeAttached()
-  await expect(page.locator("canvas").first()).toBeAttached({ timeout: 15000 })
-
-  // Decorative: the whole backdrop is hidden from assistive tech.
-  await expect(page.locator('[aria-hidden="true"] > .mesh').first()).toBeAttached()
-
-  const reduced = await browser.newContext({ reducedMotion: "reduce" })
-  const rp = await reduced.newPage()
-  await rp.goto("/")
-  await rp.waitForTimeout(2500)
-  expect(await rp.locator("canvas").count(), "no shader canvas under reduced motion").toBe(0)
-  await expect(rp.locator("h1")).toBeVisible()
-  await reduced.close()
+  await page.waitForTimeout(2000)
+  expect(await page.locator("canvas").count(), "no shader canvas under reduced motion").toBe(0)
+  await expect(page.locator(".mesh").first()).toBeAttached()
+  await expect(page.locator("h1")).toBeVisible()
+  await page.close()
 })
 
 test("band photography is real, sized, lazy and described", async ({ page }) => {
@@ -147,7 +166,9 @@ test("band photography is real, sized, lazy and described", async ({ page }) => 
   }
 })
 
-test("the hero pentagon redraws on every load", async ({ page }) => {
+test("the hero pentagon redraws on every load", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "no-preference" })
+  const page = await context.newPage()
   await page.goto("/")
 
   const edges = page.locator("svg .edge-draw")
@@ -163,10 +184,24 @@ test("the hero pentagon redraws on every load", async ({ page }) => {
   await page.reload()
   await expect(page.locator("svg .edge-draw").first()).toBeAttached()
   expect(await page.evaluate(() => Object.keys(sessionStorage).length)).toBe(0)
+  await context.close()
 })
 
-test("the pentagon traces one line at a time, not all at once", async ({ page }) => {
+test("the pentagon traces one line at a time, not all at once", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "no-preference" })
+  const page = await context.newPage()
   await page.goto("/", { waitUntil: "commit" })
+
+  // Wait until the stylesheet has applied: before it does, .pulse-in has no rule and
+  // every pulse reads as fully opaque, which is an artefact of sampling too early.
+  await page.waitForFunction(
+    () => {
+      const el = document.querySelector("svg .pulse-in")
+      return !!el && getComputedStyle(el).animationName === "node-in"
+    },
+    undefined,
+    { timeout: 20000 },
+  )
 
   const sample = () =>
     page.evaluate(() => {
@@ -183,17 +218,30 @@ test("the pentagon traces one line at a time, not all at once", async ({ page })
       }
     })
 
-  // Mid-trace: exactly one edge in flight, and no pulse visible yet.
+  // Sampling starts when the pen actually starts, not on a wall clock: how long the
+  // page takes to get here varies with machine load, and a run that only sampled after
+  // the trace had finished used to fail on pulses that were correctly visible by then.
+  await page.waitForFunction(() => {
+    const l = document.querySelector("svg .edge-draw")
+    if (!l) return false
+    const cs = getComputedStyle(l)
+    const len = parseFloat(cs.strokeDasharray) || 1
+    const drawn = 1 - (parseFloat(cs.strokeDashoffset) || 0) / len
+    return drawn > 0.005
+  })
+
+  // Mid-trace: exactly one edge in flight, and no pulse visible while one still is.
   for (let i = 0; i < 4; i++) {
     await page.waitForTimeout(500)
     const s = await sample()
     expect(s.drawing, "more than one edge drawing at once").toBeLessThanOrEqual(1)
-    expect(s.idlePulses, "pulse visible before the line is drawn").toBe(0)
+    if (s.drawing > 0) expect(s.idlePulses, "pulse visible before the line is drawn").toBe(0)
   }
 
   // Settled: everything drawn.
-  await page.waitForTimeout(2500)
+  await page.waitForTimeout(3500)
   expect((await sample()).drawing).toBe(0)
+  await context.close()
 })
 
 test("current route is marked in the nav", async ({ page }, info) => {

@@ -33,11 +33,41 @@ export function MotionRoot() {
           io.unobserve(entry.target)
         }
       },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.05 },
+      // Only the bottom edge gates anything: an element counts as intersecting once its
+      // top clears 12% above the fold. The enormous margins on the other three sides
+      // are what stop content being stranded at opacity 0 forever — anything the
+      // viewport jumped clean over (an anchor link, a restored scroll position, a fast
+      // flick) never changes intersection state without them, so the observer would
+      // simply never fire for it.
+      { rootMargin: "100000px 100000px -12% 100000px", threshold: 0.05 },
     )
 
     document.querySelectorAll("[data-reveal]:not([data-shown])").forEach((el) => io.observe(el))
-    return () => io.disconnect()
+
+    // A rail is a scroll container, so it clips its own off-screen items out of every
+    // intersection — rootMargin expands the root's rect and cannot reach past an
+    // intermediate clip. Those items would sit invisible until dragged into view. So
+    // the rail itself is what gets observed, and its items reveal with it; the stagger
+    // still comes from each item's --reveal-delay, not from the order they fire in.
+    const railObservers = [...document.querySelectorAll(".rail")].flatMap((rail) => {
+      const items = [...rail.querySelectorAll("[data-reveal]:not([data-shown])")]
+      if (!items.length) return []
+      const railIo = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return
+          railIo.disconnect()
+          for (const item of items) item.setAttribute("data-shown", "")
+        },
+        { rootMargin: "100000px 100000px -12% 100000px", threshold: 0 },
+      )
+      railIo.observe(rail)
+      return [railIo]
+    })
+
+    return () => {
+      io.disconnect()
+      for (const railIo of railObservers) railIo.disconnect()
+    }
   }, [pathname])
 
   return null
@@ -58,11 +88,9 @@ export function SiteHeader() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
 
-  // The home hero is a dark shader band, and a white header strip above it reads as two
-  // stacked sites. The header is in normal flow (not overlaying the hero), so going
-  // *transparent* just exposes the white body behind light text — axe measured 1.27:1.
-  // Instead it takes the hero's own dark base while at the top of that page, then
-  // returns to the light surface once you scroll past.
+  // The shader runs behind every page now, so the header is transparent at rest and
+  // lets it through — an opaque strip across the top read as a separate, static site.
+  // Once you scroll it becomes glass, which is what keeps nav legible over content.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
     onScroll()
@@ -70,19 +98,17 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const overHero = pathname === "/" && !scrolled
-
   return (
     <header
       className={cn(
         "sticky top-0 z-40 border-b transition-colors duration-300",
-        overHero
-          ? "on-photo bg-backdrop border-transparent"
-          : "border-line bg-canvas/80 backdrop-blur-md",
+        scrolled
+          ? "border-line bg-canvas/70 backdrop-blur-md"
+          : "border-transparent bg-transparent",
       )}
     >
       <Container>
-        <div className="flex h-16 items-center justify-between gap-6">
+        <div className="enter flex h-16 items-center justify-between gap-6">
           <Link href="/" className="font-display text-lg" aria-label={`${site.name} — home`}>
             {site.name}
             <span className="text-accent">.</span>

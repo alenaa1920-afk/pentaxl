@@ -57,8 +57,13 @@ export const scopeChangePolicy = {
   body: "It will. Something gets discovered in build that nobody could have known at stage three. When that happens we tell you the same day, with the cost in time and money and at least one alternative — usually trading something out of the current release rather than extending it. Nothing gets quietly absorbed and nothing gets quietly billed. If we got an estimate wrong ourselves, we say so, and we do not pass the cost of our own mistake on to you.",
 }
 
-/** Honest end-to-end span: the sum of the stage minimums and maximums. */
-export const engagementWeeks = processStages.reduce(
-  (total, stage) => [total[0] + stage.weeks[0], total[1] + stage.weeks[1]] as [number, number],
-  [0, 0] as [number, number],
-)
+/**
+ * Honest end-to-end span: the sum of the stage minimums and maximums. Rounded, because
+ * several stages are fractional weeks and the raw sum reads as "8–17.8 weeks".
+ */
+export const engagementWeeks = processStages
+  .reduce(
+    (total, stage) => [total[0] + stage.weeks[0], total[1] + stage.weeks[1]] as [number, number],
+    [0, 0] as [number, number],
+  )
+  .map(Math.round) as [number, number]

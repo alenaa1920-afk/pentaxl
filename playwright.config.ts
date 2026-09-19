@@ -10,12 +10,21 @@ const baseURL = `http://127.0.0.1:${PORT}`
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  // Every page paints two full-viewport WebGL canvases, which headless renders in
+  // software. More workers than this and the shader-heavy specs time out on the
+  // machine rather than on anything the site is doing wrong.
+  workers: 2,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : [["list"]],
   use: {
     baseURL,
     trace: "on-first-retry",
+    // Default to reduced motion. A full-screen WebGL backdrop plus several infinite
+    // CSS loops make headless runs slow and non-deterministic — elements never reach
+    // Playwright's "stable" state. Tests that assert motion create their own context
+    // with reducedMotion: "no-preference".
+    reducedMotion: "reduce",
   },
   projects: [
     {

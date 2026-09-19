@@ -1,61 +1,86 @@
 "use client"
 
-// The Paper Shaders mesh gradient, adopted as the site's signature backdrop.
+// The site's background: one fixed, full-viewport shader behind every page, always
+// moving. Two stacked mesh gradients at different speeds and swirls, which is what
+// gives the ground depth rather than one flat drifting blob.
 //
-// Three things make this safe to put behind real content:
-//   1. Loaded with next/dynamic so the WebGL bundle is a separate chunk fetched after
-//      paint, not part of first-load JS.
-//   2. Skipped entirely under prefers-reduced-motion, which falls back to the static
-//      CSS gradient — a continuously moving backdrop is exactly what that setting is
-//      for. Also skipped when the tab is hidden, so it stops costing GPU off-screen.
-//   3. Always paired with a scrim by the caller; text never sits on raw shader output.
+// WebGL cannot paint before its JS loads, so the arrival is hidden rather than
+// avoided: the `mesh` gradient in globals.css is the same palette in the same
+// positions, painted server-side on the first frame, and the canvas cross-fades over
+// it for 1.4s. Nothing pops in because there is nothing new to see.
+//
+// The shader only animates over the first screen. A full-viewport canvas that keeps
+// repainting is the single thing this page cannot afford: it is composited under every
+// translucent panel on screen, and each repaint forces all of their backdrop-filters to
+// run again. Measured on an Intel UHD 630, any perpetually animating full-screen canvas
+// pinned the page at 25-40 fps, and freezing it returned it to 60 — resolution barely
+// mattered, so this is compositing cost, not shading cost. `speed={0}` is the
+// library's own supported stop: it cancels the render loop and leaves the last frame
+// on screen, so the ground below the fold is a still gradient rather than a missing
+// one. The library already stops for a hidden tab and for an off-screen element, but
+// this element is `fixed`, so it is never off-screen and that never fires.
 
-import dynamic from "next/dynamic"
+import { MeshGradient } from "@paper-design/shaders-react"
 import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
 
-const MeshGradient = dynamic(
-  () => import("@paper-design/shaders-react").then((m) => m.MeshGradient),
-  { ssr: false },
-)
+/**
+ * The library renders at `max(devicePixelRatio, minPixelRatio)` and defaults
+ * minPixelRatio to 2 — so on an ordinary 1x display each of these canvases was running
+ * a fragment shader over 2880x1800, twice, every frame. That measured 3 fps on an
+ * Intel UHD 630. These two props are the whole fix: a mesh gradient is soft blobs with
+ * no edge to alias, so 1x capped at 720p is visually identical and roughly six times
+ * less work. Raise them only with a frame-rate measurement in hand.
+ */
+const RENDER = { minPixelRatio: 1, maxPixelCount: 1280 * 720 }
 
-/** Brand hues, darkest first so the shader's base stays deep. */
-const COLORS = ["#0a1028", "#4f2bff", "#7a2bf5", "#be185d", "#0a1028"]
+/**
+ * Deep base, brand violet, magenta, teal — base first and last so the loop returns to
+ * it. Saturation and contrast are baked into these values rather than applied as a CSS
+ * filter on the wrapper: a filter over the canvas stack is a full-screen composite pass
+ * every frame, and the colours are static, so it may as well be free.
+ */
+const BASE = ["#03002a", "#5119ff", "#ff00da", "#009fd3", "#180048"]
+/** A faster, swirlier veil on top. Lighter hues so it reads as light, not paint. */
+const VEIL = ["#03002a", "#29f4ff", "#ff6acb", "#bfadff"]
 
-export function ShaderBackdrop({
-  className,
-  speed = 0.22,
-  swirl = 0.5,
-}: {
-  className?: string
-  speed?: number
-  swirl?: number
-}) {
-  const [enabled, setEnabled] = useState(false)
+export function ShaderBackdrop() {
+  const [live, setLive] = useState(false)
+  const [moving, setMoving] = useState(true)
 
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)")
-    if (query.matches) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    setLive(true)
 
-    const onVisibility = () => setEnabled(!document.hidden)
-    onVisibility()
-    document.addEventListener("visibilitychange", onVisibility)
-    return () => document.removeEventListener("visibilitychange", onVisibility)
+    // Re-rendering on every scroll event would cost more than it saves; React bails out
+    // when the value is unchanged, so this only re-renders on the two crossings.
+    const sync = () => setMoving(window.scrollY < window.innerHeight)
+    sync()
+    window.addEventListener("scroll", sync, { passive: true })
+    return () => window.removeEventListener("scroll", sync)
   }, [])
 
   return (
-    <div aria-hidden="true" className={cn("absolute inset-0 -z-20 overflow-hidden", className)}>
-      {/* The static gradient is always present: it is the reduced-motion and
-          pre-hydration state, and the shader simply paints over it. */}
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-50">
       <div className="mesh absolute inset-0" />
-      {enabled ? (
-        <MeshGradient
-          className="absolute inset-0 h-full w-full"
-          colors={COLORS}
-          speed={speed}
-          swirl={swirl}
-        />
+      {live ? (
+        <div className="shader-in absolute inset-0">
+          <MeshGradient
+            className="absolute inset-0 h-full w-full"
+            colors={BASE}
+            speed={moving ? 0.3 : 0}
+            {...RENDER}
+          />
+          <MeshGradient
+            className="absolute inset-0 h-full w-full opacity-45"
+            colors={VEIL}
+            speed={moving ? 0.21 : 0}
+            swirl={0.6}
+            {...RENDER}
+          />
+        </div>
       ) : null}
+      {/* The scrim every contrast number in globals.css assumes. */}
+      <div className="absolute inset-0 bg-[#07061a]/58" />
     </div>
   )
 }

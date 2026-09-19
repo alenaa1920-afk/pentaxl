@@ -1,32 +1,58 @@
 import { test, expect } from "@playwright/test"
 import { services } from "../content/services"
 
-test.describe("service tabs", () => {
-  test("keyboard driven: one tab stop, arrows move selection, panel follows", async ({ page }) => {
+test.describe("service fold", () => {
+  test("shut by default, and opens on hover, focus and click alike", async ({ page }) => {
     await page.goto("/")
-    const tabs = page.getByRole("tab")
-    await expect(tabs).toHaveCount(services.length)
+    const triggers = page.locator("[aria-controls^='fold-']")
+    await expect(triggers).toHaveCount(services.length)
 
-    // Roving tabindex: exactly one tab is in the tab order.
-    expect(await page.locator('[role="tab"][tabindex="0"]').count()).toBe(1)
+    // The point of the section: every card shut on arrival, so no service copy is on
+    // the landing page until asked for. The copy stays in the DOM — hiding it from a
+    // screen reader or a crawler is not what was wanted — so this asserts on what is
+    // actually rendered, not on what the markup contains.
+    for (const service of services) {
+      const i = services.indexOf(service)
+      await expect(triggers.nth(i)).toHaveAttribute("aria-expanded", "false")
+      await expect(page.locator(`#fold-${service.slug} > div > div`)).toHaveCSS("opacity", "0")
+    }
 
-    await tabs.first().focus()
-    await expect(tabs.first()).toHaveAttribute("aria-selected", "true")
+    // Hover opens exactly one.
+    await triggers.nth(1).hover()
+    await expect(triggers.nth(1)).toHaveAttribute("aria-expanded", "true")
+    await expect(triggers.and(page.getByRole("button", { expanded: true }))).toHaveCount(1)
+    await expect(page.locator("#fold-" + services[1].slug)).toContainText(services[1].summary)
 
-    await page.keyboard.press("ArrowRight")
-    await expect(tabs.nth(1)).toBeFocused()
-    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true")
-    await expect(tabs.first()).toHaveAttribute("aria-selected", "false")
+    // Keyboard reaches it without a pointer, and the link inside is only in the tab
+    // order once its card is open.
+    await triggers.nth(3).focus()
+    await expect(triggers.nth(3)).toHaveAttribute("aria-expanded", "true")
+    await expect(triggers.nth(1)).toHaveAttribute("aria-expanded", "false")
+    await page.keyboard.press("Tab")
+    await expect(page.locator("#fold-" + services[3].slug).getByRole("link")).toBeFocused()
 
-    // The visible panel is the selected tab's, and only one is visible.
-    const panels = page.locator('[role="tabpanel"]:not([hidden])')
-    await expect(panels).toHaveCount(1)
-    await expect(panels).toContainText(services[1].name)
+    // Clicking opens rather than toggles, and opening one shuts the last.
+    await triggers.first().click()
+    await expect(triggers.first()).toHaveAttribute("aria-expanded", "true")
+    await expect(triggers.nth(3)).toHaveAttribute("aria-expanded", "false")
+  })
 
-    await page.keyboard.press("End")
-    await expect(tabs.last()).toBeFocused()
-    await page.keyboard.press("Home")
-    await expect(tabs.first()).toBeFocused()
+  test("a touch tap opens a card", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile", "needs a touch screen")
+    // Regression: a tap fires focus before click. While the click toggled, those two
+    // cancelled out on the same tap and no card could be opened by touch at all —
+    // which page.click() does not reproduce, because it sends mouse input.
+    await page.goto("/")
+    const trigger = page.locator("[aria-controls^='fold-']").nth(1)
+    await trigger.scrollIntoViewIfNeeded()
+    await trigger.tap()
+    // Deliberately not an immediate assertion. A tap synthesises a mouseleave a few
+    // milliseconds after it opens the card, and a check that raced that event passed
+    // against a build where tapping visibly did nothing. The card has to still be open
+    // once everything the tap set off has settled.
+    await page.waitForTimeout(600)
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+    await expect(page.locator(`#fold-${services[1].slug} > div > div`)).toHaveCSS("opacity", "1")
   })
 })
 

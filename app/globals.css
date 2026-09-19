@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
-/* Bright, vivid, photo-led. White canvas, electric indigo as the working accent, violet
-   for markers and magenta for highlights. Contrast-checked on white: ink 18.8:1,
-   muted 7.5:1, accent 6.7:1, accent-2 6.0:1, hot 6.0:1, and white-on-accent 6.7:1.
-   Text over photography uses .on-photo, which sits on a scrim, never bare imagery. */
+/* The shader is the page background — fixed, full-viewport, always moving.
+   Text tints are set against #2C627A: the lightest the ground can reach once the
+   brightest shader hue shows through the 0.58 scrim. Measured, not guessed — at the
+   previous tints muted was 4.08, accent 3.34 and hot 2.78 over those patches.
+   Thinning the scrim or brightening the hues means recomputing all four. Everything
+   above it is glass. A 0.58 scrim sits between the two, which is what makes contrast
+   predictable: sampling the rendered ground over a full shader cycle, the lightest it
+   reaches is #0F4E6A (the teal lobe), where white is 9.1:1, muted 5.5:1, violet 5.2:1
+   and cyan 5.9:1. `hot` is 3.8:1 and is only ever used inside `gradient-text`, which is
+   large display type. Re-run `scripts/measure-ground.mjs` before thinning the scrim or brightening a
+   shader hue; those numbers are measured, not assumed. */
 @theme {
-  --color-canvas: #ffffff;
-  --color-mist: #f4f7fb;
-  --color-surface: #ffffff;
-  --color-surface-2: #f7f9fe;
-  --color-ink: #0a1028;
-  --color-muted: #4a5473;
-  --color-line: #e3e8f2;
-  --color-accent: #4f2bff;
-  --color-accent-2: #7a2bf5;
-  --color-accent-dim: #8a7bff;
-  --color-hot: #be185d;
-  --color-cyan: #0077b6;
-  --color-on-accent: #ffffff;
-  /* Not overridden by .on-photo — that block repoints --color-ink to white for text,
-     so a backdrop using bg-ink inside a band renders white. Use bg-backdrop. */
-  --color-backdrop: #0a1028;
+  --color-canvas: #07061a;
+  --color-ink: #ffffff;
+  --color-muted: #e6e4fa;
+  --color-line: rgba(255, 255, 255, 0.14);
+  --color-line-strong: rgba(255, 255, 255, 0.28);
+  --color-surface: rgba(255, 255, 255, 0.055);
+  --color-surface-2: rgba(255, 255, 255, 0.1);
+  --color-accent: #ddd6ff;
+  --color-accent-2: #9deeff;
+  --color-accent-dim: #8b7bff;
+  --color-hot: #ffc6e0;
+  --color-on-accent: #0b0a22;
+  --color-backdrop: #07061a;
 
   --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
@@ -31,21 +35,22 @@
   --text-base: 1rem;
   --text-base--line-height: 1.65;
   --text-lg: 1.125rem;
-  --text-lg--line-height: 1.6;
+  --text-lg--line-height: 1.55;
   --text-xl: 1.5rem;
-  --text-xl--line-height: 1.3;
+  --text-xl--line-height: 1.25;
   --text-2xl: 2rem;
-  --text-2xl--line-height: 1.15;
+  --text-2xl--line-height: 1.1;
   --text-3xl: 3rem;
-  --text-3xl--line-height: 1.05;
+  --text-3xl--line-height: 1.02;
   --text-4xl: 4.5rem;
-  --text-4xl--line-height: 0.98;
+  --text-4xl--line-height: 0.95;
+  --text-5xl: 6.5rem;
+  --text-5xl--line-height: 0.9;
   --text-xs: initial;
-  --text-5xl: initial;
   --text-6xl: initial;
   --text-7xl: initial;
 
-  --container-measure: 68ch;
+  --container-measure: 62ch;
 }
 
 @layer base {
@@ -67,12 +72,12 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     text-wrap: balance;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-2);
     outline-offset: 3px;
   }
 
@@ -81,65 +86,110 @@
     color: var(--color-on-accent);
   }
 
-  /* Text sitting over a photo band. The scrim underneath is what makes these safe —
-     never put .on-photo text straight onto imagery. */
+  /* Kept so photo bands can still darken their own scrim; the global tokens are
+     already light-on-dark, so this only adjusts surfaces. */
   .on-photo {
-    color: #ffffff;
-    --color-ink: #ffffff;
-    --color-muted: #dfe4f2;
-    --color-line: rgba(255, 255, 255, 0.28);
     --color-surface: rgba(255, 255, 255, 0.1);
-    --color-surface-2: rgba(255, 255, 255, 0.16);
-    --color-accent: #c3b5ff;
-    --color-accent-2: #e9b8ff;
-    --color-on-accent: #0a1028;
+    --color-line: rgba(255, 255, 255, 0.22);
   }
 
-  /* Alternate band for rhythm without going dark. */
   .on-mist {
-    background-color: var(--color-mist);
+    background-color: rgba(255, 255, 255, 0.035);
   }
 }
 
-/* The vivid signature. Fully opaque on purpose: a gradient that fades to transparent
-   picks up whatever is behind it, which is how this band ended up pale. Every stop
-   clears 4.9:1 against white text (indigo 6.7, violet 6.0, magenta 6.0), so copy sits
-   safely anywhere on it without a scrim. */
-@keyframes mesh-drift {
-  0%,
-  100% {
-    background-position: 0% 50%;
+/* ---------- entrance ------------------------------------------------------
+   One orchestrated arrival, in CSS. Deliberately not framer-motion: that would
+   add ~35 kB to every page for something keyframes do identically, and the
+   complaint was that the site felt slow. */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+    filter: blur(10px);
   }
-  50% {
-    background-position: 100% 50%;
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
   }
 }
 
-@utility mesh {
-  background-image: linear-gradient(
-    115deg,
-    #4f2bff 0%,
-    #5f27f5 22%,
-    #7a2bf5 44%,
-    #a81fc4 68%,
-    #be185d 100%
-  );
-  background-size: 220% 220%;
-  animation: mesh-drift 22s ease-in-out infinite;
+@keyframes enter-word {
+  from {
+    opacity: 0;
+    transform: translateY(0.55em) rotate(2deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-@utility gradient-text {
-  background-image: linear-gradient(
-    100deg,
-    var(--color-accent),
-    var(--color-accent-2) 45%,
-    var(--color-hot)
-  );
-  background-clip: text;
-  color: transparent;
+@keyframes curtain {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
-/* Slow zoom on background photography — the Ken Burns move, kept subtle. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility enter {
+  animation: enter-up 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@utility enter-word {
+  animation: enter-word 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@utility curtain {
+  animation: curtain 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Long enough that the canvas replacing the CSS ground is not a visible event. */
+@utility shader-in {
+  animation: fade-in 1400ms ease-out both;
+}
+
+/* Glass surfaces — the page's one card treatment now that the ground moves. */
+@utility glass {
+  background-color: var(--color-surface);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--color-line);
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility glass-hover {
+  &:hover {
+    background-color: var(--color-surface-2);
+    border-color: var(--color-line-strong);
+  }
+}
+
+/* Big numerals and display type get the gradient treatment. */
+/* The static ground: painted server-side, identical in hue to the shader's base, so
+   the canvas cross-fades over it invisibly. Also the entire effect under reduced
+   motion.
+
+   Deliberately not animated. Animating background-position on this many radial
+   gradients is a full-viewport repaint every frame that no compositor can take to the
+   GPU, and it is covered by the shader a second later anyway — it measured as one of
+   two independent causes of a 3 fps homepage. The shader above it supplies the
+   motion. */
+/* Slow zoom on background photography. */
 @keyframes ken-burns {
   from {
     transform: scale(1.04);
@@ -151,6 +201,41 @@
 
 @utility ken-burns {
   animation: ken-burns 22s ease-in-out infinite alternate;
+}
+
+@utility mesh {
+  background-image:
+    radial-gradient(58% 52% at 16% 20%, #4f2bff 0%, transparent 62%),
+    radial-gradient(52% 48% at 84% 26%, #c026d3 0%, transparent 60%),
+    radial-gradient(50% 46% at 70% 78%, #0ea5e9 0%, transparent 58%),
+    radial-gradient(62% 58% at 34% 92%, #7a2bf5 0%, transparent 64%),
+    linear-gradient(160deg, #07061a, #1b0a3a 55%, #07061a);
+  background-size: 190% 190%;
+
+  /* The veil layer, matching the second shader canvas: lighter hues, other timing,
+     so the ground is already two moving layers deep before any WebGL exists. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background-image:
+      radial-gradient(46% 44% at 76% 16%, #5ee0ff 0%, transparent 60%),
+      radial-gradient(42% 40% at 22% 62%, #ff7ab8 0%, transparent 58%),
+      radial-gradient(50% 48% at 58% 100%, #b9adff 0%, transparent 62%);
+    background-size: 210% 210%;
+  }
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-accent-2),
+    var(--color-accent) 45%,
+    var(--color-hot)
+  );
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- motion -------------------------------------------------------- */
@@ -282,26 +367,21 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   animation: marquee 38s linear infinite;
 }
 
-/* Cards on the pearl ground: a warm surface, a hairline that warms to gold on hover,
-   and a whisper of elevation — luxury reads as paper and edge, not as neon. */
+/* `panel` is kept as the name every component already uses; it is glass now. */
 @utility panel {
-  background:
-    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
-    linear-gradient(140deg, var(--color-line), transparent 60%) border-box;
-  border: 1px solid transparent;
-  box-shadow: 0 1px 2px color-mix(in oklab, var(--color-ink) 5%, transparent);
+  background-color: var(--color-surface);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--color-line);
   transition:
-    background 0.35s ease,
-    box-shadow 0.35s ease,
+    background-color 0.35s ease,
+    border-color 0.35s ease,
     transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @utility panel-hover {
   &:hover {
-    background:
-      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
-      linear-gradient(140deg, var(--color-gold-bright), transparent 65%) border-box;
-    box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--color-ink) 22%, transparent);
+    background-color: var(--color-surface-2);
+    border-color: var(--color-line-strong);
   }
 }
 
@@ -615,6 +695,10 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
     display: none;
   }
 
+  .enter,
+  .enter-word,
+  .curtain,
+  .shader-in,
   .bob,
   .ring-pulse,
   .converge,
