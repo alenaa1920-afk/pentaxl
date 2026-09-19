@@ -125,10 +125,14 @@ grep -rn "PLACEHOLDER" content/ app/    # must return nothing
    do differently".
 4. **Add real names** to `/about`.
 5. **Have privacy and terms reviewed.** They describe what the site does today.
-6. **Confirm the stack list** in `content/stack.ts` is what Pentaxl genuinely works in,
+6. **Add an HD background video** if you want one — Pexels blocks direct download
+   without an API key. Either set `PEXELS_API_KEY` and ask for a clip to be fetched, or
+   download an MP4 (1920×1080, under ~8 MB, plus a poster frame) into `public/media`.
+   The band component already supports it.
+7. **Confirm the stack list** in `content/stack.ts` is what Pentaxl genuinely works in,
    and add specific model or vendor names if you want them public — the AI cluster is
    deliberately vendor-neutral right now.
-7. **Swap the rate limiter** in `app/contact/actions.ts` for `@upstash/ratelimit` if the
+8. **Swap the rate limiter** in `app/contact/actions.ts` for `@upstash/ratelimit` if the
    form gets real traffic; it is in-memory, so it is per-instance.
 
 ## Deliberate deviations from the brief

@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { Container, CtaBand, PageHeader, Section, SectionHeading, reveal } from "@/components/ui"
 import { Spotlight } from "@/components/spotlight"
 import { MediaSlot } from "@/components/media-slot"
 import { PhotoBand } from "@/components/photo-band"
+import { media } from "@/content/media"
 import { StageArt } from "@/components/stage-art"
 import { RangeChart } from "@/components/range-chart"
 import { engagementWeeks, processStages, scopeChangePolicy } from "@/content/process"
@@ -125,17 +127,21 @@ export default function ProcessPage() {
 
           {/* PLACEHOLDER: two photographs of the team actually working — a whiteboard
               session and a review — replace these frames. */}
-          <div className="grid min-w-0 gap-4">
-            <MediaSlot
-              title="Scoping session"
-              spec="JPG · 1600×1000 · candid, not stock"
-              ratio="16 / 10"
-            />
-            <MediaSlot
-              title="Milestone review"
-              spec="JPG · 1600×1000 · candid, not stock"
-              ratio="16 / 10"
-            />
+          <div className="min-w-0">
+            <figure className="border-line m-0 overflow-hidden border">
+              <Image
+                src={media.infrastructure.src}
+                alt={media.infrastructure.alt}
+                width={2400}
+                height={1350}
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="h-auto w-full"
+              />
+              <figcaption className="text-muted border-line border-t px-4 py-3 font-mono text-sm">
+                Stage five hardens this: rebuildable environments, a tested rollback and alerts that
+                mean something. {media.infrastructure.credit}
+              </figcaption>
+            </figure>
           </div>
         </div>
       </Section>
@@ -148,10 +154,12 @@ export default function ProcessPage() {
       </Section>
 
       <PhotoBand
+        src={media.scoping.src}
+        alt={media.scoping.alt}
+        credit={media.scoping.credit}
         eyebrow="/ stage one"
         title="It starts with a conversation, not a proposal"
         body="We listen to the problem before proposing anything. What the product is for, who it serves, and which constraint is non-negotiable."
-        spec="JPG · 2400×1400 · a scoping session"
         height="short"
       />
 

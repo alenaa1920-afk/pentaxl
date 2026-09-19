@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Container } from "./ui"
+import { ShaderBackdrop } from "./shader-backdrop"
 import { cn } from "@/lib/utils"
 
 /**
@@ -23,6 +24,7 @@ export function PhotoBand({
   title,
   body,
   spec,
+  credit,
   height = "tall",
   children,
 }: {
@@ -34,6 +36,8 @@ export function PhotoBand({
   body?: string
   /** Shown only in the fallback state, so you know what belongs here. */
   spec?: string
+  /** Small source line, bottom-right. */
+  credit?: string
   height?: "tall" | "short"
   children?: React.ReactNode
 }) {
@@ -62,13 +66,11 @@ export function PhotoBand({
         </>
       ) : (
         <>
-          {/* Fallback: the opaque vivid gradient, with no scrim over it. The photo scrim
-              would grey the colour out, and it is unnecessary — every stop clears
-              4.9:1 against white text. */}
-          <div aria-hidden="true" className="mesh absolute inset-0 -z-20" />
+          {/* No photo: the signature shader, with the same scrim treatment. */}
+          <ShaderBackdrop />
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-black/25 to-transparent"
+            className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-black/30 to-transparent"
           />
         </>
       )}
@@ -86,6 +88,12 @@ export function PhotoBand({
           ) : null}
         </div>
       </Container>
+
+      {credit ? (
+        <p className="text-muted absolute right-4 bottom-3 font-mono text-sm opacity-70">
+          {credit}
+        </p>
+      ) : null}
     </section>
   )
 }

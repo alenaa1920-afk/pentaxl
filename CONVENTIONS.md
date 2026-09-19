@@ -167,6 +167,27 @@ zero Axe critical or serious issues · 98 e2e tests must stay green
 Axe runs with `reducedMotion: "reduce"` so it measures settled colours; otherwise it
 samples text mid-fade and reports a blended contrast value.
 
+## The shader backdrop
+
+`ShaderBackdrop` (`components/shader-backdrop.tsx`) is the site's signature: the Paper
+Shaders mesh gradient in brand hues, behind the home hero and behind any `PhotoBand`
+that has no photo.
+
+Three rules keep it safe, and all three are load-bearing:
+
+- **Loaded with `next/dynamic`, `ssr: false`.** The WebGL bundle is a separate chunk
+  fetched after paint, which is why Home is still 132 kB first-load rather than ~180 kB.
+  Do not convert it to a static import.
+- **Skipped under `prefers-reduced-motion`, and when the tab is hidden.** The static
+  `.mesh` gradient is always rendered underneath as the fallback, so there is never a
+  blank frame. A test asserts zero canvases under reduced motion.
+- **Always paired with a scrim by the caller.** Text never sits on raw shader output.
+
+The header takes the hero's dark base (`bg-backdrop` + `.on-photo`) while at the top of
+Home, then returns to the light surface on scroll. It is in normal flow, _not_ overlaying
+the hero — making it transparent instead exposes the white body behind light text, which
+axe measured at 1.27:1.
+
 ## Photo bands
 
 `PhotoBand` is the full-width imagery band. Pass `src` (a file in `public/media`) and it
@@ -176,6 +197,11 @@ falls back to the animated vivid gradient and names the asset it is waiting for.
 The scrim over real photography is not decoration — text over bare imagery fails contrast
 the moment the picture changes. Everything inside uses `.on-photo`, which is only safe
 above that scrim.
+
+Photography is Pexels stock, registered in `content/media.ts` with alt text and credit,
+files in `public/media`, licence recorded in `public/media/CREDITS.md`. Swapping an image
+is one path change. Band photos carry a slow Ken Burns zoom, which means Playwright can
+never treat them as "stable" — assert on them with `page.evaluate`, not locator actions.
 
 ## Routes
 

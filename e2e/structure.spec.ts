@@ -3,7 +3,8 @@ import { ROUTES } from "./routes"
 import { services } from "../content/services"
 
 /** Widths from the brief's quality floor. */
-const WIDTHS = [375, 768, 1280, 1920]
+// 1024 and 1440 added per the UX checklist's breakpoint set.
+const WIDTHS = [375, 768, 1024, 1280, 1440, 1920]
 
 for (const route of ROUTES) {
   test(`${route} has the structural basics`, async ({ page }) => {
@@ -95,6 +96,55 @@ test("scroll reveal shows content as it enters the viewport", async ({ page }) =
   await target.scrollIntoViewIfNeeded()
   await expect(target).toHaveAttribute("data-shown", "")
   await expect(target).toBeVisible()
+})
+
+test("the shader backdrop loads, is decorative, and yields to reduced motion", async ({
+  page,
+  browser,
+}) => {
+  await page.goto("/")
+  // The static gradient is the pre-hydration and reduced-motion state; the shader
+  // paints over it in a canvas once its chunk arrives.
+  const backdrop = page.locator("section .mesh").first()
+  await expect(backdrop).toBeAttached()
+  await expect(page.locator("canvas").first()).toBeAttached({ timeout: 15000 })
+
+  // Decorative: the whole backdrop is hidden from assistive tech.
+  await expect(page.locator('[aria-hidden="true"] > .mesh').first()).toBeAttached()
+
+  const reduced = await browser.newContext({ reducedMotion: "reduce" })
+  const rp = await reduced.newPage()
+  await rp.goto("/")
+  await rp.waitForTimeout(2500)
+  expect(await rp.locator("canvas").count(), "no shader canvas under reduced motion").toBe(0)
+  await expect(rp.locator("h1")).toBeVisible()
+  await reduced.close()
+})
+
+test("band photography is real, sized, lazy and described", async ({ page }) => {
+  await page.goto("/")
+  // Asserted via evaluate rather than a locator action: the Ken Burns zoom never
+  // settles, so Playwright's stability wait can never succeed on these images. They
+  // are decorative backgrounds, not targets, so perpetual motion is fine here.
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 3))
+  await page.waitForTimeout(1200)
+
+  const shots = await page.evaluate(() =>
+    [...document.querySelectorAll("section img")].map((el) => {
+      const img = el as HTMLImageElement
+      const r = img.getBoundingClientRect()
+      return { alt: img.alt, width: Math.round(r.width), loading: img.loading, src: img.src }
+    }),
+  )
+
+  expect(shots.length).toBeGreaterThan(0)
+  for (const shot of shots) {
+    expect(shot.alt, "every band photo needs a real alt").toBeTruthy()
+    expect(shot.width, "photo should fill its band").toBeGreaterThan(300)
+    expect(shot.loading, "band photos are below the fold").toBe("lazy")
+    // Served through next/image, which negotiates AVIF/WebP per request.
+    expect(shot.src).toContain("/_next/image")
+  }
 })
 
 test("the hero pentagon redraws on every load", async ({ page }) => {

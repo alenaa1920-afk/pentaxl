@@ -9,6 +9,8 @@ import { CountUp } from "@/components/count-up"
 import { Faq } from "@/components/faq"
 import { RangeChart } from "@/components/range-chart"
 import { PhotoBand } from "@/components/photo-band"
+import { ShaderBackdrop } from "@/components/shader-backdrop"
+import { media } from "@/content/media"
 import { GuaranteeIcon, IndustryIcon } from "@/components/icons"
 import { services } from "@/content/services"
 import { posts } from "@/content/blog"
@@ -34,10 +36,13 @@ export default function HomePage() {
   // Home routes people; it does not try to say everything.
   return (
     <>
-      <section className="relative overflow-hidden">
+      {/* Signature hero: the shader backdrop, scrimmed, with everything inside it on
+          the .on-photo token set so contrast holds over moving colour. */}
+      <section className="on-photo relative isolate overflow-hidden">
+        <ShaderBackdrop />
         <div
           aria-hidden="true"
-          className="mesh pointer-events-none absolute -top-72 -right-52 size-[46rem] rounded-full opacity-25 blur-[130px]"
+          className="absolute inset-0 -z-10 bg-gradient-to-br from-black/70 via-black/45 to-black/70"
         />
         <Container>
           <div className="grid items-center gap-14 py-12 md:py-20 lg:grid-cols-2 lg:gap-8">
@@ -92,10 +97,12 @@ export default function HomePage() {
       </Block>
 
       <PhotoBand
+        src={media.team.src}
+        alt={media.team.alt}
+        credit={media.team.credit}
         eyebrow="/ the team"
         title="Ten engineers, senior enough to say no"
         body="Small on purpose. You get the people who will actually build the thing, in the first call and every one after it."
-        spec="JPG · 2400×1400 · the team working, candid"
       />
 
       <Block
@@ -276,10 +283,12 @@ export default function HomePage() {
       </Block>
 
       <PhotoBand
+        src={media.servers.src}
+        alt={media.servers.alt}
+        credit={media.servers.credit}
         eyebrow="/ in production"
         title="Software that survives its second year"
         body="Environments you can rebuild, deploys that are boring, and enough observability that a production problem is a question you can answer."
-        spec="JPG · 2400×1400 · screens, a desk, real work"
         height="short"
       />
 

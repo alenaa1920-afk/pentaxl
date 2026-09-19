@@ -5,7 +5,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Drawer } from "vaul"
 import { Menu, X } from "lucide-react"
 import { primaryNav, site } from "@/content/site"
@@ -56,9 +56,31 @@ const isActive = (pathname: string, href: string) =>
 
 export function SiteHeader() {
   const pathname = usePathname()
+  const [scrolled, setScrolled] = useState(false)
+
+  // The home hero is a dark shader band, and a white header strip above it reads as two
+  // stacked sites. The header is in normal flow (not overlaying the hero), so going
+  // *transparent* just exposes the white body behind light text — axe measured 1.27:1.
+  // Instead it takes the hero's own dark base while at the top of that page, then
+  // returns to the light surface once you scroll past.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  const overHero = pathname === "/" && !scrolled
 
   return (
-    <header className="border-line bg-canvas/80 sticky top-0 z-40 border-b backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b transition-colors duration-300",
+        overHero
+          ? "on-photo bg-backdrop border-transparent"
+          : "border-line bg-canvas/80 backdrop-blur-md",
+      )}
+    >
       <Container>
         <div className="flex h-16 items-center justify-between gap-6">
           <Link href="/" className="font-display text-lg" aria-label={`${site.name} — home`}>
