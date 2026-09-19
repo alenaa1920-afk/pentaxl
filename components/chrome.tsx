@@ -43,6 +43,14 @@ export function MotionRoot() {
   return null
 }
 
+/** Hides the site header and footer on /preview/* so a full-page component can be
+ *  evaluated on its own. Children stay server-rendered; this only decides whether. */
+export function ChromeGate({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  if (pathname.startsWith("/preview")) return null
+  return <>{children}</>
+}
+
 const isActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google"
 import "./globals.css"
 import { site } from "@/content/site"
-import { MotionRoot, SiteHeader } from "@/components/chrome"
+import { ChromeGate, MotionRoot, SiteHeader } from "@/components/chrome"
 import { ContactDock } from "@/components/contact-dock"
 import { JsonLd, SiteFooter } from "@/components/ui"
 
@@ -46,10 +46,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <MotionRoot />
-        <SiteHeader />
+        <ChromeGate>
+          <SiteHeader />
+        </ChromeGate>
         <main id="main">{children}</main>
-        <SiteFooter />
-        <ContactDock />
+        <ChromeGate>
+          <SiteFooter />
+          <ContactDock />
+        </ChromeGate>
         {/* Contact point omitted while the mailbox is a placeholder — publishing an
             address that bounces is worse than publishing none. */}
         <JsonLd
