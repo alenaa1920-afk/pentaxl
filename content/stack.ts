@@ -1,7 +1,7 @@
 /**
  * Six clusters. Every entry says what it is *used for* — that is the point of the page.
  *
- * PLACEHOLDER: a reasonable default, not a confirmed inventory. Prune anything Pentaxl
+ * PLACEHOLDER: a reasonable default, not a confirmed inventory. Prune anything PentaXL
  * does not genuinely work in; an overstated stack fails in the first technical call.
  * Vendor and model names are left out on purpose — add them once you want to commit to
  * specific providers publicly.

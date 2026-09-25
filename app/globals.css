@@ -267,13 +267,20 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
-/* A short dash chasing along each edge — the figure reads as a live system. */
-@keyframes dash-pulse {
-  from {
-    stroke-dashoffset: var(--len);
-  }
+/* The dashes run along each edge — the figure reads as a live system rather than a
+   diagram. Exactly one pattern period per cycle, so the loop is seamless: the dash
+   leaving the far end is the one arriving at the near one. */
+@keyframes dash-travel {
   to {
-    stroke-dashoffset: calc(var(--len) * -1);
+    stroke-dashoffset: -18;
+  }
+}
+
+/* Once an edge has traced itself the solid stroke steps back to a faint track and
+   leaves the dashes to carry the line. */
+@keyframes edge-retire {
+  to {
+    opacity: 0.2;
   }
 }
 
@@ -316,15 +323,20 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
 }
 
 /* Linear so it reads as a line being drawn at constant speed. hero.tsx overrides the
-   duration and delay per edge (SEG_MS) so the segments trace one after another. */
+   duration and delay of both animations per edge (SEG_MS) so the segments trace one
+   after another, then retire together once the whole figure is drawn. */
 @utility edge-draw {
   stroke-dasharray: var(--len);
-  animation: draw-edge 520ms linear both;
+  animation:
+    draw-edge 520ms linear both,
+    edge-retire 500ms ease-out both;
 }
 
+/* 7 + 11 = 18, the period dash-travel steps through. */
 @utility edge-pulse {
-  stroke-dasharray: 14 calc(var(--len) - 14);
-  animation: dash-pulse 3.2s linear infinite;
+  stroke-dasharray: 7 11;
+  stroke-dashoffset: 0;
+  animation: dash-travel 1.1s linear infinite;
 }
 
 @keyframes node-in {

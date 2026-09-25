@@ -323,7 +323,7 @@ export function SiteFooter() {
       <Container>
         <div className="grid gap-12 py-16 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="max-w-measure">
-            <p className="font-display text-lg">{site.name}</p>
+            <p className="font-display text-xl tracking-tight">{site.name}</p>
             <p className="text-muted mt-3 text-base">{site.tagline}</p>
             <div className="mt-6 flex flex-col gap-1 font-mono text-sm">
               <a href={`mailto:${site.email}`} className="hover:text-accent">

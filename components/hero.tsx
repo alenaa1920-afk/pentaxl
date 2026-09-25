@@ -41,6 +41,10 @@ const edges = serviceEdges.flatMap(([from, to]) => {
   return [{ from, to, a, b, len: Math.round(Math.hypot(b.x - a.x, b.y - a.y)) }]
 })
 
+/** The moment the last edge finishes tracing: when the solid strokes retire and the
+ *  dashes take over. */
+const DRAWN_MS = 900 + edges.length * SEG_MS
+
 const labelPos = (x: number, y: number) =>
   y < CY - 40
     ? "bottom-full left-1/2 -translate-x-1/2 pb-3"
@@ -102,28 +106,30 @@ export function HeroFigure() {
                 key={`${edge.from}-${edge.to}`}
                 style={{ "--len": edge.len } as React.CSSProperties}
               >
+                {/* Two delays and two durations, one per animation in `edge-draw`:
+                    this edge traces itself in turn, then every edge retires to a faint
+                    track at the same moment, once the last one has finished. */}
                 <line
                   {...shared}
                   stroke={dim ? "var(--color-line)" : "var(--color-accent)"}
                   strokeWidth={dim ? 1 : 1.5}
                   className={cn("edge-draw transition-[stroke] duration-300")}
                   style={{
-                    animationDuration: `${SEG_MS}ms`,
-                    animationDelay: `${900 + i * SEG_MS}ms`,
+                    animationDuration: `${SEG_MS}ms, 500ms`,
+                    animationDelay: `${900 + i * SEG_MS}ms, ${DRAWN_MS}ms`,
                   }}
                 />
                 {!dim ? (
-                  <g
-                    className="pulse-in"
-                    style={{ animationDelay: `${900 + edges.length * SEG_MS + 400}ms` }}
-                  >
+                  <g className="pulse-in" style={{ animationDelay: `${DRAWN_MS + 100}ms` }}>
+                    {/* The dashes the edge becomes. Staggered so the five edges are not
+                        in lockstep, which reads as circuitry rather than a metronome. */}
                     <line
                       {...shared}
                       stroke="var(--color-accent-2)"
                       strokeWidth="2"
                       strokeLinecap="round"
                       className="edge-pulse"
-                      style={{ animationDelay: `${i * 300}ms` }}
+                      style={{ animationDelay: `${i * 180}ms` }}
                     />
                   </g>
                 ) : null}

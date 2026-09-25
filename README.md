@@ -1,4 +1,4 @@
-# Pentaxl website
+/# Pentaxl website
 
 Marketing site for Pentaxl — a ten-person technical consulting startup doing software
 development, AI and ML integration, cloud and DevOps, security and compliance, and data
@@ -23,7 +23,7 @@ pnpm dev                               # http://localhost:3000
 | ---------------- | ----------------------------------------------------------- |
 | `pnpm dev`       | Dev server with Turbopack                                   |
 | `pnpm build`     | Production build; prints per-route first-load JS            |
-| `pnpm start`     | Serve the production build                                  |
+| `pnpm start`     | Serve the production build                                
 | `pnpm typecheck` | `tsc --noEmit`                                              |
 | `pnpm lint`      | ESLint                                                      |
 | `pnpm format`    | Prettier, including Tailwind class ordering                 |

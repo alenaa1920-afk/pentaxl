@@ -148,8 +148,10 @@ test("band photography is real, sized, lazy and described", async ({ page }) => 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 3))
   await page.waitForTimeout(1200)
 
+  // Scoped to the photo bands themselves. Not every image in a section is one: the
+  // hero's ground is deliberately decorative, and is covered by its own test below.
   const shots = await page.evaluate(() =>
-    [...document.querySelectorAll("section img")].map((el) => {
+    [...document.querySelectorAll("section.on-photo img")].map((el) => {
       const img = el as HTMLImageElement
       const r = img.getBoundingClientRect()
       return { alt: img.alt, width: Math.round(r.width), loading: img.loading, src: img.src }
@@ -164,6 +166,21 @@ test("band photography is real, sized, lazy and described", async ({ page }) => 
     // Served through next/image, which negotiates AVIF/WebP per request.
     expect(shot.src).toContain("/_next/image")
   }
+})
+
+test("the hero's photographic ground is decorative, not content", async ({ page }) => {
+  // It sits behind the pentagon, which is what actually carries the meaning — and the
+  // five nodes are already real links with their own names. Describing the photograph
+  // would make a screen reader read scenery before it reaches any of that, so it is
+  // marked decorative on purpose. An empty alt here is correct, not a missing one.
+  await page.goto("/")
+  const ground = page.locator("section img[aria-hidden='true']").first()
+  await expect(ground).toBeAttached()
+  await expect(ground).toHaveAttribute("alt", "")
+  expect(await ground.getAttribute("src")).toContain("/_next/image")
+
+  // Above the fold, so it must not be lazy — that would leave the hero empty on arrival.
+  expect(await ground.getAttribute("loading")).not.toBe("lazy")
 })
 
 test("the hero pentagon redraws on every load", async ({ browser }) => {

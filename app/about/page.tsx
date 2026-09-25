@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Action, CtaBand, PageHeader, Section, SectionHeading, reveal } from "@/components/ui"
 import { site } from "@/content/site"
+import { PhotoBand } from "@/components/photo-band"
+import { media } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
 
 export const metadata: Metadata = pageMetadata({
@@ -31,6 +33,13 @@ export default function AboutPage() {
         title={`Why ${site.name} exists`}
         lead="Too much software is delivered as a demo and handed over as a liability — no environments, no tests, no runbook, and nobody who can explain a decision six months later. We build the other kind."
         meta={`${site.team}, ${site.location}`}
+      />
+
+      <PhotoBand
+        photo={media.planning}
+        eyebrow="/ THE WORK"
+        title="Scope argued in the open, before anyone opens an editor"
+        height="short"
       />
 
       <Section labelledBy="how" rule={false}>
@@ -71,6 +80,13 @@ export default function AboutPage() {
           ))}
         </dl>
       </Section>
+
+      <PhotoBand
+        photo={media.engineer}
+        eyebrow="/ THE PEOPLE"
+        title="Ten engineers, and you talk to the ones building it"
+        height="short"
+      />
 
       <Section labelledBy="team">
         <SectionHeading id="team" index="/ team" title="Who you would be working with" />

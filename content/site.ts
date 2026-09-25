@@ -5,12 +5,12 @@
  */
 
 export const site = {
-  name: "Pentaxl",
-  legalName: "Pentaxl",
+  name: "PentaXL",
+  legalName: "PentaXL",
   // PLACEHOLDER: tagline — owner to confirm.
   tagline: "Software, AI and cloud, from idea to production.",
   description:
-    "Pentaxl is a technical consulting startup. Ten engineers building software, " +
+    "PentaXL is a technical consulting startup. Ten engineers building software, " +
     "integrating AI and ML into products that already exist, and running the cloud " +
     "infrastructure underneath — cloud native, on-premise or hybrid.",
   domain: "pentaxl.com",
@@ -69,7 +69,7 @@ export const RESPONSE_PROMISE = "one working day"
 
 /**
  * PLACEHOLDER: currency and bands are a pricing signal — confirm they match what
- * Pentaxl actually takes on. Wrong bands filter out good leads.
+ * PentaXL actually takes on. Wrong bands filter out good leads.
  */
 export const budgetOptions = [
   { value: "under-10k", label: "Under $10,000" },
@@ -212,7 +212,7 @@ export const legalPages = {
       },
       {
         heading: "Why",
-        body: "To reply, and if it becomes work, to keep a record of what was discussed. We do not sell it, share it outside Pentaxl, or market to you with it.",
+        body: "To reply, and if it becomes work, to keep a record of what was discussed. We do not sell it, share it outside PentaXL, or market to you with it.",
       },
       {
         heading: "Cookies and analytics",
@@ -234,7 +234,7 @@ export const legalPages = {
     sections: [
       {
         heading: "This site",
-        body: "The content here describes what Pentaxl does, for information. Timelines, ranges and technology choices on these pages are typical rather than promised — what applies to your project is what we write down for your project.",
+        body: "The content here describes what PentaXL does, for information. Timelines, ranges and technology choices on these pages are typical rather than promised — what applies to your project is what we write down for your project.",
       },
       {
         heading: "Nothing here is a quote",
@@ -242,7 +242,7 @@ export const legalPages = {
       },
       {
         heading: "Content and ownership",
-        body: "The text, diagrams and code of this site belong to Pentaxl. Product names belonging to other companies are theirs; we name them to say what we work with, not to imply endorsement.",
+        body: "The text, diagrams and code of this site belong to PentaXL. Product names belonging to other companies are theirs; we name them to say what we work with, not to imply endorsement.",
       },
       {
         heading: "Questions",

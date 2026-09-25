@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Container, PageHeader } from "@/components/ui"
 import { site, whatsAppUrl, RESPONSE_PROMISE } from "@/content/site"
+import { PhotoBand } from "@/components/photo-band"
+import { media } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
 import { ContactForm } from "./form"
 
@@ -26,7 +28,14 @@ export default function ContactPage() {
         lead="Describe the problem in a paragraph. We will tell you whether we are the right firm for it, what we would need to know to scope it, and roughly what it would take."
       />
 
-      <div className="pb-24">
+      <PhotoBand
+        photo={media.office}
+        eyebrow="/ RESPONSE"
+        title="A real engineer reads it, usually within a working day"
+        height="short"
+      />
+
+      <div className="py-24">
         <Container>
           <div className="grid gap-14 lg:grid-cols-[1.3fr_1fr]">
             <ContactForm />

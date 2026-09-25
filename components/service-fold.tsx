@@ -15,9 +15,11 @@
 // unfold downwards instead, using the 0fr/1fr grid-rows trick so the height animates
 // without measuring anything.
 
+import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { services } from "@/content/services"
+import { serviceMedia } from "@/content/media"
 import { ServiceIcon } from "./service-icon"
 import { cn } from "@/lib/utils"
 
@@ -37,22 +39,57 @@ export function ServiceFold() {
       // an unguarded onMouseLeave shut the card the tap had just opened — fast enough
       // that it looked like the tap had done nothing at all.
       onPointerLeave={(e) => e.pointerType === "mouse" && setOpen(null)}
-      // items-start so a shut card is only as tall as its icon and word. The row would
-      // otherwise reserve the open card's height in every tile, which reads as five
-      // empty boxes. min-h holds the section's own height steady instead, so opening a
-      // card never shoves the rest of the page down.
-      className="grid items-start gap-3 transition-[grid-template-columns] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:min-h-[21rem] md:grid-cols-[var(--cols)]"
+      // Equal-height tiles, not content-height ones. Sized to the open card so the row
+      // is the same shape before and after a fold, and so five shut cards read as one
+      // band rather than as five small boxes adrift in a tall empty region.
+      className="grid gap-3 transition-[grid-template-columns] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:h-[23rem] md:grid-cols-[var(--cols)]"
     >
       {services.map((service, i) => {
         const isOpen = i === open
         return (
           <li
             key={service.slug}
+            // Hover anywhere on the tile, not just on the icon and word. The button
+            // keeps click and focus, because that is what a screen reader and a
+            // keyboard need to land on; a pointer should not have to find it.
+            onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(i)}
             className={cn(
-              "panel flex flex-col overflow-hidden transition-colors duration-300",
-              isOpen && "border-line-strong bg-surface-2",
+              // Content centred as a block: the icon and word sit in the middle of a
+              // shut tile, and the detail unfolds around them rather than pushing them
+              // off an edge.
+              "panel relative flex flex-col justify-center overflow-hidden [backdrop-filter:none] transition-colors duration-300",
+              isOpen && "border-line-strong",
             )}
           >
+            {/* The discipline's own photograph, deliberately well under the type: it is
+                texture that says what the card is about, not a picture to look at. It
+                lifts a little as the card opens, which is what makes the fold feel like
+                the tile itself expanding rather than a text block appearing. */}
+            <Image
+              src={serviceMedia[service.slug].src}
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="(min-width: 768px) 30vw, 100vw"
+              className={cn(
+                "-z-20 object-cover transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                isOpen ? "scale-105 opacity-65" : "scale-100 opacity-40",
+              )}
+            />
+            {/* The scrim deepens as the card opens. A shut tile carries only its icon
+                and one word in white, so it can afford a light scrim and a clearly
+                visible picture; an open one puts muted body text over the same
+                photograph, and at the lighter setting that measured 4.1:1, under AA. */}
+            <div
+              aria-hidden="true"
+              className={cn(
+                "absolute inset-0 -z-10 bg-gradient-to-t transition-colors duration-500",
+                isOpen
+                  ? "from-[#07061afa] via-[#07061ae8] to-[#07061ac4]"
+                  : "from-[#07061ae6] via-[#07061abf] to-[#07061a8c]",
+              )}
+            />
+
             <button
               type="button"
               aria-expanded={isOpen}
@@ -63,8 +100,6 @@ export function ServiceFold() {
               // the row, or another card opening; there is nothing a card can be left
               // covering, so there is nothing to dismiss.
               onClick={() => setOpen(i)}
-              // Guarded by pointer type so a touch tap does not also run this path.
-              onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(i)}
               onFocus={() => setOpen(i)}
               className="flex min-h-11 shrink-0 items-center gap-3 p-5 text-left md:flex-col md:gap-4 md:text-center"
             >

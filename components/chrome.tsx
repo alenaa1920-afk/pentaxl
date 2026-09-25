@@ -109,7 +109,11 @@ export function SiteHeader() {
     >
       <Container>
         <div className="enter flex h-16 items-center justify-between gap-6">
-          <Link href="/" className="font-display text-lg" aria-label={`${site.name} — home`}>
+          <Link
+            href="/"
+            className="font-display text-xl tracking-tight md:text-2xl"
+            aria-label={`${site.name} — home`}
+          >
             {site.name}
             <span className="text-accent">.</span>
           </Link>

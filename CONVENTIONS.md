@@ -1,4 +1,4 @@
-# Pentaxl website — engineering conventions
+# PentaXL website — engineering conventions
 
 Technical consulting startup, ten engineers: software development, AI and ML integration,
 cloud and DevOps, security and compliance, data and integrations.

@@ -4,6 +4,8 @@ import { ClusterGrid, CtaBand, JsonLd, PageHeader, Part, PrevNext, Prose } from 
 import { neighbours, serviceBySlug, services } from "@/content/services"
 import { clustersByIds } from "@/content/stack"
 import { site } from "@/content/site"
+import { PhotoBand } from "@/components/photo-band"
+import { serviceMedia } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
 
 export const generateStaticParams = () => services.map((s) => ({ slug: s.slug }))
@@ -49,6 +51,14 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           { href: "/services", label: "Services" },
           { href: `/services/${service.slug}`, label: service.name },
         ]}
+      />
+
+      <PhotoBand
+        photo={serviceMedia[service.slug]}
+        eyebrow={`/ ${service.nodeLabel.toUpperCase()}`}
+        title={service.summary}
+        height="short"
+        priority
       />
 
       <Part index={1} id="what" title="What this is">

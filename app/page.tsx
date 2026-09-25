@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { Action, Block, Container, CtaBand, Ticker, reveal } from "@/components/ui"
 import { HeroFigure, HeroHeadline } from "@/components/hero"
@@ -34,62 +35,90 @@ const facts = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero: centred, arriving in sequence over the live shader ground. */}
-      <section className="relative flex min-h-[86vh] items-center py-16 md:py-20">
+      {/* Hero: arriving in sequence over a photographic ground, which in turn sits over
+          the live shader. The photograph is full-bleed and heavily scrimmed on purpose —
+          it is atmosphere for the headline and the pentagon, not a subject of its own,
+          and a tighter, busier crop behind the figure read as clutter. The scrim is
+          neutral black, which leaves the photograph its own cool grey rather than
+          pulling it toward the site violet — asked for deliberately. Lightest to the
+          right, where only the pentagon sits. */}
+      <section className="relative flex min-h-[86vh] items-center overflow-hidden py-16 md:py-20">
+        <Image
+          src={media.heroGround.src}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="100vw"
+          priority
+          className="-z-20 object-cover"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07061aef] via-[#07061ad9] to-[#07061ab8]"
+        />
+
         <Container>
-          <div className="mx-auto max-w-4xl text-center">
-            <p
-              className="text-accent-2 enter mb-7 font-mono text-sm tracking-[0.25em]"
-              style={{ animationDelay: "60ms" }}
-            >
-              TECHNICAL CONSULTING
-            </p>
+          {/* Two columns from lg: the claim on the left, the pentagon beside it rather
+              than a screen below it. Below lg it stacks and the figure follows. */}
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+            <div className="text-left">
+              <p
+                className="text-accent-2 enter mb-6 font-mono text-sm tracking-[0.25em]"
+                style={{ animationDelay: "60ms" }}
+              >
+                TECHNICAL CONSULTING
+              </p>
 
-            <HeroHeadline
-              lead="We build software, wire in AI, and run the"
-              accent="cloud underneath."
-              className="text-3xl md:text-4xl lg:text-5xl"
-            />
+              <HeroHeadline
+                lead="We build software, wire in AI, and run the"
+                accent="cloud underneath."
+                className="text-2xl md:text-3xl lg:text-[3.4rem] lg:leading-[1.02]"
+              />
 
-            <p
-              className="text-muted enter mx-auto mt-8 max-w-xl text-lg"
-              style={{ animationDelay: "620ms" }}
-            >
-              Ten engineers. Idea to production, and the part after launch.
-            </p>
+              <p
+                className="text-muted enter mt-7 max-w-md text-base md:text-lg"
+                style={{ animationDelay: "620ms" }}
+              >
+                Ten engineers. Idea to production, and the part after launch.
+              </p>
 
-            <div
-              className="enter mt-10 flex flex-wrap items-center justify-center gap-3"
-              style={{ animationDelay: "740ms" }}
-            >
-              <Action href="/contact">Start a project</Action>
-              <Action href="/process" variant="secondary">
-                See how we work
-              </Action>
+              <div
+                className="enter mt-9 flex flex-wrap items-center gap-3"
+                style={{ animationDelay: "740ms" }}
+              >
+                <Action href="/contact">Start a project</Action>
+                <Action href="/process" variant="secondary">
+                  See how we work
+                </Action>
+              </div>
+
+              <dl
+                className="enter mt-12 flex flex-wrap items-center gap-x-10 gap-y-5"
+                style={{ animationDelay: "860ms" }}
+              >
+                {facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt className="sr-only">{fact.label}</dt>
+                    <dd>
+                      <span className="gradient-text font-display block text-2xl md:text-3xl">
+                        <CountUp to={fact.value} />
+                      </span>
+                      <span className="text-muted font-mono text-sm">{fact.label}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
 
-            <dl
-              className="enter mt-14 flex flex-wrap items-center justify-center gap-x-12 gap-y-5"
-              style={{ animationDelay: "860ms" }}
-            >
-              {facts.map((fact) => (
-                <div key={fact.label} className="text-center">
-                  <dt className="sr-only">{fact.label}</dt>
-                  <dd>
-                    <span className="gradient-text font-display block text-2xl md:text-3xl">
-                      <CountUp to={fact.value} />
-                    </span>
-                    <span className="text-muted font-mono text-sm">{fact.label}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="enter mt-16" style={{ animationDelay: "1000ms" }}>
+            <div className="enter" style={{ animationDelay: "1000ms" }}>
               <HeroFigure />
             </div>
           </div>
         </Container>
+
+        <p className="text-muted absolute right-4 bottom-3 font-mono text-sm opacity-60">
+          {media.heroGround.credit}
+        </p>
       </section>
 
       <Ticker items={stackClusters.flatMap((c) => c.items.map((i) => i.name))} />
@@ -106,13 +135,7 @@ export default function HomePage() {
         <ServiceFold />
       </Block>
 
-      <PhotoBand
-        src={media.team.src}
-        alt={media.team.alt}
-        credit={media.team.credit}
-        eyebrow="/ THE TEAM"
-        title="Senior enough to say no"
-      />
+      <PhotoBand photo={media.team} eyebrow="/ THE TEAM" title="Senior enough to say no" />
 
       {/* Numbers, drawn. Replaces three paragraphs about timelines. */}
       <Block
@@ -156,6 +179,13 @@ export default function HomePage() {
         </ul>
       </Block>
 
+      <PhotoBand
+        photo={media.silicon}
+        eyebrow="/ UNDER THE HOOD"
+        title="Models, pipelines and the silicon they run on"
+        height="short"
+      />
+
       <Block id="process-peek" index="/ 04 — THE SEQUENCE" title="Five stages, in order">
         {/* tabIndex + a name: a scrollable region with no focusable content is a
             serious axe failure, and keyboard users genuinely cannot scroll it. */}
@@ -187,9 +217,7 @@ export default function HomePage() {
       </Block>
 
       <PhotoBand
-        src={media.servers.src}
-        alt={media.servers.alt}
-        credit={media.servers.credit}
+        photo={media.servers}
         eyebrow="/ IN PRODUCTION"
         title="Built to survive its second year"
         height="short"

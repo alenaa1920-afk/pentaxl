@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Container, CtaBand, PageHeader, reveal } from "@/components/ui"
 import { Spotlight } from "@/components/spotlight"
 import { posts } from "@/content/blog"
+import { PhotoBand } from "@/components/photo-band"
+import { media } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
 
 export const metadata: Metadata = pageMetadata({
@@ -21,7 +23,14 @@ export default function BlogPage() {
         lead="Written by whoever did the thing, not by a marketing team. Short, specific, and honest about what did not work."
       />
 
-      <div className="pb-20">
+      <PhotoBand
+        photo={media.code}
+        eyebrow="/ FROM THE DESK"
+        title="Written between builds, not between campaigns"
+        height="short"
+      />
+
+      <div className="py-20">
         <Container>
           <ul className="grid gap-4 md:grid-cols-2">
             {posts.map((post, i) => (

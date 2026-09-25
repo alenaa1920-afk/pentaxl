@@ -13,7 +13,7 @@ import { pageMetadata } from "@/lib/utils"
 export const metadata: Metadata = pageMetadata({
   title: "How an engagement runs",
   description:
-    "Pentaxl's five delivery stages — idea, technical enrichment, scope agreement, delivery " +
+    "PentaXL's five delivery stages — idea, technical enrichment, scope agreement, delivery " +
     "and production readiness — with what each delivers and how long it takes.",
   path: "/process",
 })
@@ -154,9 +154,14 @@ export default function ProcessPage() {
       </Section>
 
       <PhotoBand
-        src={media.scoping.src}
-        alt={media.scoping.alt}
-        credit={media.scoping.credit}
+        photo={media.patchPanel}
+        eyebrow="/ WHAT IT RUNS ON"
+        title="The environment is part of the deliverable"
+        height="short"
+      />
+
+      <PhotoBand
+        photo={media.scoping}
         eyebrow="/ stage one"
         title="It starts with a conversation, not a proposal"
         body="We listen to the problem before proposing anything. What the product is for, who it serves, and which constraint is non-negotiable."

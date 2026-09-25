@@ -28,10 +28,14 @@ import { useEffect, useState } from "react"
  * minPixelRatio to 2 — so on an ordinary 1x display each of these canvases was running
  * a fragment shader over 2880x1800, twice, every frame. That measured 3 fps on an
  * Intel UHD 630. These two props are the whole fix: a mesh gradient is soft blobs with
- * no edge to alias, so 1x capped at 720p is visually identical and roughly six times
- * less work. Raise them only with a frame-rate measurement in hand.
+ * no edge to alias, so rendering below the viewport and letting the browser scale it up
+ * is visually identical and many times less work.
+ *
+ * The cap is 1024x576 because that is where the hero measured a clean 60 fps; 720p sat
+ * at ~52 and 480p bought nothing further. Raise it only with a frame-rate measurement
+ * in hand.
  */
-const RENDER = { minPixelRatio: 1, maxPixelCount: 1280 * 720 }
+const RENDER = { minPixelRatio: 1, maxPixelCount: 1024 * 576 }
 
 /**
  * Deep base, brand violet, magenta, teal — base first and last so the loop returns to

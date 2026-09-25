@@ -2,7 +2,7 @@
  * Blog posts.
  *
  * PLACEHOLDER: these three are outlines, not finished articles — the titles and angles
- * are ones Pentaxl can genuinely speak to, but the prose has to come from whoever did
+ * are ones PentaXL can genuinely speak to, but the prose has to come from whoever did
  * the work. Each is `status: "draft"`, which keeps it out of the sitemap, marks it
  * noindex, and shows a visible notice on the page. Flip to "published" once written.
  *
