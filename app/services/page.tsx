@@ -27,7 +27,6 @@ export default function ServicesPage() {
 
       <PhotoBand
         photo={media.whiteboard}
-        eyebrow="/ HOW IT STARTS"
         title="The design argument happens before the build"
         height="short"
       />
@@ -56,7 +55,7 @@ export default function ServicesPage() {
                       aria-hidden="true"
                       className="absolute inset-0 bg-gradient-to-t from-[#0a1028e6] via-[#0a102873] to-transparent"
                     />
-                    <span className="text-accent-2 absolute bottom-3 left-4">
+                    <span className="text-accent absolute bottom-3 left-4">
                       <ServiceIcon slug={service.slug} className="size-5" />
                     </span>
                   </div>

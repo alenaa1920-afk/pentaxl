@@ -55,7 +55,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
       <PhotoBand
         photo={serviceMedia[service.slug]}
-        eyebrow={`/ ${service.nodeLabel.toUpperCase()}`}
         title={service.summary}
         height="short"
         priority

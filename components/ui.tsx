@@ -65,9 +65,7 @@ export function SectionHeading({
       className={cn("max-w-measure", align === "center" ? "mx-auto text-center" : "")}
       {...reveal()}
     >
-      {index ? (
-        <p className="text-accent-2 mb-4 font-mono text-sm tracking-widest">{index}</p>
-      ) : null}
+      {index ? <p className="text-accent mb-4 font-mono text-sm tracking-widest">{index}</p> : null}
       <h2 id={id} className="text-2xl md:text-3xl">
         {title}
       </h2>
@@ -424,12 +422,7 @@ export function Part({
 }) {
   return (
     <Section labelledBy={id} rule={index !== 1}>
-      <SectionHeading
-        id={id}
-        index={`/ ${String(index).padStart(2, "0")}`}
-        title={title}
-        lead={lead}
-      />
+      <SectionHeading id={id} title={title} lead={lead} />
       <div className="mt-8" {...reveal(1)}>
         {children}
       </div>

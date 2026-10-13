@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Container, CtaBand, PageHeader, Section, SectionHeading, reveal } from "@/components/ui"
 import { Spotlight } from "@/components/spotlight"
-import { MediaSlot } from "@/components/media-slot"
+import { EngagementFilm } from "@/components/engagement-film"
 import { PhotoBand } from "@/components/photo-band"
-import { media } from "@/content/media"
+import { engagementFilm, media } from "@/content/media"
 import { StageArt } from "@/components/stage-art"
 import { RangeChart } from "@/components/range-chart"
 import { engagementWeeks, processStages, scopeChangePolicy } from "@/content/process"
@@ -27,24 +27,19 @@ export default function ProcessPage() {
         meta={`${engagementWeeks[0]}–${engagementWeeks[1]} weeks end to end, typically`}
       />
 
-      {/* PLACEHOLDER: a walkthrough film of a real engagement belongs here — it is the
-          single strongest asset this page could have. Drop the file in public/ and swap
-          this frame for a <video> with a poster image. */}
+      {/* Stock footage standing in for the real thing. A recording of an actual PentaXL
+          engagement would be stronger still — when one exists, swap engagementFilm in
+          content/media.ts and nothing else here needs to change. */}
       <div className="pb-6">
         <Container>
           <div className="grid items-center gap-8 lg:grid-cols-[1.5fr_1fr]" {...reveal()}>
-            <MediaSlot
-              kind="video"
-              title="Walk an engagement end to end"
-              spec="MP4 or WebM · 1920×1080 · 90 seconds · poster frame too"
-            />
+            <EngagementFilm src={engagementFilm.src} poster={engagementFilm.poster} />
             <div className="min-w-0">
-              <p className="text-accent-2 font-mono text-sm">Coming here</p>
-              <h2 className="mt-3 text-xl">Ninety seconds, one real engagement</h2>
+              <h2 className="text-xl">Work you can watch take shape</h2>
               <p className="text-muted mt-4 text-base">
-                A screen recording of an actual build: the problem statement, the design document, a
-                milestone demo, then the deploy and the runbook. It answers the question a page of
-                copy cannot — what it is actually like to work with us.
+                Every stage below ends the same way: a review where the people who own the problem
+                watch the work run, ask questions, and decide what happens next. Progress you can
+                see, not a status report.
               </p>
             </div>
           </div>
@@ -72,13 +67,13 @@ export default function ProcessPage() {
                     </Spotlight>
 
                     <div {...reveal(1)}>
-                      <p className="text-accent-2 font-mono text-sm">
+                      <p className="text-accent font-mono text-sm">
                         Stage {String(stage.number).padStart(2, "0")} of 05
                       </p>
                       <h2 className="mt-3 text-xl md:text-2xl">{stage.name}</h2>
                       <span
                         aria-hidden="true"
-                        className="bg-accent-2/50 rule-draw mt-6 block h-px w-full"
+                        className="bg-accent/50 rule-draw mt-6 block h-px w-full"
                       />
                       <p className="max-w-measure mt-6 text-base md:text-lg">{stage.what}</p>
 
@@ -106,7 +101,6 @@ export default function ProcessPage() {
       <Section labelledBy="timeline-chart">
         <SectionHeading
           id="timeline-chart"
-          index="/ to scale"
           title="The same five stages, drawn to scale"
           lead="Ranges rather than single figures. Delivery is the long pole, and the only stage whose length you can really trade."
         />
@@ -139,7 +133,7 @@ export default function ProcessPage() {
               />
               <figcaption className="text-muted border-line border-t px-4 py-3 font-mono text-sm">
                 Stage five hardens this: rebuildable environments, a tested rollback and alerts that
-                mean something. {media.infrastructure.credit}
+                mean something.
               </figcaption>
             </figure>
           </div>
@@ -147,7 +141,7 @@ export default function ProcessPage() {
       </Section>
 
       <Section labelledBy="scope-change" className="on-mist">
-        <SectionHeading id="scope-change" index="/ policy" title={scopeChangePolicy.heading} />
+        <SectionHeading id="scope-change" title={scopeChangePolicy.heading} />
         <p className="max-w-measure mt-6 text-base md:text-lg" {...reveal(1)}>
           {scopeChangePolicy.body}
         </p>
@@ -155,14 +149,12 @@ export default function ProcessPage() {
 
       <PhotoBand
         photo={media.patchPanel}
-        eyebrow="/ WHAT IT RUNS ON"
         title="The environment is part of the deliverable"
         height="short"
       />
 
       <PhotoBand
         photo={media.scoping}
-        eyebrow="/ stage one"
         title="It starts with a conversation, not a proposal"
         body="We listen to the problem before proposing anything. What the product is for, who it serves, and which constraint is non-negotiable."
         height="short"

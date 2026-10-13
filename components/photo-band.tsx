@@ -7,14 +7,13 @@ type Photo = (typeof media)[keyof typeof media]
 
 /**
  * A full-width band with photography behind it, taken straight from the media registry
- * so the alt text and credit travel with the image rather than being retyped per page.
+ * so the alt text travels with the image rather than being retyped per page.
  *
  * The scrim is not decoration: text over bare photography fails contrast the moment the
  * image changes. Everything inside uses `.on-photo`, which is only safe above a scrim.
  */
 export function PhotoBand({
   photo,
-  eyebrow,
   title,
   body,
   height = "tall",
@@ -22,7 +21,6 @@ export function PhotoBand({
   children,
 }: {
   photo: Photo
-  eyebrow?: string
   title: string
   body?: string
   height?: "tall" | "short"
@@ -53,16 +51,11 @@ export function PhotoBand({
 
       <Container>
         <div className="max-w-measure py-14 md:py-20">
-          {eyebrow ? <p className="text-accent font-mono text-sm">{eyebrow}</p> : null}
-          <h2 className="mt-3 text-2xl md:text-3xl">{title}</h2>
+          <h2 className="text-2xl md:text-3xl">{title}</h2>
           {body ? <p className="text-muted mt-5 text-base md:text-lg">{body}</p> : null}
           {children}
         </div>
       </Container>
-
-      <p className="text-muted absolute right-4 bottom-3 font-mono text-sm opacity-70">
-        {photo.credit}
-      </p>
     </section>
   )
 }

@@ -34,7 +34,7 @@ export const whatsAppUrl = () => {
 
 export const primaryNav = [
   { href: "/services", label: "Services" },
-  { href: "/process", label: "How we work" },
+  { href: "/process", label: "Process" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -45,7 +45,7 @@ export const footerNav = [
     heading: "What we do",
     items: [
       { href: "/services", label: "Services" },
-      { href: "/process", label: "How we work" },
+      { href: "/process", label: "Process" },
     ],
   },
   {
@@ -143,28 +143,6 @@ export const guarantees = [
     id: "honesty",
     name: "We tell you when we are wrong",
     note: "Including our own bad estimates, which we do not pass on to you.",
-  },
-]
-
-/** Three shapes an engagement can take. Shared by Home and About. */
-export const engagementModels = [
-  {
-    id: "fixed",
-    name: "Fixed scope",
-    body: "A defined piece of work with an agreed scope document, milestones and a price. Best when the problem is understood well enough to write down.",
-    best: "Clear problem, fixed budget",
-  },
-  {
-    id: "retainer",
-    name: "Retainer",
-    body: "A recurring block of capacity for ongoing product work, maintenance, and the things that surface only once real users arrive.",
-    best: "Live product, continuous change",
-  },
-  {
-    id: "augmentation",
-    name: "Staff augmentation",
-    body: "Our engineers working inside your team and your process, when you need capacity rather than a separate delivery.",
-    best: "You have a team, you need hands",
   },
 ]
 

@@ -56,41 +56,6 @@ test.describe("service fold", () => {
   })
 })
 
-test.describe("work carousel", () => {
-  test("arrows page through and disable at the ends", async ({ page }) => {
-    await page.goto("/")
-    const prev = page.getByRole("button", { name: "Previous" })
-    const next = page.getByRole("button", { name: "Next" })
-
-    await prev.scrollIntoViewIfNeeded()
-    await expect(prev).toBeDisabled()
-    await expect(next).toBeEnabled()
-
-    await next.click()
-    await page.waitForTimeout(700)
-    await expect(prev).toBeEnabled()
-
-    // Reaching the end disables next.
-    for (let i = 0; i < 4; i++) {
-      if (await next.isDisabled()) break
-      await next.click()
-      await page.waitForTimeout(500)
-    }
-    await expect(next).toBeDisabled()
-  })
-
-  test("position is announced and dots jump to a slide", async ({ page }) => {
-    await page.goto("/")
-    const dots = page.getByRole("button", { name: /^Go to item/ })
-    expect(await dots.count()).toBeGreaterThan(1)
-
-    await dots.last().scrollIntoViewIfNeeded()
-    await dots.last().click()
-    await page.waitForTimeout(700)
-    await expect(dots.last()).toHaveAttribute("aria-current", "true")
-  })
-})
-
 test.describe("faq", () => {
   test("opens on click and only one answer stays open", async ({ page }) => {
     await page.goto("/")

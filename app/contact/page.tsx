@@ -30,7 +30,6 @@ export default function ContactPage() {
 
       <PhotoBand
         photo={media.office}
-        eyebrow="/ RESPONSE"
         title="A real engineer reads it, usually within a working day"
         height="short"
       />

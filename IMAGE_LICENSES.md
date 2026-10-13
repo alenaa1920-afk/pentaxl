@@ -23,6 +23,10 @@ implying that a depicted person or brand endorses this company. Photographers ar
 credited anyway — it is good manners, and it makes an asset traceable when it is
 replaced.
 
+**No credit is shown on the site itself.** Neither the Pexels nor the Unsplash
+licence requires on-page attribution, and a credit line on every photograph read as
+clutter. This file is the record instead — keep it complete.
+
 Downloaded 2026-09-25 (rows marked †: 2026-09-19), via the Pexels CDN at
 `?auto=compress&cs=tinysrgb&w=2400&h=1350&fit=crop`, then served through `next/image`,
 which re-encodes to AVIF or WebP per request.
@@ -49,6 +53,15 @@ which re-encodes to AVIF or WebP per request.
 
 ## Video
 
-None yet. Pexels blocks direct video download without an API key, so either set
-`PEXELS_API_KEY` and ask for one to be fetched, or drop an MP4 into `public/media`
-(1920×1080, under ~8 MB, with a poster frame) and add its row above.
+Same licence as the photography above (the Pexels licence covers video identically).
+Downloaded 2026-10-13 from the Pexels CDN, at the 1366×720 rendition — the largest below
+4K, and sharp at the width it is shown. Served as a static file from `public/media`;
+the poster frame is Pexels' own.
+
+| File                           | Subject                                                                             | Creator          | Source URL                            |
+| ------------------------------ | ----------------------------------------------------------------------------------- | ---------------- | ------------------------------------- |
+| `engagement-review.mp4`        | Engineers gathered round a developer reviewing code mid-build (22 s, muted, looped) | cottonbro studio | https://www.pexels.com/video/6804110/ |
+| `engagement-review-poster.jpg` | Poster frame for the above                                                          | cottonbro studio | https://www.pexels.com/video/6804110/ |
+
+Pexels serves video downloads without an API key (an earlier note here said otherwise;
+it was wrong). Unsplash has no video library, so its API key would not help with video.

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Action, CtaBand, PageHeader, Section, SectionHeading, reveal } from "@/components/ui"
-import { site } from "@/content/site"
+import { industries, site } from "@/content/site"
+import { IndustryIcon } from "@/components/icons"
 import { PhotoBand } from "@/components/photo-band"
 import { media } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
@@ -37,7 +38,6 @@ export default function AboutPage() {
 
       <PhotoBand
         photo={media.planning}
-        eyebrow="/ THE WORK"
         title="Scope argued in the open, before anyone opens an editor"
         height="short"
       />
@@ -45,7 +45,6 @@ export default function AboutPage() {
       <Section labelledBy="how" rule={false}>
         <SectionHeading
           id="how"
-          index="/ approach"
           title="How we work"
           lead="Scope before build, milestones you can use, and the trade-offs written down at the time rather than reconstructed afterwards."
         />
@@ -63,7 +62,6 @@ export default function AboutPage() {
       <Section labelledBy="engage">
         <SectionHeading
           id="engage"
-          index="/ engagements"
           title="How to engage us"
           lead="Three shapes, and we will tell you which fits rather than defaulting to the largest."
         />
@@ -81,15 +79,31 @@ export default function AboutPage() {
         </dl>
       </Section>
 
+      {/* Moved here from the homepage, as one row of chips rather than eight cards: it
+          is a detail a buyer checks once they are interested, not a reason to be. */}
+      <Section labelledBy="domains">
+        <SectionHeading id="domains" title="Domains we are set up for" />
+        <ul className="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
+          {industries.map((item) => (
+            <li
+              key={item.id}
+              className="border-line flex items-center gap-2.5 rounded-full border px-4 py-2 text-base"
+            >
+              <IndustryIcon id={item.id} className="text-accent size-4 shrink-0" />
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
       <PhotoBand
         photo={media.engineer}
-        eyebrow="/ THE PEOPLE"
         title="Ten engineers, and you talk to the ones building it"
         height="short"
       />
 
       <Section labelledBy="team">
-        <SectionHeading id="team" index="/ team" title="Who you would be working with" />
+        <SectionHeading id="team" title="Who you would be working with" />
         <div className="max-w-measure mt-6 space-y-4 text-base" {...reveal(1)}>
           {/* PLACEHOLDER: replace with real names, roles and links before launch. */}
           <p>

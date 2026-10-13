@@ -84,13 +84,18 @@ export function ChromeGate({ children }: { children: React.ReactNode }) {
 const isActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)
 
+/** Contact is the header's button, so it is not also a plain link beside it. The 404 page
+ *  still lists it, which is why it stays in primaryNav itself. */
+const headerLinks = primaryNav.filter((item) => item.href !== "/contact")
+
 export function SiteHeader() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
 
-  // The shader runs behind every page now, so the header is transparent at rest and
-  // lets it through — an opaque strip across the top read as a separate, static site.
-  // Once you scroll it becomes glass, which is what keeps nav legible over content.
+  // A floating bar rather than a strip: detached from the top edge, rounded, no rule
+  // under it. Over the hero it is barely there — a light frost on the photograph — and
+  // once the page scrolls under it, it darkens just enough that the links stay legible
+  // over body text.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
     onScroll()
@@ -99,28 +104,29 @@ export function SiteHeader() {
   }, [])
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 border-b transition-colors duration-300",
-        scrolled
-          ? "border-line bg-canvas/70 backdrop-blur-md"
-          : "border-transparent bg-transparent",
-      )}
-    >
+    // pt-2 + h-14 and md:pt-4 + md:h-16 keep the header's footprint at 64 / 80px, which
+    // the home hero's negative margin is sized to.
+    <header className="sticky top-0 z-40 pt-2 md:pt-4">
       <Container>
-        <div className="enter flex h-16 items-center justify-between gap-6">
+        <div
+          className={cn(
+            "enter flex h-14 items-center justify-between gap-6 rounded-2xl px-4 backdrop-blur-md transition-colors duration-300 md:h-16 md:px-6",
+            scrolled
+              ? "bg-[#0b0a22]/60 shadow-[0_12px_40px_-18px_rgba(0,0,0,0.8)]"
+              : "bg-white/[0.04]",
+          )}
+        >
           <Link
             href="/"
-            className="font-display text-xl tracking-tight md:text-2xl"
+            className="font-display text-2xl font-bold tracking-tight md:text-[1.75rem]"
             aria-label={`${site.name} — home`}
           >
             {site.name}
-            <span className="text-accent">.</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden md:block">
             <ul className="flex items-center gap-7">
-              {primaryNav.map((item) => {
+              {headerLinks.map((item) => {
                 const active = isActive(pathname, item.href)
                 return (
                   <li key={item.href}>
@@ -128,22 +134,23 @@ export function SiteHeader() {
                       href={item.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative py-1 text-base transition-colors",
-                        active ? "text-accent" : "text-muted hover:text-ink",
+                        "py-1 text-base font-semibold tracking-wide transition-colors",
+                        active ? "text-accent" : "text-ink hover:text-accent",
                       )}
                     >
                       {item.label}
-                      <span
-                        aria-hidden="true"
-                        className={cn(
-                          "bg-accent absolute -bottom-0.5 left-0 h-px transition-all duration-300",
-                          active ? "w-full" : "w-0",
-                        )}
-                      />
                     </Link>
                   </li>
                 )
               })}
+              <li>
+                <Action
+                  href="/contact"
+                  className="min-h-10 rounded-full px-5 py-2 text-sm font-semibold"
+                >
+                  Start a project
+                </Action>
+              </li>
             </ul>
           </nav>
 
@@ -171,14 +178,14 @@ export function SiteHeader() {
                 </div>
                 <nav aria-label="Primary" className="overflow-y-auto px-5">
                   <ul>
-                    {primaryNav.map((item) => (
+                    {headerLinks.map((item) => (
                       <li key={item.href} className="border-line border-b">
                         <Drawer.Close asChild>
                           <Link
                             href={item.href}
                             aria-current={isActive(pathname, item.href) ? "page" : undefined}
                             className={cn(
-                              "flex min-h-14 items-center text-lg",
+                              "flex min-h-14 items-center text-lg font-semibold",
                               isActive(pathname, item.href) ? "text-accent" : "text-ink",
                             )}
                           >
@@ -190,7 +197,7 @@ export function SiteHeader() {
                   </ul>
                   {/* Primary action last, in thumb reach. */}
                   <Drawer.Close asChild>
-                    <Action href="/contact" className="mt-6 w-full">
+                    <Action href="/contact" className="mt-6 w-full rounded-full">
                       Start a project
                     </Action>
                   </Drawer.Close>
@@ -200,10 +207,6 @@ export function SiteHeader() {
           </Drawer.Root>
         </div>
       </Container>
-      <div
-        aria-hidden="true"
-        className="scroll-progress bg-accent absolute inset-x-0 bottom-0 h-px origin-left"
-      />
     </header>
   )
 }

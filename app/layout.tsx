@@ -10,7 +10,7 @@ import { JsonLd, SiteFooter } from "@/components/ui"
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" })
 const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   variable: "--font-plex-sans",
   display: "swap",
 })

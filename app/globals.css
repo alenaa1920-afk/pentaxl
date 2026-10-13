@@ -672,24 +672,6 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   animation: travel 4s linear infinite;
 }
 
-/* Reading progress, zero JS where supported. */
-@supports (animation-timeline: scroll()) {
-  @keyframes progress {
-    from {
-      scale: 0 1;
-    }
-    to {
-      scale: 1 1;
-    }
-  }
-
-  .scroll-progress {
-    animation: progress linear;
-    animation-timeline: scroll();
-    transform-origin: left;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -701,10 +683,6 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .scroll-progress {
-    display: none;
   }
 
   .enter,

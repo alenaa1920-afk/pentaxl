@@ -6,7 +6,7 @@
  * the work. Each is `status: "draft"`, which keeps it out of the sitemap, marks it
  * noindex, and shows a visible notice on the page. Flip to "published" once written.
  *
- * Adding a post is one entry here — the index, the home carousel, prev/next and the
+ * Adding a post is one entry here — the index, prev/next and the
  * sitemap all follow.
  */
 

@@ -107,7 +107,7 @@ export function ServiceFold() {
                 aria-hidden="true"
                 className={cn(
                   "shrink-0 transition-colors duration-300",
-                  isOpen ? "text-accent-2" : "text-accent",
+                  isOpen ? "text-accent" : "text-ink",
                 )}
               >
                 <ServiceIcon slug={service.slug} className="size-7" />
@@ -134,7 +134,7 @@ export function ServiceFold() {
                 >
                   <h3 className="text-xl">{service.name}</h3>
                   <p className="text-muted mt-3 text-base">{service.summary}</p>
-                  <p className="gradient-text font-display mt-5 text-2xl">
+                  <p className="text-accent font-display mt-5 text-2xl">
                     {service.weeks[0]}–{service.weeks[1]}
                     <span className="text-muted font-sans text-base"> weeks</span>
                   </p>
