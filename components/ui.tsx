@@ -1,6 +1,4 @@
 import Link from "next/link"
-import { cva, type VariantProps } from "class-variance-authority"
-import type { Thing, WithContext } from "schema-dts"
 import { cn } from "@/lib/utils"
 import { site, footerNav, whatsAppUrl } from "@/content/site"
 
@@ -111,35 +109,41 @@ export function PageHeader({
   )
 }
 
-const action = cva(
-  "inline-flex min-h-11 items-center justify-center px-5 py-2.5 text-base font-medium transition-all duration-300",
-  {
-    variants: {
-      variant: {
-        primary:
-          "bg-accent text-on-accent sheen hover:shadow-[0_0_28px_-4px_var(--color-accent)] hover:brightness-110",
-        secondary: "border border-line text-ink hover:border-accent hover:text-accent",
-        quiet:
-          "px-0 font-mono text-sm text-accent underline decoration-accent/30 underline-offset-[6px] hover:decoration-accent",
-      },
-    },
-    defaultVariants: { variant: "primary" },
-  },
-)
+const ACTION =
+  "inline-flex min-h-11 items-center justify-center px-5 py-2.5 text-base font-medium transition-all duration-300"
+const VARIANTS = {
+  primary:
+    "bg-accent text-on-accent hover:shadow-[0_0_28px_-4px_var(--color-accent)] hover:brightness-110",
+  secondary: "border border-line text-ink hover:border-accent hover:text-accent",
+  quiet:
+    "px-0 font-mono text-sm text-accent underline decoration-accent/30 underline-offset-[6px] hover:decoration-accent",
+}
 
+/**
+ * Everything else is passed straight through to the link — onClick from a menu that
+ * needs to close, or `data-project-dialog` to open the project dialog instead of
+ * navigating (when JS is running).
+ */
 export function Action({
   href,
-  variant,
+  variant = "primary",
   className,
   children,
-}: VariantProps<typeof action> & { href: string; className?: string; children: React.ReactNode }) {
-  const cls = cn(action({ variant }), className)
+  ...rest
+}: Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className"> & {
+  href: string
+  variant?: keyof typeof VARIANTS
+  className?: string
+  children: React.ReactNode
+  "data-project-dialog"?: string
+}) {
+  const cls = cn(ACTION, VARIANTS[variant], className)
   return /^(https?:|mailto:|tel:)/.test(href) ? (
-    <a href={href} className={cls}>
+    <a {...rest} href={href} className={cls}>
       {children}
     </a>
   ) : (
-    <Link href={href} className={cls}>
+    <Link {...rest} href={href} className={cls}>
       {children}
     </Link>
   )
@@ -155,16 +159,13 @@ export const SubmitButton = ({
   <button
     type="submit"
     disabled={pending}
-    className={cn(
-      action({ variant: "primary" }),
-      "disabled:cursor-not-allowed disabled:opacity-60",
-    )}
+    className={cn(ACTION, VARIANTS.primary, "disabled:cursor-not-allowed disabled:opacity-60")}
   >
     {children}
   </button>
 )
 
-export const JsonLd = ({ schema }: { schema: WithContext<Thing> }) => (
+export const JsonLd = ({ schema }: { schema: Record<string, unknown> }) => (
   <script
     type="application/ld+json"
     dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
@@ -280,37 +281,13 @@ export function CtaBand({
             <p className="text-muted mt-4 text-base md:text-lg">{body}</p>
           </div>
           <div {...reveal(1)}>
-            <Action href={actionHref}>{actionLabel}</Action>
+            <Action href={actionHref} data-project-dialog="">
+              {actionLabel}
+            </Action>
           </div>
         </div>
       </Container>
     </section>
-  )
-}
-
-/** Infinite technology strip. Duplicated once so the loop is seamless. */
-export function Ticker({ items }: { items: string[] }) {
-  const row = [...items, ...items]
-  return (
-    <div className="border-line relative overflow-hidden border-y py-5">
-      {/* Tailwind v4 renamed these utilities: bg-linear-*, not bg-gradient-*. */}
-      <div
-        aria-hidden="true"
-        className="from-canvas pointer-events-none absolute inset-y-0 left-0 z-10 w-32 bg-linear-to-r to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="from-canvas pointer-events-none absolute inset-y-0 right-0 z-10 w-32 bg-linear-to-l to-transparent"
-      />
-      <ul className="ticker-track flex w-max gap-10" aria-hidden="true">
-        {row.map((item, i) => (
-          <li key={`${item}-${i}`} className="text-muted font-mono text-sm whitespace-nowrap">
-            {item}
-          </li>
-        ))}
-      </ul>
-      <span className="sr-only">{items.join(", ")}</span>
-    </div>
   )
 }
 
@@ -370,7 +347,7 @@ export function SiteFooter() {
   )
 }
 
-/** A landing-page section: heading, content, and one optional trailing link. */
+/** A section: heading, content, and one optional trailing link. */
 export function Block({
   id,
   index,
@@ -382,7 +359,7 @@ export function Block({
   children,
 }: {
   id: string
-  index: string
+  index?: string
   title: string
   lead?: string
   more?: { href: string; label: string }
@@ -402,30 +379,6 @@ export function Block({
           </Action>
         </p>
       ) : null}
-    </Section>
-  )
-}
-
-/** A numbered section on a detail page. The first one skips the top rule. */
-export function Part({
-  index,
-  id,
-  title,
-  lead,
-  children,
-}: {
-  index: number
-  id: string
-  title: string
-  lead?: string
-  children: React.ReactNode
-}) {
-  return (
-    <Section labelledBy={id} rule={index !== 1}>
-      <SectionHeading id={id} title={title} lead={lead} />
-      <div className="mt-8" {...reveal(1)}>
-        {children}
-      </div>
     </Section>
   )
 }

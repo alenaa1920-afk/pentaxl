@@ -1,59 +1,81 @@
 import { test, expect } from "@playwright/test"
 import { services } from "../content/services"
 
-test.describe("service fold", () => {
-  test("shut by default, and opens on hover, focus and click alike", async ({ page }) => {
-    await page.goto("/")
-    const triggers = page.locator("[aria-controls^='fold-']")
-    await expect(triggers).toHaveCount(services.length)
+test("service explorer: tabs select by click and arrow keys, panel follows", async ({ page }) => {
+  await page.goto("/")
+  const tabs = page.getByRole("tablist", { name: "Disciplines" }).getByRole("tab")
+  const panel = page.getByRole("tabpanel")
+  await expect(tabs).toHaveCount(services.length)
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true")
 
-    // The point of the section: every card shut on arrival, so no service copy is on
-    // the landing page until asked for. The copy stays in the DOM — hiding it from a
-    // screen reader or a crawler is not what was wanted — so this asserts on what is
-    // actually rendered, not on what the markup contains.
-    for (const service of services) {
-      const i = services.indexOf(service)
-      await expect(triggers.nth(i)).toHaveAttribute("aria-expanded", "false")
-      await expect(page.locator(`#fold-${service.slug} > div > div`)).toHaveCSS("opacity", "0")
-    }
+  await tabs.nth(2).click()
+  await expect(tabs.nth(2)).toHaveAttribute("aria-selected", "true")
+  await expect(panel).toContainText(services[2].summary)
+  await expect(panel.getByRole("link")).toHaveAttribute("href", `/services/${services[2].slug}`)
 
-    // Hover opens exactly one.
-    await triggers.nth(1).hover()
-    await expect(triggers.nth(1)).toHaveAttribute("aria-expanded", "true")
-    await expect(triggers.and(page.getByRole("button", { expanded: true }))).toHaveCount(1)
-    await expect(page.locator("#fold-" + services[1].slug)).toContainText(services[1].summary)
+  // Roving tabindex: arrows move selection and focus together, and wrap.
+  await page.keyboard.press("ArrowDown")
+  await expect(tabs.nth(3)).toBeFocused()
+  await expect(panel).toContainText(services[3].summary)
+  await tabs.first().click()
+  await page.keyboard.press("ArrowUp")
+  await expect(tabs.last()).toHaveAttribute("aria-selected", "true")
+})
 
-    // Keyboard reaches it without a pointer, and the link inside is only in the tab
-    // order once its card is open.
-    await triggers.nth(3).focus()
-    await expect(triggers.nth(3)).toHaveAttribute("aria-expanded", "true")
-    await expect(triggers.nth(1)).toHaveAttribute("aria-expanded", "false")
-    await page.keyboard.press("Tab")
-    await expect(page.locator("#fold-" + services[3].slug).getByRole("link")).toBeFocused()
+test("process orbit: scrolling over it turns one stage per gesture, scrolling beside it scrolls the page", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "desktop", "wheel input")
+  await page.goto("/process")
+  const live = page.locator(".dsh-sr")
+  const scrollY = () => page.evaluate(() => window.scrollY)
+  const wheelAt = async (x: number, dy: number) => {
+    await page.mouse.move(x, 450)
+    await page.mouse.wheel(0, dy)
+    await page.waitForTimeout(320) // longer than the carousel's quiet window
+  }
+  const OVER = 640 // middle of the carousel
+  const SIDE = 20 // the page gutter beside it
+  await expect(live).toHaveText(/Idea/)
 
-    // Clicking opens rather than toggles, and opening one shuts the last.
-    await triggers.first().click()
-    await expect(triggers.first()).toHaveAttribute("aria-expanded", "true")
-    await expect(triggers.nth(3)).toHaveAttribute("aria-expanded", "false")
+  // Bring the whole carousel on screen.
+  await page.evaluate(() => {
+    const root = document.querySelector(".dsh-root")!
+    window.scrollTo(0, root.getBoundingClientRect().top + window.scrollY - 100)
   })
+  await page.waitForTimeout(320)
+  const at = await scrollY()
 
-  test("a touch tap opens a card", async ({ page }, info) => {
-    test.skip(info.project.name !== "mobile", "needs a touch screen")
-    // Regression: a tap fires focus before click. While the click toggled, those two
-    // cancelled out on the same tap and no card could be opened by touch at all —
-    // which page.click() does not reproduce, because it sends mouse input.
-    await page.goto("/")
-    const trigger = page.locator("[aria-controls^='fold-']").nth(1)
-    await trigger.scrollIntoViewIfNeeded()
-    await trigger.tap()
-    // Deliberately not an immediate assertion. A tap synthesises a mouseleave a few
-    // milliseconds after it opens the card, and a check that raced that event passed
-    // against a build where tapping visibly did nothing. The card has to still be open
-    // once everything the tap set off has settled.
-    await page.waitForTimeout(600)
-    await expect(trigger).toHaveAttribute("aria-expanded", "true")
-    await expect(page.locator(`#fold-${services[1].slug} > div > div`)).toHaveCSS("opacity", "1")
-  })
+  // Over the carousel: the stage turns and the page holds.
+  await wheelAt(OVER, 120)
+  await expect(live).toHaveText(/Technical enrichment/)
+  expect(await scrollY(), "the page holds while the stages turn").toBe(at)
+
+  // A burst of wheel events — trackpad momentum — is one gesture: one stage, not three.
+  await page.mouse.move(OVER, 450)
+  for (let i = 0; i < 6; i++) {
+    await page.mouse.wheel(0, 60)
+    await page.waitForTimeout(30)
+  }
+  await page.waitForTimeout(320)
+  await expect(live).toHaveText(/Scope agreement/)
+
+  // Beside it: the page scrolls and the stage does not change.
+  await wheelAt(SIDE, 200)
+  expect(await scrollY()).toBeGreaterThan(at)
+  await expect(live).toHaveText(/Scope agreement/)
+  await wheelAt(SIDE, -200)
+
+  // Back over it, up turns back, and past the last stage the page scrolls on.
+  await wheelAt(OVER, -120)
+  await expect(live).toHaveText(/Technical enrichment/)
+  for (const stage of [/Scope agreement/, /Delivery/, /Production ready/]) {
+    await wheelAt(OVER, 120)
+    await expect(live).toHaveText(stage)
+  }
+  const before = await scrollY()
+  await wheelAt(OVER, 300)
+  expect(await scrollY()).toBeGreaterThan(before)
 })
 
 test.describe("faq", () => {
@@ -80,4 +102,91 @@ test.describe("faq", () => {
     expect(html).toContain("Cloud native, on-premise or hybrid are all fine")
     expect(html).toContain('"@type":"FAQPage"')
   })
+})
+
+test.describe("project dialog", () => {
+  test("opens from the nav without navigating, validates, and closes on Escape", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "desktop", "the nav button is desktop-only")
+    await page.goto("/")
+    await page.locator("header").getByRole("link", { name: "Start a project" }).click()
+
+    const dialog = page.locator("dialog.project-dialog")
+    await expect(dialog).toHaveJSProperty("open", true)
+    await expect(page).toHaveURL(/\/$/)
+    await expect(page.locator("#project-dialog-title")).toHaveText("Start your project")
+
+    // Exactly the four fields asked for, and every service in the dropdown.
+    for (const label of [
+      "Your name",
+      "Email",
+      "What do you need",
+      "What are you trying to build",
+    ]) {
+      await expect(dialog.getByLabel(label)).toBeVisible()
+    }
+    for (const service of services) {
+      await expect(dialog.locator("select option", { hasText: service.name })).toHaveCount(1)
+    }
+
+    await dialog.getByRole("button", { name: /^Send/ }).click()
+    await expect(dialog.getByText("Please enter your name.")).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(dialog).toHaveJSProperty("open", false)
+  })
+
+  test("on a phone the dialog opened from the hero can be typed into", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile", "needs a touch screen")
+    await page.goto("/")
+    await page.locator("main").getByRole("link", { name: "Start a project" }).first().tap()
+    const name = page.locator("dialog.project-dialog").getByLabel("Your name")
+    await name.tap()
+    await page.keyboard.type("Ravi")
+    await expect(name).toHaveValue("Ravi")
+  })
+
+  test("the mobile menu's Start a project closes the menu and leaves the page usable", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "mobile", "the menu is mobile-only")
+    // Regression: this link once navigated without closing the menu, which left the
+    // page behind it untappable.
+    await page.goto("/")
+    await page.getByRole("button", { name: "Open menu" }).tap()
+    await page
+      .getByRole("dialog", { name: "Menu" })
+      .getByRole("link", { name: "Start a project" })
+      .tap()
+    await expect(page).toHaveURL(/\/contact$/)
+    await expect(page.getByRole("dialog", { name: "Menu" })).toHaveCount(0)
+    await expect
+      .poll(() => page.evaluate(() => getComputedStyle(document.body).pointerEvents))
+      .not.toBe("none")
+  })
+})
+
+test("the wordmark's letters sit wholly inside its mask, and the mask inside the bar", async ({
+  page,
+}) => {
+  // Default suite context is reduced motion, so this checks the resting state the
+  // animation lands in — the letters must not be clipped by the mask that animates them.
+  await page.goto("/")
+  const fit = await page.evaluate(() => {
+    const mask = document.querySelector(".brand-mask")!.getBoundingClientRect()
+    const bar = document.querySelector("header > div > div")!.getBoundingClientRect()
+    const letters = [...document.querySelectorAll(".brand-letter")].map((l) => {
+      const r = l.getBoundingClientRect()
+      return r.top >= mask.top - 0.5 && r.bottom <= mask.bottom + 0.5
+    })
+    return {
+      text: document.querySelector(".brand-mask")!.textContent,
+      lettersInside: letters.every(Boolean),
+      maskInsideBar: mask.top >= bar.top && mask.bottom <= bar.bottom,
+    }
+  })
+  expect(fit.text).toBe("PentaXL")
+  expect(fit.lettersInside).toBe(true)
+  expect(fit.maskInsideBar).toBe(true)
 })

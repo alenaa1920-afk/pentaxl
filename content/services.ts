@@ -2,7 +2,7 @@ import type { ClusterId } from "./stack"
 
 /**
  * Five disciplines, one per hero node. Array order drives the index, the cards and
- * prev/next. `heroCycle` orders the pentagon so perimeter edges land on adjacent nodes.
+ * prev/next, and the pentagon's node order (perimeter edges land on adjacent nodes).
  *
  * PLACEHOLDER: confirm each of these is genuinely sold today. Delete rather than keep
  * anything aspirational.
@@ -15,8 +15,6 @@ export type Service = {
   body: string
   deliverables: string[]
   timeline: string
-  /** [min, max] weeks — the numbers behind `timeline`, for the chart. */
-  weeks: [number, number]
   timelineCaveat: string
   stackClusters: ClusterId[]
 }
@@ -36,7 +34,6 @@ export const services: Service[] = [
       "Handover notes and a runbook, whoever maintains it next",
     ],
     timeline: "4 to 12 weeks to a first production release",
-    weeks: [4, 12],
     timelineCaveat:
       "The range is wide because discovery honestly changes it. We narrow it in writing after week one, and tell you if it moves again.",
     stackClusters: ["languages", "frameworks", "data"],
@@ -55,7 +52,6 @@ export const services: Service[] = [
       "A human review path for whatever the model gets wrong",
     ],
     timeline: "3 to 8 weeks for a production feature",
-    weeks: [3, 8],
     timelineCaveat:
       "Evaluation and data access take longer than the integration itself, which is usually the surprise.",
     stackClusters: ["ai-ml", "data", "languages"],
@@ -74,7 +70,6 @@ export const services: Service[] = [
       "A documented rollback, tested at least once",
     ],
     timeline: "2 to 6 weeks to a first working pipeline",
-    weeks: [2, 6],
     timelineCaveat:
       "Existing estates take longer than greenfield, and the difference is usually access and approvals rather than engineering.",
     stackClusters: ["cloud-devops", "data"],
@@ -93,7 +88,6 @@ export const services: Service[] = [
       "Dependency and image scanning in CI, with a patching cadence",
     ],
     timeline: "1 to 4 weeks as a focused engagement",
-    weeks: [1, 4],
     timelineCaveat:
       "Shorter alongside a build we are already doing, because those decisions are being made anyway.",
     stackClusters: ["security-compliance", "cloud-devops"],
@@ -112,7 +106,6 @@ export const services: Service[] = [
       "Documented contracts for every external system touched",
     ],
     timeline: "2 to 8 weeks per integration surface",
-    weeks: [2, 8],
     timelineCaveat:
       "The variable is almost always the other system: its rate limits, its sandbox quality, and how fast its owners reply.",
     stackClusters: ["data", "languages", "cloud-devops"],
@@ -130,14 +123,6 @@ export const serviceEdges: [string, string][] = [
   ["ai-and-ml-integration", "data-and-integrations"],
 ]
 
-export const heroCycle = [
-  "software-development",
-  "ai-and-ml-integration",
-  "cloud-and-devops",
-  "security-and-compliance",
-  "data-and-integrations",
-]
-
 export const serviceBySlug = (slug: string) => services.find((s) => s.slug === slug)
 
 export function neighbours<T extends { slug: string }>(items: T[], slug: string) {
@@ -148,3 +133,43 @@ export function neighbours<T extends { slug: string }>(items: T[], slug: string)
     next: items[(i + 1) % items.length],
   }
 }
+
+/**
+ * Where AI earns its place — the use cases the landing page leads with. Each is a shape
+ * of work the AI service above already describes (retrieval, evaluation, guardrails),
+ * not a client claim.
+ *
+ * PLACEHOLDER: owner to cut any PentaXL would not take on today.
+ */
+export const aiUseCases = [
+  {
+    id: "assistant",
+    name: "Assistants over your own documents",
+    note: "Answers grounded in your policies, manuals and tickets, with the source cited.",
+  },
+  {
+    id: "extraction",
+    name: "Document extraction",
+    note: "Invoices, contracts and forms turned into structured data, with a review queue for the doubtful ones.",
+  },
+  {
+    id: "agents",
+    name: "Agents that run workflows",
+    note: "Multi-step tasks across your systems, with limits on what they may touch and a person approving the risky steps.",
+  },
+  {
+    id: "triage",
+    name: "Triage and routing",
+    note: "Support tickets, leads and alerts classified and sent to the right place, measured against an evaluation set.",
+  },
+  {
+    id: "copilot",
+    name: "Copilots inside your product",
+    note: "Drafting, summarising and search added to software you already run, behind a cost ceiling.",
+  },
+  {
+    id: "forecast",
+    name: "Forecasting and anomalies",
+    note: "Demand, churn and fraud signals from the data you already collect, explained rather than guessed.",
+  },
+]

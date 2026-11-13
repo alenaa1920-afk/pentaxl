@@ -1,12 +1,11 @@
 "use client"
 
 // Client only for what needs the browser: the reveal observer, the current-route
-// marker, and the drawer's focus management.
+// marker, and opening the menu dialog.
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
-import { Drawer } from "vaul"
+import { useEffect, useRef, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { primaryNav, site } from "@/content/site"
 import { Container, Action } from "./ui"
@@ -44,41 +43,10 @@ export function MotionRoot() {
 
     document.querySelectorAll("[data-reveal]:not([data-shown])").forEach((el) => io.observe(el))
 
-    // A rail is a scroll container, so it clips its own off-screen items out of every
-    // intersection — rootMargin expands the root's rect and cannot reach past an
-    // intermediate clip. Those items would sit invisible until dragged into view. So
-    // the rail itself is what gets observed, and its items reveal with it; the stagger
-    // still comes from each item's --reveal-delay, not from the order they fire in.
-    const railObservers = [...document.querySelectorAll(".rail")].flatMap((rail) => {
-      const items = [...rail.querySelectorAll("[data-reveal]:not([data-shown])")]
-      if (!items.length) return []
-      const railIo = new IntersectionObserver(
-        (entries) => {
-          if (!entries.some((e) => e.isIntersecting)) return
-          railIo.disconnect()
-          for (const item of items) item.setAttribute("data-shown", "")
-        },
-        { rootMargin: "100000px 100000px -12% 100000px", threshold: 0 },
-      )
-      railIo.observe(rail)
-      return [railIo]
-    })
-
-    return () => {
-      io.disconnect()
-      for (const railIo of railObservers) railIo.disconnect()
-    }
+    return () => io.disconnect()
   }, [pathname])
 
   return null
-}
-
-/** Hides the site header and footer on /preview/* so a full-page component can be
- *  evaluated on its own. Children stay server-rendered; this only decides whether. */
-export function ChromeGate({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-  if (pathname.startsWith("/preview")) return null
-  return <>{children}</>
 }
 
 const isActive = (pathname: string, href: string) =>
@@ -88,9 +56,47 @@ const isActive = (pathname: string, href: string) =>
  *  still lists it, which is why it stays in primaryNav itself. */
 const headerLinks = primaryNav.filter((item) => item.href !== "/contact")
 
+const LETTERS = [...site.name]
+/** Where "XL" — the last two letters — starts: those drop in from above; the rest rise. */
+const CUT = LETTERS.length - 2
+
+/**
+ * The wordmark arrives letter by letter, entirely inside its own box: the mask is
+ * overflow-hidden, so every letter starts out of sight *within* the nav bar and moves
+ * into place, rather than flying in from off the edge of it. "Penta" rises in turn;
+ * "XL" drops in after it, lands with a small overshoot and a violet flash, then a shine
+ * runs across the letters themselves. On hover the letters ripple. All of it is CSS, plays once
+ * per page load (the header survives client-side navigation), and is skipped outright
+ * under reduced motion. The visible letters are aria-hidden; the link is named by its
+ * aria-label, so a screen reader hears "PentaXL — home", not seven separate letters.
+ */
+function Wordmark() {
+  return (
+    <span aria-hidden="true" className="brand-mask">
+      {LETTERS.map((ch, k) => {
+        const drop = k >= CUT
+        // --k (inherited by the inner span) orders the shine and the hover ripple;
+        // --i / --j order the rise and the drop.
+        const vars = drop ? { "--j": k - CUT, "--k": k } : { "--i": k, "--k": k }
+        return (
+          <span
+            key={k}
+            className={`brand-letter ${drop ? "brand-drop" : "brand-rise"}`}
+            style={vars as React.CSSProperties}
+          >
+            <span className="brand-wave">{ch}</span>
+          </span>
+        )
+      })}
+    </span>
+  )
+}
+
 export function SiteHeader() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
+  const menu = useRef<HTMLDialogElement>(null)
+  const closeMenu = () => menu.current?.close()
 
   // A floating bar rather than a strip: detached from the top edge, rounded, no rule
   // under it. Over the hero it is barely there — a light frost on the photograph — and
@@ -118,10 +124,10 @@ export function SiteHeader() {
         >
           <Link
             href="/"
-            className="font-display text-2xl font-bold tracking-tight md:text-[1.75rem]"
+            className="brand font-display text-[1.7rem] font-bold tracking-tight md:text-[2.15rem]"
             aria-label={`${site.name} — home`}
           >
-            {site.name}
+            <Wordmark />
           </Link>
 
           <nav aria-label="Primary" className="hidden md:block">
@@ -146,6 +152,7 @@ export function SiteHeader() {
               <li>
                 <Action
                   href="/contact"
+                  data-project-dialog=""
                   className="min-h-10 rounded-full px-5 py-2 text-sm font-semibold"
                 >
                   Start a project
@@ -154,57 +161,59 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          <Drawer.Root>
-            <Drawer.Trigger
-              className="inline-flex min-h-11 min-w-11 items-center justify-center md:hidden"
-              aria-label="Open menu"
-            >
-              <Menu aria-hidden="true" className="size-5" />
-            </Drawer.Trigger>
-            <Drawer.Portal>
-              <Drawer.Overlay className="bg-canvas/70 fixed inset-0 z-50 backdrop-blur-sm" />
-              <Drawer.Content
-                aria-label="Menu"
-                className="border-line bg-surface fixed inset-x-0 bottom-0 z-50 flex max-h-[85vh] flex-col border-t pb-8 outline-none"
+          <button
+            type="button"
+            onClick={() => menu.current?.showModal()}
+            className="inline-flex min-h-11 min-w-11 items-center justify-center md:hidden"
+            aria-label="Open menu"
+          >
+            <Menu aria-hidden="true" className="size-5" />
+          </button>
+          {/* A native modal <dialog>, as a bottom sheet: the browser supplies the focus
+              trap, Escape, the backdrop, inert content behind and focus restored to the
+              button. A click on the dialog element itself is a click on the backdrop. */}
+          <dialog
+            ref={menu}
+            aria-label="Menu"
+            onClick={(e) => e.target === e.currentTarget && closeMenu()}
+            className="menu-sheet border-line text-ink fixed inset-x-0 top-auto bottom-0 m-0 max-h-[85vh] w-full max-w-none border-t bg-[#0d0b24] p-0 pb-8 md:hidden"
+          >
+            <div className="border-line flex items-center justify-between border-b px-5 py-4">
+              <p className="font-display text-lg">Menu</p>
+              <button
+                type="button"
+                onClick={closeMenu}
+                className="inline-flex min-h-11 min-w-11 items-center justify-center"
+                aria-label="Close menu"
               >
-                <div className="border-line flex items-center justify-between border-b px-5 py-4">
-                  <Drawer.Title className="font-display text-lg">Menu</Drawer.Title>
-                  <Drawer.Close
-                    className="inline-flex min-h-11 min-w-11 items-center justify-center"
-                    aria-label="Close menu"
-                  >
-                    <X aria-hidden="true" className="size-5" />
-                  </Drawer.Close>
-                </div>
-                <nav aria-label="Primary" className="overflow-y-auto px-5">
-                  <ul>
-                    {headerLinks.map((item) => (
-                      <li key={item.href} className="border-line border-b">
-                        <Drawer.Close asChild>
-                          <Link
-                            href={item.href}
-                            aria-current={isActive(pathname, item.href) ? "page" : undefined}
-                            className={cn(
-                              "flex min-h-14 items-center text-lg font-semibold",
-                              isActive(pathname, item.href) ? "text-accent" : "text-ink",
-                            )}
-                          >
-                            {item.label}
-                          </Link>
-                        </Drawer.Close>
-                      </li>
-                    ))}
-                  </ul>
-                  {/* Primary action last, in thumb reach. */}
-                  <Drawer.Close asChild>
-                    <Action href="/contact" className="mt-6 w-full rounded-full">
-                      Start a project
-                    </Action>
-                  </Drawer.Close>
-                </nav>
-              </Drawer.Content>
-            </Drawer.Portal>
-          </Drawer.Root>
+                <X aria-hidden="true" className="size-5" />
+              </button>
+            </div>
+            <nav aria-label="Primary" className="overflow-y-auto px-5">
+              <ul>
+                {headerLinks.map((item) => (
+                  <li key={item.href} className="border-line border-b">
+                    <Link
+                      href={item.href}
+                      onClick={closeMenu}
+                      aria-current={isActive(pathname, item.href) ? "page" : undefined}
+                      className={cn(
+                        "flex min-h-14 items-center text-lg font-semibold",
+                        isActive(pathname, item.href) ? "text-accent" : "text-ink",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {/* Primary action last, in thumb reach. The full contact page rather than
+                  the project dialog: on a phone it is the better form. */}
+              <Action href="/contact" onClick={closeMenu} className="mt-6 w-full rounded-full">
+                Start a project
+              </Action>
+            </nav>
+          </dialog>
         </div>
       </Container>
     </header>

@@ -1,6 +1,6 @@
 # PentaXL website — engineering conventions
 
-Technical consulting startup, ten engineers: software development, AI and ML integration,
+Technology consultancy: software development, AI and ML integration,
 cloud and DevOps, security and compliance, data and integrations.
 
 ## Stack
@@ -19,7 +19,7 @@ route types otherwise fail the check.
 ## Rules
 
 - Server Components by default. `"use client"` only for real interactivity — say why in a
-  comment. Only four client files exist: `chrome`, `hero`, `stack-explorer`, `contact/form`.
+  comment.
 - No arbitrary hex, px or font values in components. Tokens only.
 - All copy and data comes from `content/`. Never hardcode strings in a page.
 - Every route exports `metadata`. Every detail route has breadcrumbs + JSON-LD.
@@ -74,7 +74,7 @@ brief's Sections 6 and 7 calm/no-motion direction. Do not "fix" the animations a
   sequence ~3.6s at 520ms per segment; the owner asked for it slow and sequential — do
   not speed it up or overlap the edges. It is pure CSS with
   server-rendered classes, so it starts on first paint and works with JS disabled. Do
-  not gate it behind sessionStorage again. Ticker marquees the stack. All CSS keyframes
+  not gate it behind sessionStorage again. All CSS keyframes
   — **no animation library is installed and none should be.**
 - Everything degrades under `prefers-reduced-motion: reduce`.
 - Tailwind v4 uses `bg-linear-to-r`, not `bg-gradient-to-r`. The old name silently
@@ -84,25 +84,16 @@ brief's Sections 6 and 7 calm/no-motion direction. Do not "fix" the animations a
 
 Reusable, all keyboard- and screen-reader-tested in `e2e/interactive.spec.ts`:
 
-- `Tabs` (`components/tabs.tsx`) — real ARIA tabs: roving tabindex (one tab stop),
-  arrow/Home/End keys, `aria-selected`, one visible panel. `ServiceTabs` composes it.
-- `Carousel` (`components/carousel.tsx`) — native scroll-snap `rail`, so touch drag and
-  keyboard work without a gesture library. Arrows disable at the ends; dots are real
-  navigation; position is announced in a live region. **No autoplay** — nothing moves on
-  its own, so there is no WCAG 2.2.2 pause control to get wrong. It calls
-  `Children.toArray`, which matters: `{list}` plus a trailing slide otherwise arrives as
-  `[wholeList, trailing]` and crams the list into one slide.
-- `Spotlight` (`components/spotlight.tsx`) — sets `--mx/--my` from a mouse pointer so the
-  `spot` utility's glow follows the cursor; touch and keyboard fall back to a centred
-  glow on `:focus-within`.
-- `CountUp` — animates a number once on first view; renders the final value server-side
-  and skips the animation under reduced motion.
+- `ServiceExplorer` — real ARIA tabs: roving tabindex, arrow keys, `aria-selected`, one
+  panel. Advances on its own (with a visible progress line) until someone picks a tab;
+  never under reduced motion.
+- `ProjectDialog` and the mobile menu — native modal `<dialog>`s: the browser supplies
+  the focus trap, Escape, the backdrop and focus restore. Any link carrying
+  `data-project-dialog` opens the project dialog instead of navigating.
 - `ContactDock` — the floating launcher, bottom-right. Hidden on `/contact`, closes on
   Escape and restores focus, and its bob runs **six iterations then stops**: an
   infinitely moving control is measurably harder to hit, and Playwright cannot land a
   click on one at all.
-- `StageArt` — five hand-authored animated SVGs, one per delivery stage. Decorative and
-  `aria-hidden`; the stage text carries the meaning.
 - `Faq` — native `<details name="faq">`, so accordion behaviour, keyboard and
   find-in-page are free, plus `FAQPage` JSON-LD. Answers stay in the DOM when closed.
 
@@ -110,34 +101,26 @@ Reusable, all keyboard- and screen-reader-tested in `e2e/interactive.spec.ts`:
 axe flags a scrollable region with no focusable content as a serious failure, and
 keyboard users genuinely cannot scroll it otherwise.
 
-## Charts
+## Delivery journey (/process)
 
-`RangeChart` (`components/range-chart.tsx`) draws horizontal min–max bars. It is used
-twice on Home: engagement stages and per-discipline durations.
+The process is an AI development life cycle, never "SDLC" (feedback 2026-11). Stages show
+no numbers, durations or timeline. `/process` is an orbit carousel,
+`components/ui/stage-orbit-carousel.tsx` (adapted from a supplied DishOrbitCarousel; GSAP
+— the one animation library, asked for explicitly). Scrolling _locks_ on the section:
+one wheel/swipe gesture = one stage, and the page is released past either end. Do not
+go back to a scroll-scrub with snap — that skipped stages on trackpad momentum. Content:
+`content/process.ts` (`journey`, `processStages[].phase` / `.ai`); photos: `stageMedia`
+in `content/media.ts`.
 
-- **Single hue, identity from the row label.** Stage order is a _sequence_, not a
-  magnitude, so a sequential ramp would imply something untrue — and a five-colour
-  categorical set cannot clear the CVD-separation check on this surface (verified with
-  the dataviz validator; the darkest step also fell to 2.43:1). `accent` is 11.1:1 on
-  `panel` and `accent-dim` 5.52:1; grid lines stay recessive at 1.22:1.
-- **Every bar carries its own value label**, so colour is never the only channel, and a
-  real `<table>` sits behind a "View as a table" toggle.
-- **Numbers come from `content/`** (`service.weeks`, `stage.weeks`, `engagementWeeks`),
-  never from parsing the prose — so chart and copy cannot disagree.
-- Reserve the right gutter (`pr-20` / `mr-20`) for the end-of-bar labels; a bar at the
-  axis maximum otherwise pushes its label off the page.
-
-**No dual-axis charts, ever**, and no invented metrics — every number plotted must trace
-to something in `content/`.
+Never state a team size or headcount anywhere on the site (feedback 2026-11): the firm
+should read as an established organisation.
 
 ## Utilities worth knowing
 
-`spot` (cursor glow) · `glow` / `glow-on` (hover and active lighting for tabs, pills,
-arrows) · `aurora` (slow drifting background light) · `rail` (scroll-snap carousel) ·
-`rule-draw` (hairline that draws itself when its section reveals) · `panel` /
-`panel-hover` (card surface) · `tilt` / `lift` (pointer-driven 3D tilt, capped at 5°,
-fed by `Spotlight`) · `sheen` (gold sweep) · `bob` / `ring-pulse` (contact dock) ·
-`converge` / `fill-bar` / `tick-in` / `trace` / `travel` (stage illustrations)
+`glow` (hover lighting for tabs, pills, arrows) · `aurora` (slow drifting background
+light) · `rail` (scroll-snap row) · `rule-draw` (hairline that draws itself when its
+section reveals) · `panel` / `panel-hover` (glass card surface) · `bob` / `ring-pulse`
+(contact dock) · `ken-burns` (photo bands) · `gradient-text`
 
 **When editing `globals.css`, never replace a range between two comment anchors.** Doing
 that once silently deleted `spot`, `glow`, `glow-on`, `aurora`, `rule-draw` and `rail`

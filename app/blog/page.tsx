@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { Container, CtaBand, PageHeader, reveal } from "@/components/ui"
-import { Spotlight } from "@/components/spotlight"
 import { posts } from "@/content/blog"
 import { PhotoBand } from "@/components/photo-band"
 import { media } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
+import { site } from "@/content/site"
 
 export const metadata: Metadata = pageMetadata({
   title: "Blog",
@@ -16,6 +17,7 @@ export const metadata: Metadata = pageMetadata({
 })
 
 export default function BlogPage() {
+  if (!site.blogEnabled) notFound()
   return (
     <>
       <PageHeader
@@ -33,7 +35,7 @@ export default function BlogPage() {
         <Container>
           <ul className="grid gap-4 md:grid-cols-2">
             {posts.map((post, i) => (
-              <Spotlight as="li" key={post.slug} className="panel tilt lift" {...reveal(i)}>
+              <li key={post.slug} className="panel panel-hover" {...reveal(i)}>
                 <Link href={`/blog/${post.slug}`} className="group flex h-full flex-col p-6 md:p-8">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-sm">
                     <span className="text-accent">{post.tag}</span>
@@ -56,7 +58,7 @@ export default function BlogPage() {
                     {post.status === "draft" ? "See the outline" : "Read the post"}
                   </span>
                 </Link>
-              </Spotlight>
+              </li>
             ))}
           </ul>
         </Container>

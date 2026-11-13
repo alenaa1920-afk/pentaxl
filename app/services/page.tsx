@@ -3,8 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Container, CtaBand, PageHeader, reveal } from "@/components/ui"
 import { PhotoBand } from "@/components/photo-band"
-import { Spotlight } from "@/components/spotlight"
-import { ServiceIcon } from "@/components/service-icon"
+import { ServiceIcon } from "@/components/icons"
 import { services } from "@/content/services"
 import { media, serviceMedia } from "@/content/media"
 import { pageMetadata } from "@/lib/utils"
@@ -35,12 +34,7 @@ export default function ServicesPage() {
         <Container>
           <ul className="grid gap-4 md:grid-cols-2">
             {services.map((service, i) => (
-              <Spotlight
-                as="li"
-                key={service.slug}
-                className="panel overflow-hidden"
-                {...reveal(i)}
-              >
+              <li key={service.slug} className="panel overflow-hidden" {...reveal(i)}>
                 <Link href={`/services/${service.slug}`} className="group flex h-full flex-col">
                   <div className="relative aspect-[16/7] overflow-hidden">
                     <Image
@@ -80,7 +74,7 @@ export default function ServicesPage() {
                     </dl>
                   </div>
                 </Link>
-              </Spotlight>
+              </li>
             ))}
           </ul>
         </Container>

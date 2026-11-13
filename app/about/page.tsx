@@ -33,7 +33,7 @@ export default function AboutPage() {
       <PageHeader
         title={`Why ${site.name} exists`}
         lead="Too much software is delivered as a demo and handed over as a liability — no environments, no tests, no runbook, and nobody who can explain a decision six months later. We build the other kind."
-        meta={`${site.team}, ${site.location}`}
+        meta={`Headquartered in ${site.location}`}
       />
 
       <PhotoBand
@@ -54,7 +54,7 @@ export default function AboutPage() {
         </p>
         <p className="mt-8" {...reveal(2)}>
           <Action href="/process" variant="quiet">
-            The five stages in full, including what happens when scope changes
+            The ADLC in full, including what happens when scope changes
           </Action>
         </p>
       </Section>
@@ -98,7 +98,7 @@ export default function AboutPage() {
 
       <PhotoBand
         photo={media.engineer}
-        title="Ten engineers, and you talk to the ones building it"
+        title="Senior engineers, and you talk to the ones building it"
         height="short"
       />
 
@@ -107,10 +107,10 @@ export default function AboutPage() {
         <div className="max-w-measure mt-6 space-y-4 text-base" {...reveal(1)}>
           {/* PLACEHOLDER: replace with real names, roles and links before launch. */}
           <p>
-            {site.team}, working out of {site.location}. We are a startup, and small on purpose — if
-            you want senior people on your problem directly, that is what this is. If you need forty
-            engineers next month we are honestly the wrong firm, and we will say so on the first
-            call.
+            Every engagement gets a dedicated delivery team led by a senior engineer, with AI,
+            cloud, security and data specialists brought in as the work needs them. Teams scale with
+            the engagement, and you talk directly to the people building your product rather than
+            through layers of account management.
           </p>
           <p className="border-line text-muted border px-4 py-3 font-mono text-sm">
             Names, roles and profiles are being added to this page.

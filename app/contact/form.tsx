@@ -47,8 +47,22 @@ const FIELDS: Field[] = [
   },
 ]
 
-export function ContactForm() {
+/**
+ * The full form on /contact, and the short one inside the project dialog — one
+ * component, so both share validation, the honeypot, the pending state and the honest
+ * not-delivering-yet message, and can never drift apart.
+ */
+export function ContactForm({
+  only,
+  compact = false,
+}: {
+  /** Render just these fields, in the form's own order. */
+  only?: FieldName[]
+  /** Tighter spacing and no hints, for the dialog. */
+  compact?: boolean
+} = {}) {
   const [state, formAction, pending] = useActionState(submitLead, { status: "idle" } as FormState)
+  const fields = only ? FIELDS.filter((f) => only.includes(f.name)) : FIELDS
   const [blurred, setBlurred] = useState<Partial<Record<FieldName, string>>>({})
   const uid = useId()
 
@@ -89,11 +103,12 @@ export function ContactForm() {
         </p>
       ) : null}
 
-      <div className="space-y-8">
-        {FIELDS.map((field) => {
+      <div className={compact ? "space-y-5" : "space-y-8"}>
+        {fields.map((field) => {
           const id = `${uid}-${field.name}`
           const error = errorFor(field.name)
-          const describedBy = error ? `${id}-error` : field.hint ? `${id}-hint` : undefined
+          const hint = compact ? undefined : field.hint
+          const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined
           const shared = {
             id,
             name: field.name,
@@ -111,14 +126,14 @@ export function ContactForm() {
                 {field.label}
                 {field.required ? null : <span className="sr-only"> (optional)</span>}
               </label>
-              {field.hint ? (
+              {hint ? (
                 <p id={`${id}-hint`} className="text-muted mt-1 text-sm">
-                  {field.hint}
+                  {hint}
                 </p>
               ) : null}
 
               {field.type === "textarea" ? (
-                <textarea {...shared} rows={6} />
+                <textarea {...shared} rows={compact ? 4 : 6} />
               ) : field.type === "select" ? (
                 // Native select: fully accessible, platform picker on mobile, 0KB.
                 <select {...shared}>
@@ -151,7 +166,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="mt-10">
+      <div className={compact ? "mt-7" : "mt-10"}>
         <SubmitButton pending={pending}>{pending ? "Sending" : "Send this"}</SubmitButton>
         <p className="text-muted mt-4 font-mono text-sm">We reply within {RESPONSE_PROMISE}.</p>
       </div>

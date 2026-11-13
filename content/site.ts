@@ -10,9 +10,9 @@ export const site = {
   // PLACEHOLDER: tagline — owner to confirm.
   tagline: "Software, AI and cloud, from idea to production.",
   description:
-    "PentaXL is a technical consulting startup. Ten engineers building software, " +
-    "integrating AI and ML into products that already exist, and running the cloud " +
-    "infrastructure underneath — cloud native, on-premise or hybrid.",
+    "PentaXL is a technology consultancy building AI-first software, integrating AI and " +
+    "ML into products that already exist, and running the cloud infrastructure underneath " +
+    "— cloud native, on-premise or hybrid.",
   domain: "pentaxl.com",
   url: "https://pentaxl.com",
   // PLACEHOLDER: email — stand-in, no mailbox purchased yet (see emailIsLive).
@@ -22,9 +22,10 @@ export const site = {
   phoneDisplay: "",
   // PLACEHOLDER: location — the city shown publicly.
   location: "India",
-  team: "Ten engineers",
-  teamSize: 10,
   emailIsLive: false,
+  // Blog hidden for now (feedback 2026-11). Flip to true to bring back the nav links,
+  // the sitemap entries and the routes themselves.
+  blogEnabled: false,
 }
 
 export const whatsAppUrl = () => {
@@ -35,7 +36,7 @@ export const whatsAppUrl = () => {
 export const primaryNav = [
   { href: "/services", label: "Services" },
   { href: "/process", label: "Process" },
-  { href: "/blog", label: "Blog" },
+  ...(site.blogEnabled ? [{ href: "/blog", label: "Blog" }] : []),
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ]
@@ -51,7 +52,7 @@ export const footerNav = [
   {
     heading: "The firm",
     items: [
-      { href: "/blog", label: "Blog" },
+      ...(site.blogEnabled ? [{ href: "/blog", label: "Blog" }] : []),
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
     ],
@@ -100,53 +101,6 @@ export const industries = [
 ]
 
 /**
- * Commitments, not adjectives. Every line here is something the site already promises
- * in a service page or the process — this section just puts them in one place.
- */
-export const guarantees = [
-  {
-    id: "scope",
-    name: "Scope in writing first",
-    note: "Agreed at stage three, before anyone builds. Nothing is billed before that.",
-  },
-  {
-    id: "milestones",
-    name: "Working software every milestone",
-    note: "Roughly every two weeks you get something you can use, not a status report.",
-  },
-  {
-    id: "tests",
-    name: "Tests and CI from day one",
-    note: "Set up at the start rather than retrofitted, so regressions surface early.",
-  },
-  {
-    id: "rollback",
-    name: "A rollback that has been tested",
-    note: "Documented and exercised at least once — not a plan nobody has run.",
-  },
-  {
-    id: "observability",
-    name: "Production you can see into",
-    note: "Logs, metrics and traces with alerts that mean something.",
-  },
-  {
-    id: "cost",
-    name: "A cost ceiling on AI calls",
-    note: "Measured per request at realistic volume before launch, with fallbacks.",
-  },
-  {
-    id: "handover",
-    name: "Handover, not hostage",
-    note: "Runbook and notes so whoever maintains it next can, including you.",
-  },
-  {
-    id: "honesty",
-    name: "We tell you when we are wrong",
-    note: "Including our own bad estimates, which we do not pass on to you.",
-  },
-]
-
-/**
  * Buyer questions, answered from what the site already commits to elsewhere — the
  * process stages, the deployment stance and the team size. Nothing here promises
  * anything the rest of the site does not.
@@ -173,8 +127,8 @@ export const faqs = [
     a: "That is most of our AI work. We build retrieval over your own data, measure quality with an evaluation set before and after, and put limits, fallbacks and a cost ceiling around every model call. If a problem does not need a model, we will say so.",
   },
   {
-    q: "How big is the team we would work with?",
-    a: "Ten engineers in total, so you get senior people on the problem directly. If you need forty engineers next month we are the wrong firm, and we will tell you on the first call.",
+    q: "Who would we actually work with?",
+    a: "A dedicated team shaped around your project and led by a senior engineer, with AI, cloud, security and data specialists brought in as the work needs them. You talk directly to the people building it, not through layers of account management.",
   },
 ]
 

@@ -7,7 +7,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { heroCycle, services, serviceEdges } from "@/content/services"
+import { services, serviceEdges } from "@/content/services"
 import { site } from "@/content/site"
 import { cn } from "@/lib/utils"
 
@@ -20,19 +20,16 @@ const R = 140
 /** Milliseconds per traced segment. Owner asked for a visible, unhurried draw. */
 const SEG_MS = 520
 
-const points = heroCycle
-  .map((slug) => services.find((s) => s.slug === slug)!)
-  .filter(Boolean)
-  .map((service, i, all) => {
-    const angle = (-90 + i * (360 / all.length)) * (Math.PI / 180)
-    return {
-      slug: service.slug,
-      name: service.name,
-      label: service.nodeLabel,
-      x: CX + R * Math.cos(angle),
-      y: CY + R * Math.sin(angle),
-    }
-  })
+const points = services.map((service, i, all) => {
+  const angle = (-90 + i * (360 / all.length)) * (Math.PI / 180)
+  return {
+    slug: service.slug,
+    name: service.name,
+    label: service.nodeLabel,
+    x: CX + R * Math.cos(angle),
+    y: CY + R * Math.sin(angle),
+  }
+})
 
 const edges = serviceEdges.flatMap(([from, to]) => {
   const a = points.find((p) => p.slug === from)
@@ -175,7 +172,7 @@ export function HeroFigure() {
             <span
               aria-hidden="true"
               className={cn(
-                "absolute font-mono text-sm whitespace-nowrap transition-colors duration-300",
+                "absolute font-mono text-sm whitespace-nowrap transition-colors duration-300 [text-shadow:0_1px_10px_rgb(7_6_26/0.95),0_0_2px_rgb(7_6_26/0.9)]",
                 labelPos(p.x, p.y),
                 active !== null && p.slug !== active ? "text-muted/50" : "text-ink",
               )}
@@ -186,7 +183,7 @@ export function HeroFigure() {
         ))}
       </div>
 
-      <p className="text-muted mx-auto mt-6 min-h-12 max-w-[26rem] text-center text-base">
+      <p className="text-muted mx-auto mt-6 min-h-12 max-w-[26rem] text-center text-base [text-shadow:0_1px_10px_rgb(7_6_26/0.95),0_0_2px_rgb(7_6_26/0.9)]">
         {summary ?? site.tagline}
       </p>
     </div>

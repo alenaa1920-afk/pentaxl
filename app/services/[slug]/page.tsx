@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
-import { ClusterGrid, CtaBand, JsonLd, PageHeader, Part, PrevNext, Prose } from "@/components/ui"
+import { Block, ClusterGrid, CtaBand, JsonLd, PageHeader, PrevNext, Prose } from "@/components/ui"
 import { neighbours, serviceBySlug, services } from "@/content/services"
 import { clustersByIds } from "@/content/stack"
 import { site } from "@/content/site"
@@ -60,12 +60,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         priority
       />
 
-      <Part index={1} id="what" title="What this is">
+      <Block rule={false} id="what" title="What this is">
         <Prose>{service.body}</Prose>
-      </Part>
+      </Block>
 
-      <Part
-        index={2}
+      <Block
         id="deliverables"
         title="What you get"
         lead="Artefacts, not adjectives. Each is something you can open, run, or hand to someone else."
@@ -83,21 +82,20 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </li>
           ))}
         </ul>
-      </Part>
+      </Block>
 
-      <Part index={3} id="timeline" title="How long it takes">
+      <Block id="timeline" title="How long it takes">
         <p className="text-accent font-mono text-lg md:text-xl">{service.timeline}</p>
         <p className="max-w-measure text-muted mt-4 text-base">{service.timelineCaveat}</p>
-      </Part>
+      </Block>
 
-      <Part
-        index={4}
+      <Block
         id="tech"
         title="What it is built with"
         lead="The tools this discipline actually uses, and why each one is in the list."
       >
         <ClusterGrid clusters={clustersByIds(service.stackClusters)} />
-      </Part>
+      </Block>
 
       {near ? (
         <PrevNext

@@ -16,10 +16,6 @@ const entry = (file: string, alt: string): Media => ({ src: `/media/${file}`, al
 
 export const media = {
   // — People doing the work ————————————————————————————————————————————
-  team: entry(
-    "team-collaboration.jpg",
-    "Four engineers gathered around a monitor reviewing code together",
-  ),
   whiteboard: entry(
     "whiteboard-architecture.jpg",
     "Three engineers working a system design out on a whiteboard",
@@ -28,41 +24,22 @@ export const media = {
     "team-planning.jpg",
     "A team planning a build against a wall of notes and diagrams",
   ),
-  scoping: entry(
-    "scoping-session.jpg",
-    "Two people at desks in an open office working through a problem",
-  ),
   engineer: entry(
     "engineer-at-monitor.jpg",
     "An engineer reading a wall of code on a large display",
-  ),
-  workstation: entry(
-    "developer-workstation.jpg",
-    "A developer at a dual-monitor workstation mid-build",
   ),
 
   // — Software ————————————————————————————————————————————————————————
   code: entry("code-on-screen.jpg", "Source code on a dark screen, syntax highlighted"),
 
   // — Infrastructure ——————————————————————————————————————————————————
-  servers: entry("server-room.jpg", "Rows of server hardware lit blue and red in a data centre"),
   blades: entry(
     "server-blades.jpg",
     "A row of server blades with status lights running down the chassis",
   ),
-  infrastructure: entry(
-    "infrastructure.jpg",
-    "Close-up of server racks and network cabling in a data centre",
-  ),
   fibre: entry("fibre-optic-switch.jpg", "A fibre optic switch with every port patched"),
-  patchPanel: entry(
-    "network-patch-panel.jpg",
-    "A network patch panel with cabling bundled across it",
-  ),
 
   // — Silicon and data ————————————————————————————————————————————————
-  gpu: entry("compute-gpu.jpg", "A high-performance GPU and its cooling fans, close up"),
-  silicon: entry("silicon-chips.jpg", "Memory silicon and components on a circuit board, close up"),
   analytics: entry("data-visualisation.jpg", "A dense data visualisation on a dark display"),
 
   /**
@@ -76,28 +53,51 @@ export const media = {
     "A server rack photographed close up, falling away into shallow focus",
   ),
 
+  // — Livelier picks (2026-11 feedback: brighter, more colour, more people) ————
+  teamBright: entry(
+    "team-bright.jpg",
+    "A team gathered round a table in a bright office, working through a project on laptops",
+  ),
+  aiLanguage: entry(
+    "ai-language-models.jpg",
+    "Glowing arches of streaming code — an artist's illustration of language models",
+  ),
+  aiNeural: entry(
+    "ai-neural.jpg",
+    "Glass spheres bursting outward on blue — an artist's illustration of adaptable AI",
+  ),
+
   // — Place ———————————————————————————————————————————————————————————
   office: entry("office-at-night.jpg", "An office building still lit at night"),
 } as const
-
-export type MediaKey = keyof typeof media
 
 /**
  * One photograph per discipline, so a service reads as its own subject rather than as a
  * row in a list. Keyed by service slug; every slug in content/services.ts needs a row.
  */
 export const serviceMedia: Record<string, Media> = {
-  "software-development": media.workstation,
-  "ai-and-ml-integration": media.gpu,
+  "software-development": media.aiLanguage,
+  "ai-and-ml-integration": media.aiNeural,
   "cloud-and-devops": media.blades,
   "security-and-compliance": media.fibre,
   "data-and-integrations": media.analytics,
 }
 
+/** One photograph per delivery stage, in `processStages` order (the /process carousel). */
+export const stageMedia: Media[] = [
+  entry("stage-idea.jpg", "A team brainstorming with sticky notes on a glass wall"),
+  entry(
+    "stage-design.jpg",
+    "Translucent blue and violet blocks streaming through space — an illustration of neural network inputs and outputs",
+  ),
+  entry("stage-scope.jpg", "Colleagues smiling as they agree a plan around a laptop"),
+  entry("stage-delivery.jpg", "A team building together around laptops in a colourful office"),
+  entry("stage-launch.jpg", "A team celebrating a launch at their desks"),
+]
+
 /**
- * The film on /process. Stock b-roll from the same cottonbro studio shoot as `team`, so
- * the cast matches the photograph on the homepage. 1366x720 is the largest rendition
- * Pexels serves below 4K, and is sharp at the width it displays.
+ * The film on /process. Stock b-roll from cottonbro studio. 1366x720 is the largest
+ * rendition Pexels serves below 4K, and is sharp at the width it displays.
  */
 export const engagementFilm = {
   src: "/media/engagement-review.mp4",

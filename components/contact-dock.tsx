@@ -52,7 +52,7 @@ export function ContactDock() {
           <div className="mt-5 grid gap-2">
             <Link
               href="/contact"
-              className="bg-accent text-on-accent sheen inline-flex min-h-11 items-center justify-center px-4 text-base font-medium transition-[filter] hover:brightness-110"
+              className="bg-accent text-on-accent inline-flex min-h-11 items-center justify-center px-4 text-base font-medium transition-[filter] hover:brightness-110"
             >
               Tell us about the project
             </Link>

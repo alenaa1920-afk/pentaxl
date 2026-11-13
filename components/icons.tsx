@@ -1,20 +1,22 @@
 import {
   Banknote,
-  Boxes,
+  BrainCircuit,
+  Cloud,
+  Code2,
+  Database,
+  ShieldCheck,
+  Bot,
+  FileSearch,
+  MessagesSquare,
+  Sparkles,
+  TrendingUp,
+  Workflow,
   Building2,
   Cpu,
-  FileCheck2,
   GraduationCap,
   HeartPulse,
   Layers,
-  LineChart,
-  Receipt,
-  RotateCcw,
-  ScrollText,
-  ShieldCheck,
   ShoppingBag,
-  Siren,
-  TestTube2,
   Truck,
 } from "lucide-react"
 
@@ -33,23 +35,34 @@ const INDUSTRY: Record<string, React.ComponentType<{ className?: string }>> = {
   saas: Layers,
 }
 
-const GUARANTEE: Record<string, React.ComponentType<{ className?: string }>> = {
-  scope: ScrollText,
-  milestones: Boxes,
-  tests: TestTube2,
-  rollback: RotateCcw,
-  observability: Siren,
-  cost: Receipt,
-  handover: FileCheck2,
-  honesty: LineChart,
-}
-
 export function IndustryIcon({ id, className = "size-4" }: { id: string; className?: string }) {
   const Icon = INDUSTRY[id] ?? Layers
   return <Icon className={className} />
 }
 
-export function GuaranteeIcon({ id, className = "size-4" }: { id: string; className?: string }) {
-  const Icon = GUARANTEE[id] ?? ShieldCheck
+const AI_USE: Record<string, React.ComponentType<{ className?: string }>> = {
+  assistant: MessagesSquare,
+  extraction: FileSearch,
+  agents: Workflow,
+  triage: Bot,
+  copilot: Sparkles,
+  forecast: TrendingUp,
+}
+
+export function AiUseIcon({ id, className = "size-4" }: { id: string; className?: string }) {
+  const Icon = AI_USE[id] ?? Sparkles
   return <Icon className={className} />
+}
+
+const SERVICE: Record<string, React.ComponentType<{ className?: string }>> = {
+  "software-development": Code2,
+  "ai-and-ml-integration": BrainCircuit,
+  "cloud-and-devops": Cloud,
+  "security-and-compliance": ShieldCheck,
+  "data-and-integrations": Database,
+}
+
+export function ServiceIcon({ slug, className = "size-4" }: { slug: string; className?: string }) {
+  const Icon = SERVICE[slug]
+  return Icon ? <Icon className={className} /> : null
 }

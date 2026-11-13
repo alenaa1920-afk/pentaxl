@@ -2,9 +2,10 @@ import type { Metadata } from "next"
 import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google"
 import "./globals.css"
 import { site } from "@/content/site"
-import { ChromeGate, MotionRoot, SiteHeader } from "@/components/chrome"
+import { MotionRoot, SiteHeader } from "@/components/chrome"
 import { ShaderBackdrop } from "@/components/shader-backdrop"
 import { ContactDock } from "@/components/contact-dock"
+import { ProjectDialog } from "@/components/project-dialog"
 import { JsonLd, SiteFooter } from "@/components/ui"
 
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-archivo", display: "swap" })
@@ -48,14 +49,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <ShaderBackdrop />
         <MotionRoot />
-        <ChromeGate>
-          <SiteHeader />
-        </ChromeGate>
+        <SiteHeader />
         <main id="main">{children}</main>
-        <ChromeGate>
-          <SiteFooter />
-          <ContactDock />
-        </ChromeGate>
+        <SiteFooter />
+        <ContactDock />
+        <ProjectDialog />
         {/* Contact point omitted while the mailbox is a placeholder — publishing an
             address that bounces is worse than publishing none. */}
         <JsonLd
@@ -65,7 +63,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             name: site.legalName,
             url: site.url,
             description: site.description,
-            numberOfEmployees: { "@type": "QuantitativeValue", value: site.teamSize },
             ...(site.emailIsLive ? { email: site.email } : {}),
           }}
         />

@@ -1,15 +1,15 @@
 /# Pentaxl website
 
-Marketing site for Pentaxl — a ten-person technical consulting startup doing software
+Marketing site for Pentaxl — a technology consultancy doing AI-first software
 development, AI and ML integration, cloud and DevOps, security and compliance, and data
 and integrations.
 
-Warm pearl ground with obsidian luxe bands, jade for interaction and gold for emphasis.
-Motion throughout is CSS: scroll reveals, a self-drawing hero, pointer-driven 3D card
-tilt, animated stage illustrations, and a floating contact launcher.
+A live violet shader ground with glass panels over it. Motion is CSS — scroll reveals, a
+self-drawing hero, a floating contact launcher — except the /process orbit carousel,
+which uses GSAP.
 
 Next.js 15 App Router, React 19, TypeScript, Tailwind v4. No CMS: content is typed
-TypeScript in `content/`. No animation library: the motion is CSS.
+TypeScript in `content/`.
 
 ## Running it
 
@@ -43,19 +43,19 @@ app/                 routes; every page exports metadata
   blog/              index + one page per post
 content/             all copy and data — the single source of truth
   site.ts            company facts, nav, form options, legal copy
-  services.ts        five disciplines + hero figure edges
+  services.ts        five disciplines, AI use cases, hero figure edges
   stack.ts           six technology clusters
-  process.ts         five delivery stages
-  work.ts            case studies
+  process.ts         the five stages of the AI development life cycle
+  media.ts           every photo and video, with its alt text
 components/
-  ui.tsx             layout, actions, headings, breadcrumbs, footer, ticker
-  chrome.tsx         header, mobile drawer, the reveal observer
+  ui.tsx             layout, actions, headings, breadcrumbs, footer
+  chrome.tsx         header, mobile menu dialog, the reveal observer
   hero.tsx           animated network figure
-  rows.tsx           service and case-study list rows
-  stack-explorer.tsx cluster filter
+  service-explorer.tsx  the five disciplines as tabs (home)
+  ui/stage-orbit-carousel.tsx  the delivery stages (/process)
 lib/                 cn + metadata, lead schema
 e2e/                 Playwright specs, routes derived from content
-docs/                pre-ship checklists, client wireframe sheet
+docs/                pre-ship checklists
 ```
 
 Pages never hardcode copy. Adding a service means one entry in `content/services.ts` —
@@ -89,22 +89,16 @@ collide with the `text-base` font-size utility — which is why the background i
 
 ## Interaction
 
-| Piece                       | Where                | Notes                                                                        |
-| --------------------------- | -------------------- | ---------------------------------------------------------------------------- |
-| Service tabs                | home                 | ARIA tabs, arrow keys, glow on hover and selection                           |
-| Work carousel               | home                 | scroll-snap, arrows disable at ends, dots, live-region position              |
-| FAQ accordion               | home                 | native `<details name>`, `FAQPage` JSON-LD, zero JS                          |
-| Spotlight cards             | home, services, work | cursor-following glow, focus fallback                                        |
-| Count-up stats              | home                 | animates once on view, skipped under reduced motion                          |
-| Stack filter                | `/stack`             | glowing pills, scrollable on mobile                                          |
-| Pentagon hero               | home                 | traces one line at a time on every load                                      |
-| Duration charts             | home                 | min–max range bars, hover emphasis, table view; numbers come from `content/` |
-| Industry + commitment cards | home                 | icon tiles with spotlight glow                                               |
-| Media slots                 | home                 | reserved frames for real photo/video assets, sized to avoid layout shift     |
+| Piece            | Where      | Notes                                                                  |
+| ---------------- | ---------- | ---------------------------------------------------------------------- |
+| Pentagon hero    | home       | traces one line at a time on every load                                |
+| Service explorer | home       | ARIA tabs, arrow keys, advances on its own until someone picks one     |
+| FAQ accordion    | home       | native `<details name>`, `FAQPage` JSON-LD, zero JS                    |
+| Orbit carousel   | `/process` | scroll over it turns one stage per gesture; beside it scrolls the page |
+| Project dialog   | everywhere | native `<dialog>`; opens from any `data-project-dialog` link           |
+| Mobile menu      | everywhere | native `<dialog>` as a bottom sheet                                    |
 
-Two rules worth keeping: `Carousel` must flatten with
-`Children.toArray` (otherwise a mapped list plus a trailing slide becomes one slide), and
-any horizontally scrollable container needs `tabIndex={0}` plus a name or axe fails it as
+Any horizontally scrollable container needs `tabIndex={0}` plus a name or axe fails it as
 a serious violation — correctly, since keyboard users cannot scroll it otherwise.
 
 ## Before launch

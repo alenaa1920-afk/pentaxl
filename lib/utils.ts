@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import type { Metadata } from "next"
 import { site } from "@/content/site"
 
-export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
+export const cn = (...classes: (string | false | null | undefined)[]) =>
+  twMerge(classes.filter(Boolean).join(" "))
 
 /** Every route's metadata goes through here so canonical and OG can never drift. */
 export function pageMetadata({
@@ -48,7 +48,7 @@ export const STATIC_ROUTES = [
   "/",
   "/services",
   "/process",
-  "/blog",
+  ...(site.blogEnabled ? ["/blog"] : []),
   "/about",
   "/contact",
   "/privacy",

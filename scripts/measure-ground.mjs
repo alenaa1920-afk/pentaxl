@@ -13,10 +13,10 @@ import { chromium } from "@playwright/test"
 const URL = process.env.URL ?? "http://127.0.0.1:3210/"
 const TOKENS = {
   ink: "#ffffff",
-  muted: "#c9c6ee",
-  accent: "#c6bdff",
-  accent2: "#5ee0ff",
-  hot: "#ff7ab8",
+  muted: "#e6e4fa",
+  accent: "#ddd6ff",
+  accent2: "#9deeff",
+  hot: "#ffc6e0",
 }
 
 const toLinear = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)

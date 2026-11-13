@@ -6,7 +6,8 @@ import { neighbours } from "@/content/services"
 import { site } from "@/content/site"
 import { pageMetadata } from "@/lib/utils"
 
-export const generateStaticParams = () => posts.map((p) => ({ slug: p.slug }))
+export const generateStaticParams = () =>
+  (site.blogEnabled ? posts : []).map((p) => ({ slug: p.slug }))
 
 export async function generateMetadata({
   params,
@@ -27,7 +28,7 @@ export async function generateMetadata({
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const post = postBySlug((await params).slug)
-  if (!post) notFound()
+  if (!post || !site.blogEnabled) notFound()
 
   const near = neighbours(posts, post.slug)
 

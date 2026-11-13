@@ -84,7 +84,7 @@ export function ShaderBackdrop() {
         </div>
       ) : null}
       {/* The scrim every contrast number in globals.css assumes. */}
-      <div className="absolute inset-0 bg-[#07061a]/58" />
+      <div className="absolute inset-0 bg-[#07061a]/45" />
     </div>
   )
 }

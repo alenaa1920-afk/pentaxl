@@ -24,9 +24,9 @@ for (const route of ROUTES) {
 }
 
 test("text clears AA against the lightest the shader ground can get", async ({ page }) => {
-  // The backdrop is two moving gradients under a 0.58 scrim. The worst case is the
+  // The backdrop is two moving gradients under a 0.45 scrim. The worst case is the
   // brightest point of the rendered ground over a full shader cycle, sampled at
-  // #0F4E6A by scripts/measure-ground.mjs — so that, not a flat token, is what text
+  // #305C89 by scripts/measure-ground.mjs — so that, not a flat token, is what text
   // has to clear.
   await page.goto("/")
   const ratios = await page.evaluate(() => {
@@ -38,7 +38,7 @@ test("text clears AA against the lightest the shader ground can get", async ({ p
       const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
       return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
     }
-    const WORST_GROUND = "#0f4e6a"
+    const WORST_GROUND = "#305c89"
     const against = (token: string) => {
       const a = lum(root.getPropertyValue(token))
       const b = lum(WORST_GROUND)

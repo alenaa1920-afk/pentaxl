@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...publishedPosts.map((post) => ({
+    ...(site.blogEnabled ? publishedPosts : []).map((post) => ({
       url: url(`/blog/${post.slug}`),
       changeFrequency: "yearly" as const,
       priority: 0.6,

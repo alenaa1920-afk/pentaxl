@@ -27,29 +27,34 @@ replaced.
 licence requires on-page attribution, and a credit line on every photograph read as
 clutter. This file is the record instead — keep it complete.
 
-Downloaded 2026-09-25 (rows marked †: 2026-09-19), via the Pexels CDN at
+Downloaded 2026-09-25, via the Pexels CDN at
 `?auto=compress&cs=tinysrgb&w=2400&h=1350&fit=crop`, then served through `next/image`,
 which re-encodes to AVIF or WebP per request.
 
-| File                          | Subject                                            | Photographer                 | Source URL                             |
-| ----------------------------- | -------------------------------------------------- | ---------------------------- | -------------------------------------- |
-| `hero-rack.jpg`               | Server rack in shallow focus (hero ground)         | cookiecutter                 | https://www.pexels.com/photo/37605910/ |
-| `server-blades.jpg`           | Server blades with status LEDs                     | cookiecutter                 | https://www.pexels.com/photo/1148820/  |
-| `fibre-optic-switch.jpg`      | Fibre optic switch, patched                        | Brett Sayles                 | https://www.pexels.com/photo/4497197/  |
-| `network-patch-panel.jpg`     | Network patch panel and cabling                    | Brett Sayles                 | https://www.pexels.com/photo/5087172/  |
-| `silicon-chips.jpg`           | Circuit board and memory silicon, macro            | Jakub Pabis                  | https://www.pexels.com/photo/36169774/ |
-| `engineer-at-monitor.jpg`     | Engineer reading code on a large display           | ThisIsEngineering            | https://www.pexels.com/photo/3861951/  |
-| `developer-workstation.jpg`   | Developer at a dual-monitor workstation            | Zayed Hossain                | https://www.pexels.com/photo/36706459/ |
-| `compute-gpu.jpg`             | High-performance GPU and cooling fans              | Planka                       | https://www.pexels.com/photo/35569901/ |
-| `code-on-screen.jpg`          | Source code on a dark screen                       | Nemuel Sereti                | https://www.pexels.com/photo/6424583/  |
-| `whiteboard-architecture.jpg` | Engineers working through a design at a whiteboard | ThisIsEngineering            | https://www.pexels.com/photo/3913021/  |
-| `team-planning.jpg`           | Team planning against a wall of notes              | ThisIsEngineering            | https://www.pexels.com/photo/3912478/  |
-| `data-visualisation.jpg`      | Data visualisation on a dark display               | Thales13                     | https://www.pexels.com/photo/38808473/ |
-| `office-at-night.jpg`         | Office building lit at night                       | Pexels contributor 227888035 | https://www.pexels.com/photo/12837026/ |
-| `team-collaboration.jpg` †    | Engineers reviewing code together                  | cottonbro studio             | https://www.pexels.com/photo/6804071/  |
-| `server-room.jpg` †           | Server hardware lit blue and red                   | cookiecutter                 | https://www.pexels.com/photo/17489151/ |
-| `scoping-session.jpg` †       | Two people working through a problem at desks      | cottonbro studio             | https://www.pexels.com/photo/6804068/  |
-| `infrastructure.jpg` †        | Server racks and network cabling                   | cookiecutter                 | https://www.pexels.com/photo/37730212/ |
+| File                          | Subject                                            | Photographer                      | Source URL                             |
+| ----------------------------- | -------------------------------------------------- | --------------------------------- | -------------------------------------- |
+| `hero-rack.jpg`               | Server rack in shallow focus (hero ground)         | cookiecutter                      | https://www.pexels.com/photo/37605910/ |
+| `server-blades.jpg`           | Server blades with status LEDs                     | cookiecutter                      | https://www.pexels.com/photo/1148820/  |
+| `fibre-optic-switch.jpg`      | Fibre optic switch, patched                        | Brett Sayles                      | https://www.pexels.com/photo/4497197/  |
+| `engineer-at-monitor.jpg`     | Engineer reading code on a large display           | ThisIsEngineering                 | https://www.pexels.com/photo/3861951/  |
+| `code-on-screen.jpg`          | Source code on a dark screen                       | Nemuel Sereti                     | https://www.pexels.com/photo/6424583/  |
+| `whiteboard-architecture.jpg` | Engineers working through a design at a whiteboard | ThisIsEngineering                 | https://www.pexels.com/photo/3913021/  |
+| `team-planning.jpg`           | Team planning against a wall of notes              | ThisIsEngineering                 | https://www.pexels.com/photo/3912478/  |
+| `data-visualisation.jpg`      | Data visualisation on a dark display               | Thales13                          | https://www.pexels.com/photo/38808473/ |
+| `office-at-night.jpg`         | Office building lit at night                       | Pexels contributor 227888035      | https://www.pexels.com/photo/12837026/ |
+| `team-bright.jpg`             | Team round a table in a bright office              | fauxels                           | https://www.pexels.com/photo/3182804/  |
+| `ai-language-models.jpg`      | Arches of code — illustration of language models   | Google DeepMind (Wes Cockx)       | https://www.pexels.com/photo/18069694/ |
+| `ai-neural.jpg`               | Glass spheres — illustration of adaptable AI       | Google DeepMind (Nidia Dias)      | https://www.pexels.com/photo/17485657/ |
+| `stage-idea.jpg` ‡            | Team brainstorming on a glass wall                 | Vitaly Gariev                     | https://www.pexels.com/photo/39204845/ |
+| `stage-design.jpg` ‡          | Blocks streaming — illustration of neural networks | Google DeepMind (Rose Pilkington) | https://www.pexels.com/photo/17485706/ |
+| `stage-scope.jpg` ‡           | Colleagues agreeing a plan around a laptop         | Andrea Piacquadio                 | https://www.pexels.com/photo/3860819/  |
+| `stage-delivery.jpg` ‡        | Team building together in a colourful office       | Vitaly Gariev                     | https://www.pexels.com/photo/39190489/ |
+| `stage-launch.jpg` ‡          | Team celebrating a launch                          | Yan Krukau                        | https://www.pexels.com/photo/7693708/  |
+
+Rows from `team-bright.jpg` down:
+2026-11-13, chosen for colour and people after feedback that the photography read as
+dark. ‡ rows are 1600x1000 rather than 2400x1350: they are only ever shown small, as the
+round stage photos on /process.
 
 ## Video
 

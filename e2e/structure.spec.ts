@@ -27,7 +27,7 @@ for (const route of ROUTES) {
 
 for (const width of WIDTHS) {
   test(`no horizontal overflow at ${width}px`, async ({ page }) => {
-    for (const route of ["/", "/services/software-development", "/blog", "/process", "/contact"]) {
+    for (const route of ["/", "/services/software-development", "/about", "/process", "/contact"]) {
       await page.setViewportSize({ width, height: 900 })
       await page.goto(route)
       const overflow = await page.evaluate(
@@ -263,16 +263,18 @@ test("the pentagon traces one line at a time, not all at once", async ({ browser
 
 test("current route is marked in the nav", async ({ page }, info) => {
   test.skip(info.project.name !== "desktop", "desktop nav only")
-  await page.goto("/blog")
-  await expect(page.locator('nav[aria-label="Primary"] a[aria-current="page"]')).toHaveText("Blog")
+  await page.goto("/about")
+  // Role-based, so the closed mobile menu's copy of the nav (hidden) is not matched.
+  await expect(
+    page.getByRole("navigation", { name: "Primary" }).locator('a[aria-current="page"]'),
+  ).toHaveText("About")
 })
 
-test("draft posts are excluded from the sitemap, and removed routes are gone", async ({ page }) => {
+test("hidden and removed routes are kept out of the sitemap", async ({ page }) => {
   const body = await (await page.request.get("/sitemap.xml")).text()
   expect(body).toContain("/services/software-development")
-  expect(body).toContain("/blog")
-  // Drafts stay out until written.
-  expect(body).not.toContain("/blog/what-happens-when-the-model-is-wrong")
+  // The blog is hidden for now (site.blogEnabled).
+  expect(body).not.toContain("/blog")
   // Work and Stack were deferred to phase two.
   expect(body).not.toContain("/work")
   expect(body).not.toContain("/stack")

@@ -1,16 +1,11 @@
 @import "tailwindcss";
 
-/* The shader is the page background — fixed, full-viewport, always moving.
-   Text tints are set against #2C627A: the lightest the ground can reach once the
-   brightest shader hue shows through the 0.58 scrim. Measured, not guessed — at the
-   previous tints muted was 4.08, accent 3.34 and hot 2.78 over those patches.
-   Thinning the scrim or brightening the hues means recomputing all four. Everything
-   above it is glass. A 0.58 scrim sits between the two, which is what makes contrast
-   predictable: sampling the rendered ground over a full shader cycle, the lightest it
-   reaches is #0F4E6A (the teal lobe), where white is 9.1:1, muted 5.5:1, violet 5.2:1
-   and cyan 5.9:1. `hot` is 3.8:1 and is only ever used inside `gradient-text`, which is
-   large display type. Re-run `scripts/measure-ground.mjs` before thinning the scrim or brightening a
-   shader hue; those numbers are measured, not assumed. */
+/* The shader is the page background — fixed, full-viewport, always moving — under a
+   0.45 scrim (thinned from 0.58 in 2026-11: the site read as too dark). Sampled over a
+   full shader cycle by `scripts/measure-ground.mjs`, the lightest the ground reaches is
+   #305C89, where ink is 7.0:1, muted 5.6:1, accent 5.0:1, accent-2 5.3:1 and hot 4.8:1.
+   Re-run that script before thinning the scrim or brightening a shader hue; those
+   numbers are measured, not assumed. Everything above it is glass. */
 @theme {
   --color-canvas: #07061a;
   --color-ink: #ffffff;
@@ -126,15 +121,6 @@
   }
 }
 
-@keyframes curtain {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -152,43 +138,11 @@
   animation: enter-word 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@utility curtain {
-  animation: curtain 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
 /* Long enough that the canvas replacing the CSS ground is not a visible event. */
 @utility shader-in {
   animation: fade-in 1400ms ease-out both;
 }
 
-/* Glass surfaces — the page's one card treatment now that the ground moves. */
-@utility glass {
-  background-color: var(--color-surface);
-  backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid var(--color-line);
-  transition:
-    background-color 0.35s ease,
-    border-color 0.35s ease,
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@utility glass-hover {
-  &:hover {
-    background-color: var(--color-surface-2);
-    border-color: var(--color-line-strong);
-  }
-}
-
-/* Big numerals and display type get the gradient treatment. */
-/* The static ground: painted server-side, identical in hue to the shader's base, so
-   the canvas cross-fades over it invisibly. Also the entire effect under reduced
-   motion.
-
-   Deliberately not animated. Animating background-position on this many radial
-   gradients is a full-viewport repaint every frame that no compositor can take to the
-   GPU, and it is covered by the shader a second later anyway — it measured as one of
-   two independent causes of a 3 fps homepage. The shader above it supplies the
-   motion. */
 /* Slow zoom on background photography. */
 @keyframes ken-burns {
   from {
@@ -203,6 +157,15 @@
   animation: ken-burns 22s ease-in-out infinite alternate;
 }
 
+/* The static ground: painted server-side, identical in hue to the shader's base, so
+   the canvas cross-fades over it invisibly. Also the entire effect under reduced
+   motion.
+
+   Deliberately not animated. Animating background-position on this many radial
+   gradients is a full-viewport repaint every frame that no compositor can take to the
+   GPU, and it is covered by the shader a second later anyway — it measured as one of
+   two independent causes of a 3 fps homepage. The shader above it supplies the
+   motion. */
 @utility mesh {
   background-image:
     radial-gradient(58% 52% at 16% 20%, #4f2bff 0%, transparent 62%),
@@ -227,6 +190,7 @@
   }
 }
 
+/* Big numerals and display type get the gradient treatment. */
 @utility gradient-text {
   background-image: linear-gradient(
     100deg,
@@ -293,24 +257,6 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
-@keyframes drift {
-  to {
-    transform: translate(-28px, -28px);
-  }
-}
-
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -363,23 +309,11 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   animation: pulse-node 3s ease-in-out infinite;
 }
 
-@utility grid-drift {
-  animation: drift 6s linear infinite;
-}
-
-@utility halo {
-  animation: spin-slow 28s linear infinite;
-}
-
 @utility rise {
   animation: rise-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@utility ticker-track {
-  animation: marquee 38s linear infinite;
-}
-
-/* `panel` is kept as the name every component already uses; it is glass now. */
+/* The card surface: glass over the shader. */
 @utility panel {
   background-color: var(--color-surface);
   backdrop-filter: blur(14px) saturate(140%);
@@ -394,55 +328,6 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   &:hover {
     background-color: var(--color-surface-2);
     border-color: var(--color-line-strong);
-  }
-}
-
-/* Near-3D card tilt. Spotlight sets --rx/--ry from the pointer; with no pointer the
-   vars stay 0 and the card simply does not tilt. */
-@utility tilt {
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-
-@utility lift {
-  &:hover {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(10px);
-  }
-}
-
-/* Gold sheen sweeping across a surface — the one overtly luxurious flourish. */
-@keyframes sheen {
-  from {
-    transform: translateX(-120%) skewX(-18deg);
-  }
-  to {
-    transform: translateX(320%) skewX(-18deg);
-  }
-}
-
-@utility sheen {
-  position: relative;
-  overflow: hidden;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 28%;
-    pointer-events: none;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in oklab, var(--color-gold-bright) 55%, transparent),
-      transparent
-    );
-    opacity: 0;
-  }
-
-  &:hover::after {
-    opacity: 0.7;
-    animation: sheen 900ms ease-out;
   }
 }
 
@@ -485,34 +370,7 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   animation: ring-pulse 2.8s ease-out infinite;
 }
 
-/* Cursor-following wash. On the pearl ground a warm gold reads as lustre; on an
-   obsidian band the same utility picks up that band's brighter accent. */
-@utility spot {
-  position: relative;
-  isolation: isolate;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    background: radial-gradient(
-      280px circle at var(--mx, 50%) var(--my, 0%),
-      color-mix(in oklab, var(--color-gold-bright) 26%, transparent),
-      transparent 68%
-    );
-  }
-
-  &:hover::after,
-  &:focus-within::after {
-    opacity: 1;
-  }
-}
-
-/* Interactive chrome — tabs, pills, arrows — warms to gold and gains a soft ring. */
+/* Interactive chrome — tabs, pills, arrows — lights up and gains a soft ring. */
 @utility glow {
   transition:
     box-shadow 0.35s ease,
@@ -526,13 +384,6 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
       0 0 0 1px color-mix(in oklab, var(--color-accent) 30%, transparent),
       0 8px 22px -12px color-mix(in oklab, var(--color-ink) 40%, transparent);
   }
-}
-
-@utility glow-on {
-  border-color: var(--color-accent);
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-accent) 45%, transparent),
-    0 10px 26px -14px color-mix(in oklab, var(--color-ink) 45%, transparent);
 }
 
 /* Slow drifting light behind sections. */
@@ -590,86 +441,134 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
-/* Stage illustrations on /process. Each animation loops slowly and stops entirely
-   under reduced motion (handled by the global block at the end of this file). */
-@keyframes converge {
-  0%,
-  100% {
-    transform: translate(var(--dx), var(--dy));
-    opacity: 0.35;
-  }
-  45%,
-  55% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-}
-
-@utility converge {
-  animation: converge 5s ease-in-out infinite;
-}
-
-@keyframes fill-bar {
-  0% {
+/* The service explorer's "next tab in…" line. */
+@keyframes tab-progress {
+  from {
     transform: scaleX(0);
   }
-  55%,
-  100% {
+  to {
     transform: scaleX(1);
   }
 }
 
-@utility fill-bar {
+.tab-progress {
   transform-origin: left;
-  animation: fill-bar 4.5s ease-in-out infinite;
+  animation: tab-progress linear both;
 }
 
-@keyframes tick-in {
-  0%,
-  20% {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-  45%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* ---------- wordmark ------------------------------------------------------
+   The nav's "PentaXL" arrives letter by letter inside an overflow-hidden mask, so
+   nothing is ever drawn outside the bar. Two nested spans per letter: the outer one
+   carries the one-off entrance, the inner one the hover ripple, so hovering never
+   restarts — and so never re-hides — the entrance. */
+.brand-mask {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  /* Headroom so the ripple and the landing overshoot are never shaved by the mask. */
+  padding-block: 0.14em;
+  line-height: 1;
 }
 
-@utility tick-in {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: tick-in 4.5s ease-in-out infinite;
+.brand-letter {
+  display: inline-block;
+  transform-origin: 50% 100%;
 }
 
-@keyframes trace {
-  0% {
-    stroke-dashoffset: var(--len, 300);
-  }
-  60%,
-  100% {
-    stroke-dashoffset: 0;
-  }
+.brand-wave {
+  display: inline-block;
 }
 
-@utility trace {
-  stroke-dasharray: var(--len, 300);
-  animation: trace 5s ease-in-out infinite;
-}
-
-@keyframes travel {
+@keyframes letter-rise {
   from {
-    offset-distance: 0%;
+    transform: translateY(118%) rotate(9deg);
+    opacity: 0;
+    filter: blur(6px);
   }
   to {
-    offset-distance: 100%;
+    transform: none;
+    opacity: 1;
+    filter: blur(0);
   }
 }
 
-@utility travel {
-  offset-path: var(--path);
-  animation: travel 4s linear infinite;
+/* Drops from above the mask, overshoots a touch, flashes violet on landing, settles. */
+@keyframes letter-drop {
+  0% {
+    transform: translateY(-118%) scale(0.92);
+    opacity: 0;
+  }
+  62% {
+    transform: translateY(7%) scale(1.05);
+    opacity: 1;
+    color: var(--color-accent);
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes letter-wave {
+  45% {
+    transform: translateY(-11%);
+  }
+}
+
+/* Once the word has landed, light runs across it letter by letter — on the glyphs
+   themselves, so it reads as a shine and not as a lit box passing over the bar. No
+   fill mode, so it only applies while running and hands colour straight back. */
+@keyframes letter-shine {
+  50% {
+    color: #fff;
+    text-shadow:
+      0 0 10px color-mix(in oklab, var(--color-accent) 90%, transparent),
+      0 0 22px color-mix(in oklab, var(--color-accent) 45%, transparent);
+  }
+}
+
+.brand-rise {
+  animation:
+    letter-rise 720ms cubic-bezier(0.16, 1, 0.3, 1) calc(260ms + var(--i) * 70ms) both,
+    letter-shine 560ms ease-in-out calc(1500ms + var(--k) * 60ms);
+}
+
+.brand-drop {
+  animation:
+    letter-drop 680ms cubic-bezier(0.34, 1.4, 0.64, 1) calc(760ms + var(--j) * 130ms) both,
+    letter-shine 560ms ease-in-out calc(1500ms + var(--k) * 60ms);
+}
+
+.brand:hover .brand-wave {
+  animation: letter-wave 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--k) * 38ms);
+}
+
+/* ---------- dialogs (project form, mobile menu) ---------------------------- */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+dialog[open] {
+  animation: dialog-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* A solid dim rather than a blur: a backdrop-filter here would re-blur the animating
+   shader on every frame the dialog is open. */
+dialog::backdrop {
+  background: rgb(4 3 16 / 0.72);
+}
+
+/* Native modal dialogs do not stop the page scrolling underneath. */
+html:has(dialog[open]) {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -687,24 +586,15 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
 
   .enter,
   .enter-word,
-  .curtain,
+  .brand-rise,
+  .brand-drop,
+  .brand-wave,
+  dialog[open],
   .shader-in,
   .bob,
   .ring-pulse,
-  .converge,
-  .fill-bar,
-  .tick-in,
-  .trace,
-  .travel {
+  .tab-progress {
     animation: none !important;
-  }
-
-  .fill-bar {
-    transform: scaleX(1);
-  }
-
-  .tilt {
-    transform: none !important;
   }
 
   .rule-draw,
