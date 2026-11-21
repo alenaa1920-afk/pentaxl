@@ -542,8 +542,9 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
 /* The bar mark: each bar rises from below inside its own box, bottom bar first, so the
    mark grows upward. Ends at ~830ms, as "Penta" is still rising beside it. */
 .brand-mark {
-  width: 0.95em;
-  height: 0.95em;
+  /* The bars fill 74% of the box, so 1.2em makes the stack a touch taller than the caps. */
+  width: 1.2em;
+  height: 1.2em;
   flex: none;
   overflow: visible;
 }
