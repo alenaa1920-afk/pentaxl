@@ -103,9 +103,9 @@ const BARS = [
 ]
 
 /**
- * The bar mark beside the wordmark. Each bar rises into place from below, shortest first,
- * so the mark builds up the way it reads: growth. It finishes just as "Penta" starts to
- * rise. The top bar carries the same cyan-lavender-pink sweep as `gradient-text`. Pure
+ * The bar mark beside the wordmark. Each bar slides out from the left, shortest first,
+ * so the mark builds up the way it reads: growth. Bar n moves with letter n of "Penta"
+ * (see .brand-bar). The top bar carries the same cyan-lavender-pink sweep as `gradient-text`. Pure
  * CSS, once per page load, skipped under reduced motion. Decorative: the link's
  * aria-label names it.
  */
