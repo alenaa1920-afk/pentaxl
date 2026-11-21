@@ -5,7 +5,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { primaryNav, site } from "@/content/site"
 import { Container, Action } from "./ui"
@@ -92,6 +92,52 @@ function Wordmark() {
   )
 }
 
+/** The mark's five bars, bottom to top, so `--b` staggers them in the direction of growth.
+ *  Lengths step up by 12 units: their right ends trace a rising line. */
+const BARS = [
+  { y: 78, w: 30 },
+  { y: 62, w: 42 },
+  { y: 46, w: 54 },
+  { y: 30, w: 66 },
+  { y: 14, w: 78 },
+]
+
+/**
+ * The bar mark beside the wordmark. Each bar rises into place from below, shortest first,
+ * so the mark builds up the way it reads: growth. It finishes just as "Penta" starts to
+ * rise. The top bar carries the same cyan-lavender-pink sweep as `gradient-text`. Pure
+ * CSS, once per page load, skipped under reduced motion. Decorative: the link's
+ * aria-label names it.
+ */
+function BrandMark() {
+  // useId() output carries characters (colons, guillemets) that are unsafe inside url(#…).
+  const gradient = `brand-bar-${useId().replace(/[^\w-]/g, "")}`
+  return (
+    <svg aria-hidden="true" viewBox="0 0 100 100" className="brand-mark">
+      <defs>
+        <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" style={{ stopColor: "var(--color-accent-2)" }} />
+          <stop offset="0.45" style={{ stopColor: "var(--color-accent)" }} />
+          <stop offset="1" style={{ stopColor: "var(--color-hot)" }} />
+        </linearGradient>
+      </defs>
+      {BARS.map((bar, b) => (
+        <rect
+          key={bar.y}
+          x="12"
+          y={bar.y}
+          width={bar.w}
+          height="10"
+          rx="3"
+          className={cn("brand-bar", b < BARS.length - 1 && "fill-muted")}
+          fill={b === BARS.length - 1 ? `url(#${gradient})` : undefined}
+          style={{ "--b": b } as React.CSSProperties}
+        />
+      ))}
+    </svg>
+  )
+}
+
 export function SiteHeader() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
@@ -124,9 +170,10 @@ export function SiteHeader() {
         >
           <Link
             href="/"
-            className="brand font-display text-[1.7rem] font-bold tracking-tight md:text-[2.15rem]"
+            className="brand font-display inline-flex items-center gap-2.5 text-[1.7rem] font-extrabold tracking-[0.04em] uppercase md:gap-3 md:text-[2.15rem]"
             aria-label={`${site.name} — home`}
           >
+            <BrandMark />
             <Wordmark />
           </Link>
 

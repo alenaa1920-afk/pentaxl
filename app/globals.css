@@ -539,6 +539,32 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
     letter-shine 560ms ease-in-out calc(1500ms + var(--k) * 60ms);
 }
 
+/* The bar mark: each bar rises from below inside its own box, bottom bar first, so the
+   mark grows upward. Ends at ~830ms, as "Penta" is still rising beside it. */
+.brand-mark {
+  width: 0.95em;
+  height: 0.95em;
+  flex: none;
+  overflow: visible;
+}
+
+@keyframes bar-rise {
+  from {
+    transform: translateY(160%) scaleX(0.55);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.brand-bar {
+  transform-box: fill-box;
+  transform-origin: 0 100%;
+  animation: bar-rise 560ms cubic-bezier(0.16, 1, 0.3, 1) calc(60ms + var(--b) * 105ms) both;
+}
+
 .brand:hover .brand-wave {
   animation: letter-wave 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--k) * 38ms);
@@ -589,6 +615,7 @@ html:has(dialog[open]) {
   .brand-rise,
   .brand-drop,
   .brand-wave,
+  .brand-bar,
   dialog[open],
   .shader-in,
   .bob,
