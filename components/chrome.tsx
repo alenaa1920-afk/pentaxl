@@ -129,7 +129,7 @@ function BrandMark() {
           width={bar.w}
           height="10"
           rx="3"
-          className={cn("brand-bar", b < BARS.length - 1 && "fill-muted")}
+          className={cn("brand-bar", b < BARS.length - 1 && "brand-bar-tone")}
           fill={b === BARS.length - 1 ? `url(#${gradient})` : undefined}
           style={{ "--b": b } as React.CSSProperties}
         />

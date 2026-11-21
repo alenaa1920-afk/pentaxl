@@ -576,6 +576,20 @@ html[data-motion="on"] [data-reveal]:not([data-shown]) {
   }
 }
 
+/* The four lower bars climb in tone as they climb in length: deep violet (accent-dim) at
+   the bottom, lifting toward lavender (accent), so the top bar's cyan-lavender-pink sweep
+   reads as the peak. Same family as the rest of the site, so it adds depth without
+   shouting. Only the lower bars: a CSS fill would override the top bar's gradient. */
+.brand-bar-tone {
+  fill: color-mix(in oklch, var(--color-accent) calc(var(--b) * 28%), var(--color-accent-dim));
+}
+
+/* "XL" in lavender, tying the wordmark to the bars; "Penta" stays white for legibility.
+   letter-shine still flashes it to white and back. */
+.brand-drop {
+  color: var(--color-accent);
+}
+
 .brand-bar {
   transform-box: fill-box;
   animation: bar-slide calc(720ms * var(--brand-pace)) cubic-bezier(0.16, 1, 0.3, 1)
